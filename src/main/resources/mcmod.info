@@ -1,0 +1,29 @@
+{
+  "modListVersion": "2",
+  "modList": [
+    {
+      "modid": "boson",
+      "name": "Boson",
+      "description": "Bosons are at the core of our universe: they are particles that have an integral spin value, such as Photons or the Higgs Boson.\n\nSo, much like Bosons are at the core of our universe, Boson is at the core of your Minecraft experience.\n\nBoson: the biggest Kotlin-based library for modding!",
+      "version": "${version}",
+      "mcversion": "${mc_version}",
+      "url": "Https://thesilkminer.net/mc-mods/boson",
+      "updateUrl": "Curse",
+      "authorList": [
+        "TheSilkMiner (aka Silk)"
+      ],
+      "credits": "Physicists from all around the world, that every day come up with new proofs and theories that make us understand better the world we live in.",
+      "logoFile": "",
+      "screenshots": [
+      ],
+      "parent": "",
+      "requiredMods": [
+      ],
+      "dependencies": [
+      ],
+      "dependants": [
+      ],
+      "useDependencyInformation": "false"
+    }
+  ]
+}

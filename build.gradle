@@ -1,0 +1,221 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven {
+            name 'Minecraft Forge'
+            url 'https://files.minecraftforge.net/maven'
+        }
+        maven {
+            name 'OpenMods Third Party'
+            url 'https://repo.openmods.info/artifactory/simple/thirdparty'
+        }
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '2.3-SNAPSHOT'
+        classpath group: 'net.thesilkminer.gradle.translationchecker', name: 'TranslationChecker', version: '1.1'
+        classpath group: 'org.jetbrains.kotlin', name: 'kotlin-gradle-plugin', version: "${kotlin_version}"
+    }
+}
+
+plugins {
+    id 'idea'
+    id 'java'
+    id 'eclipse'
+	id 'visual-studio'
+	id 'maven'
+    id 'org.jlleitschuh.gradle.ktlint' version '8.1.0'
+    id 'org.jetbrains.dokka' version '0.9.17'
+    id 'net.minecrell.licenser' version '0.4.1'
+}
+
+apply plugin: 'kotlin'
+apply plugin: 'net.minecraftforge.gradle.forge'
+
+static def getGitCommit() {
+    def proc = "git rev-parse --short HEAD".execute()
+    proc.waitFor()
+    return proc.exitValue() ? "EINVAL(NO_GIT)" : proc.text.trim()
+}
+
+static def getBuildNumber() {
+    return System.env.BUILD_NUMBER? System.env.BUILD_NUMBER : System.env.TRAVIS_BUILD_NUMBER
+}
+
+static def getBuildString() {
+    return getBuildNumber()? "+build.${getBuildNumber()}" : ""
+}
+
+idea {
+    module {
+        inheritOutputDirs = true
+    }
+}
+
+license {
+    header = project.file('NOTICE')
+
+    include '**/*.java'
+    include '**/*.kt'
+
+    ext {
+        year = Calendar.getInstance().get(Calendar.YEAR)
+        name = 'TheSilkMiner'
+        email = 'thesilkminer <at> outlook <dot> com'
+        app = "Boson"
+    }
+
+    ignoreFailures = false
+}
+
+dokka {
+    outputFormat = 'gfm'
+    outputDirectory = "$buildDir/kdoc/md"
+    jdkVersion = 8
+    skipEmptyPackages = false
+}
+
+ktlint {
+    version = "0.33.0"
+    debug = true
+    verbose = true
+    android = false
+    outputToConsole = true
+    reporters = [org.jlleitschuh.gradle.ktlint.reporter.ReporterType.PLAIN, org.jlleitschuh.gradle.ktlint.reporter.ReporterType.CHECKSTYLE]
+    //ignoreFailures = false
+    ignoreFailures = true // <-- temporary
+    enableExperimentalRules = false
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = '1.8'
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = '1.8'
+}
+
+version = "1.0.0" + getBuildString()
+group = "net.thesilkminer.mc.boson" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "Boson"
+
+sourceCompatibility = targetCompatibility = '1.8'
+compileJava {
+    sourceCompatibility = targetCompatibility = '1.8'
+}
+
+minecraft {
+    version = "1.12.2-14.23.5.2847"
+    runDir = "run"
+    mappings = "snapshot_20180814"
+
+    replace '@VERSION@', project.version
+    replace '@FINGERPRINT@', project.findProperty('signSHA1')
+}
+
+repositories {
+	mavenCentral()
+	jcenter()
+    maven {
+        name 'ShadowFacts'
+        url 'http://maven.shadowfacts.net/'
+    }
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+configurations {
+    shade
+    compile.extendsFrom shade
+}
+
+// compile, provided, deobfCompile, deobfProvided
+dependencies {
+    /* ======================= COMPILE TIME ONLY ======================= */
+
+    // Fermion
+    compile name: 'Fermion-1.0.0'
+
+    // Forgelin
+    compile group: 'net.shadowfacts', name: 'Forgelin', version: '1.8.4'
+    
+    /* ======================= SHADED LIBRARIES ======================= */
+    
+    // JetBrains Annotations
+    shade group: 'org.jetbrains', name: 'annotations', version: '17.0.0'
+
+    // Sqlite JDBC
+    shade group: 'org.xerial', name: 'sqlite-jdbc', version: '3.28.0'
+    
+    /* ======================= RUNTIME LIBRARIES ======================= */
+}
+
+processResources {
+    // this will ensure that this task is redone when the versions change.
+    inputs.property "version", project.version
+    inputs.property "mc_version", project.minecraft.version
+
+    // replace stuff in mcmod.info, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+                
+        // replace version and mcversion
+        expand 'version':project.version, 'mc_version':project.minecraft.version
+    }
+        
+    // copy everything else except the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
+
+task deobfJar(type: Jar, dependsOn: 'jar') {
+    from "build/source/main"
+    classifier "deobf"
+}
+
+task signJar(type: SignJar, dependsOn: 'reobfJar') {
+    onlyIf {
+        project.hasProperty('keystore')
+    }
+    keyStore = project.findProperty('keystore')
+    alias = project.findProperty('keystoreAlias')
+    storePass = project.findProperty('keystorePass')
+    keyPass = project.findProperty('keyPass')
+    inputFile = jar.archivePath
+    outputFile = jar.archivePath
+}
+
+build.dependsOn signJar
+
+artifacts {
+    archives deobfJar
+}
+
+jar {
+    configurations.shade.each {
+        from (project.zipTree(it)) {
+            exclude 'META-INF/MANIFEST.MF'
+        }
+    }
+    manifest {
+        attributes([
+            "Specification-Title": "Boson",
+            "Specification-Vendor": "TheSilkMiner",
+            "Specification-Version": "1.0.0", // We are version 1 of ourselves
+            "Implementation-Title": project.name,
+            "Implementation-Version": "${version}",
+            "Implementation-Vendor" :"TheSilkMiner",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+            "GitCommit": "" + getGitCommit(),
+            "BuildNumber": "" + getBuildNumber(),
+            "HasFermionAddon": "true"
+        ])
+    }
+}
+
+wrapper {
+	gradleVersion = "${gradle_version}"
+    distributionType = Wrapper.DistributionType.ALL
+}
