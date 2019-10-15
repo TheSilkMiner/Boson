@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
+import net.thesilkminer.mc.boson.api.event.BosonPreAvailableEvent
 
 @Mod(modid = MOD_ID, name = MOD_NAME, version = MOD_VERSION, dependencies = MOD_DEPENDENCIES,
         acceptedMinecraftVersions = MOD_MC_VERSION, certificateFingerprint = MOD_CERTIFICATE_FINGERPRINT,
@@ -31,6 +32,12 @@ object Boson {
     @Mod.EventHandler
     fun onPostInitialization(event: FMLPostInitializationEvent) {
         println("post")
+    }
+
+    @Mod.EventHandler
+    fun onLoadFinished(event: BosonPreAvailableEvent) {
+        println("BOSON!")
+        Thread.sleep(5 * 1000)
     }
 
     @Mod.EventHandler

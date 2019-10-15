@@ -1,6 +1,9 @@
 package net.thesilkminer.mc.boson.asm;
 
 import com.google.common.collect.ImmutableSet;
+import net.thesilkminer.mc.boson.asm.transformer.GameDataTransformer;
+import net.thesilkminer.mc.boson.asm.transformer.LoadControllerTransformer;
+import net.thesilkminer.mc.boson.asm.transformer.ProgressManagerTransformer;
 import net.thesilkminer.mc.fermion.asm.api.PluginMetadata;
 import net.thesilkminer.mc.fermion.asm.prefab.AbstractLaunchPlugin;
 
@@ -11,6 +14,7 @@ public final class BosonLaunchPlugin extends AbstractLaunchPlugin {
 
     public BosonLaunchPlugin() {
         super("boson.asm");
+        this.registerTransformers();
     }
 
     @Override
@@ -27,5 +31,11 @@ public final class BosonLaunchPlugin extends AbstractLaunchPlugin {
     @Override
     public Set<String> getRootPackages() {
         return ImmutableSet.of("net.thesilkminer.mc.boson.asm");
+    }
+
+    private void registerTransformers() {
+        this.registerTransformer(new GameDataTransformer(this));
+        this.registerTransformer(new LoadControllerTransformer(this));
+        this.registerTransformer(new ProgressManagerTransformer(this));
     }
 }
