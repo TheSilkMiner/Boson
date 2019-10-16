@@ -37,7 +37,6 @@ object Boson {
     @Mod.EventHandler
     fun onLoadFinished(event: BosonPreAvailableEvent) {
         println("BOSON!")
-        Thread.sleep(5 * 1000)
     }
 
     @Mod.EventHandler
