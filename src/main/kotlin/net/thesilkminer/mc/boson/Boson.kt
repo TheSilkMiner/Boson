@@ -8,44 +8,47 @@ import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
 import net.thesilkminer.mc.boson.api.event.BosonPreAvailableEvent
+import net.thesilkminer.mc.boson.api.log.L
 
 @Mod(modid = MOD_ID, name = MOD_NAME, version = MOD_VERSION, dependencies = MOD_DEPENDENCIES,
         acceptedMinecraftVersions = MOD_MC_VERSION, certificateFingerprint = MOD_CERTIFICATE_FINGERPRINT,
         modLanguageAdapter = KOTLIN_LANGUAGE_ADAPTER, modLanguage = "kotlin")
 object Boson {
 
+    private val l = L(MOD_ID, "Main")
+
     @Mod.EventHandler
     fun onConstruction(event: FMLConstructionEvent) {
-        println("construction")
+        this.l.info("construction")
     }
 
     @Mod.EventHandler
     fun onPreInitialization(event: FMLPreInitializationEvent) {
-        println("pre")
+        this.l.info("pre")
     }
 
     @Mod.EventHandler
     fun onInitialization(event: FMLInitializationEvent) {
-        println("init")
+        this.l.info("init")
     }
 
     @Mod.EventHandler
     fun onPostInitialization(event: FMLPostInitializationEvent) {
-        println("post")
+        this.l.info("post")
     }
 
     @Mod.EventHandler
     fun onLoadFinished(event: BosonPreAvailableEvent) {
-        println("BOSON!")
+        this.l.info("BOSON!")
     }
 
     @Mod.EventHandler
     fun onLoadComplete(event: FMLLoadCompleteEvent) {
-        println("available")
+        this.l.info("available")
     }
 
     @Mod.EventHandler
     fun onFingerprintViolation(event: FMLFingerprintViolationEvent) {
-        println("violation")
+        this.l.info("violation")
     }
 }
