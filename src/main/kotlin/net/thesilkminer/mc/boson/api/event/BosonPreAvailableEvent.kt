@@ -4,9 +4,15 @@ import net.minecraftforge.fml.common.LoaderState
 import net.minecraftforge.fml.common.event.FMLStateEvent
 
 /**
- * // TODO
+ * Latest event called in the lifecycle of mod loading.
  *
- * @param data // TODO
+ * It is called after
+ * [net.minecraftforge.fml.common.event.FMLPostInitializationEvent] and tells
+ * the Mod Containers the loading process has completed for all mods and they
+ * are transitioning to the `AVAILABLE` state.
+ *
+ * @param data
+ *      Some data that may be needed to build the event.
  *
  * @since 1.0.0
  */
