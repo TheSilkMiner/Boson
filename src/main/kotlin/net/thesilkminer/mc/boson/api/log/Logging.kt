@@ -13,6 +13,11 @@ class L(id: String, marker: String = "") : Logger by LogManager.getLogger("$id${
         DO_NOT_DUMP
     }
 
+    companion object {
+        @Suppress("SpellCheckingInspection")
+        fun r(marker: String = "") = L("RE/SYST", marker)
+    }
+
     fun logAndDump(message: String, dumpStack: DumpStackBehavior = DumpStackBehavior.FULL_DUMP) {
         this.doBigMessage(message, dumpStack) {
             this.info(it)
