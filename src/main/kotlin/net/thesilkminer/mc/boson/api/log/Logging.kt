@@ -80,7 +80,9 @@ private fun doDump(initialString: String, dsb: L.DumpStackBehavior): String {
     return builder()
 }
 
-private fun StackTraceElement.toPrintableString() = "at ${this.className}.${this.methodName}"
+private fun StackTraceElement.toPrintableString() =
+        if (this.isNativeMethod) "at ${this.className}.${this.methodName} (in JNI)"
+        else "at ${this.className}.${this.methodName} (${if (this.fileName == null) "???" else this.fileName!!}:${if (this.lineNumber < 0) "???" else this.lineNumber.toString()})"
 
 private operator fun StringBuilder.plusAssign(a: String) {
     this.append(a)
