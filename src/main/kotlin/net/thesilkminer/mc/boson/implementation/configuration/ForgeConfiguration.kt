@@ -61,7 +61,8 @@ class ForgeConfiguration(builder: ConfigurationBuilder) : Configuration {
     }
 
     private fun ConfigurationEntryBuilder.toProperty(previousProperty: Property?) = when (this.type) {
-        EntryType.LIST_OF_STRINGS -> this.toPropertyArray(previousProperty)
+        EntryType.LIST_OF_REAL_NUMBERS, EntryType.LIST_OF_OBJECTS, EntryType.LIST_OF_STRINGS, EntryType.LIST_OF_WHOLE_NUMBERS,
+        EntryType.LIST_OF_BOOLEANS -> this.toPropertyArray(previousProperty)
         else -> this.toPropertyString(previousProperty)
     }
     private fun ConfigurationEntryBuilder.toPropertyString(previousProperty: Property?) = this.toPropertyObject(previousProperty) {
