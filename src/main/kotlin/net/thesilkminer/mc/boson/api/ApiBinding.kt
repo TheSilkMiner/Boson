@@ -7,6 +7,7 @@ import net.thesilkminer.mc.boson.api.configuration.Configuration
 import net.thesilkminer.mc.boson.api.configuration.ConfigurationBuilder
 import net.thesilkminer.mc.boson.api.configuration.ConfigurationFormat
 import net.thesilkminer.mc.boson.api.configuration.Entry
+import net.thesilkminer.mc.boson.api.distribution.Distribution
 import net.thesilkminer.mc.boson.api.log.L
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -35,6 +36,8 @@ val bosonApi by lazy {
                 override operator fun get(category: String): Category = error("Category '$category' does not exist")
                 override operator fun get(category: String, entry: String): Entry = error("Entry '$entry' does not exist in category '$category'")
             }
+
+            override val currentDistribution: Distribution = Distribution.DEDICATED_SERVER
         }
     }
 }
@@ -42,6 +45,8 @@ val bosonApi by lazy {
 interface BosonApi {
     val configurationDirectory: Path
     fun buildConfiguration(builder: ConfigurationBuilder): Configuration
+
+    val currentDistribution: Distribution
 }
 
 private fun <T : Any> loadWithService(lookUpInterface: KClass<T>, defaultProvider: () -> T) : T {
