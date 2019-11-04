@@ -83,11 +83,11 @@ private class BosonConfigElement(private val entry: Entry, private val parent: C
     override fun getDefaults() = (this.entry.default.toList() ?: listOf<Any?>()).toArray()
     override fun getMaxListLength() = -1
     override fun getMaxValue() = this.entry.bounds.second
-    override fun setToDefault() = this.entry.let { it.currentValue = it.default }
+    override fun setToDefault() = this.set(this.entry.default)
     override fun getType() = this.entry.type.toConfigType()
     override fun isProperty() = true
-    override fun set(value: Any?) = this.entry.let { it.currentValue = value!! }
-    override fun set(aVal: Array<out Any>?) = this.entry.let { it.currentValue = aVal!! }
+    override fun set(value: Any?) = this.entry.let { it.currentValue = value!! }.andSave()
+    override fun set(aVal: Array<out Any>?) = this.entry.let { it.currentValue = aVal!! }.andSave()
     override fun getList() = (this.entry.currentValue.toList() ?: listOf<Any?>()).toTypedArray()
     override fun showInGui() = true
     override fun isDefault() = this.entry.currentValue == this.entry.default
@@ -108,4 +108,5 @@ private class BosonConfigElement(private val entry: Entry, private val parent: C
         EntryType.BOOLEAN, EntryType.LIST_OF_BOOLEANS -> ConfigGuiType.BOOLEAN
         EntryType.OBJECT, EntryType.LIST_OF_OBJECTS -> ConfigGuiType.STRING // Requires custom serialization techniques
     }
+    @Suppress("unused") private fun Any.andSave() = this@BosonConfigElement.parent.save()
 }
