@@ -28,7 +28,7 @@ class ForgeConfiguration(builder: ConfigurationBuilder) : Configuration {
     override val owner = builder.owner
     override val name = builder.name
     override val location = builder.constructPath()
-    override val categories: List<Category> = this.backend.categoryNames.map { this.backend.getCategory(it) }.map { it.wrap() }
+    override val categories: List<Category> = this.backend.categoryNames.filter { !it.representsSubCategory() }.map { this.backend.getCategory(it) }.map { it.wrap() }
 
     override fun save() = this.backend.save()
     override fun load() = this.backend.load()
@@ -116,6 +116,7 @@ class ForgeConfiguration(builder: ConfigurationBuilder) : Configuration {
             .resolve("./${this.owner}/${this.name}.$FORGE_CONFIGURATION_FILE_EXTENSION")
             .normalize()
             .toAbsolutePath()
+    private fun String.representsSubCategory(): Boolean = this.contains(ForgeConfig.CATEGORY_SPLITTER)
     private fun ConfigCategory.wrap(): Category = ForgeConfigurationCategory(this)
 }
 
