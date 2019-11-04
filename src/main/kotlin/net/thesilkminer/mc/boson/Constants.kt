@@ -15,3 +15,5 @@ const val MOD_DEPENDENCIES = "required-after:forge@[14.23.5.2768,);" +
 
 @Suppress("SpellCheckingInspection")
 const val KOTLIN_LANGUAGE_ADAPTER = "net.shadowfacts.forgelin.KotlinAdapter"
+@Suppress("SpellCheckingInspection")
+const val MOD_GUI_FACTORY = "net.thesilkminer.mc.boson.mod.client.configuration.BosonConfigurationGuiFactory"

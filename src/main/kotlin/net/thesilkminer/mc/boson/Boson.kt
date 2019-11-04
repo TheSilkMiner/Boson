@@ -10,12 +10,12 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
 import net.thesilkminer.mc.boson.api.event.BosonPreAvailableEvent
 import net.thesilkminer.mc.boson.api.fingerprint.logViolationMessage
 import net.thesilkminer.mc.boson.api.log.L
+import net.thesilkminer.mc.boson.implementation.configuration.ConfigurationManager
 
 @Mod(modid = MOD_ID, name = MOD_NAME, version = MOD_VERSION, dependencies = MOD_DEPENDENCIES,
         acceptedMinecraftVersions = MOD_MC_VERSION, certificateFingerprint = MOD_CERTIFICATE_FINGERPRINT,
-        modLanguageAdapter = KOTLIN_LANGUAGE_ADAPTER, modLanguage = "kotlin")
+        guiFactory = MOD_GUI_FACTORY, modLanguageAdapter = KOTLIN_LANGUAGE_ADAPTER, modLanguage = "kotlin")
 object Boson {
-
     private val l = L(MOD_NAME, "Main")
 
     @Mod.EventHandler
