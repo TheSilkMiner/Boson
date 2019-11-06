@@ -53,15 +53,20 @@ public final class GameDataTransformer extends TargetMethodTransformer {
         return ImmutableMap.of(
                 FIRE_CREATE_REGISTRY_EVENTS, (desc, pair) -> new MethodVisitor(pair.getLeft(), pair.getRight()) {
                     @Override
-                    public void visitCode() {
-                        super.visitCode();
+                    public void visitInsn(final int opcode) {
+                        if (opcode != Opcodes.RETURN) {
+                            super.visitInsn(opcode);
+                            return;
+                        }
+
+                        LOGGER.i("Found RETURN instruction for method '" + desc + "': injecting progress bar code now");
 
                         final Label l0 = new Label();
                         super.visitLabel(l0);
                         super.visitLineNumber(8 * 100 + 2 * 10 + 6, l0);
-                        super.visitMethodInsn(Opcodes.INVOKESTATIC, "net/thesilkminer/mc/boson/hook/GameDataHook", "showRegistryCreationBar", "()V", false);
+                        super.visitMethodInsn(Opcodes.INVOKESTATIC, "net/thesilkminer/mc/boson/hook/GameDataHook", "showPreInitializationCreationBar", "()V", false);
 
-                        LOGGER.i("Injected registry creation progress bar hook");
+                        super.visitInsn(opcode);
                     }
                 },
                 FIRE_REGISTRY_EVENTS, (desc, pair) -> {

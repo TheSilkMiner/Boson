@@ -7,6 +7,7 @@ import net.thesilkminer.mc.boson.api.event.BosonPreAvailableEvent
 
 @Suppress("unused")
 object GameDataHook {
+    private const val PRE_INIT_MARKER = "\$Boson\$marker\$UsePreInit"
 
     private fun reflectProgressBarFromLoader() = with(Loader::class.java.getDeclaredField("progressBar")) {
         this.isAccessible = true
@@ -14,8 +15,8 @@ object GameDataHook {
     }
 
     @JvmStatic
-    fun showRegistryCreationBar() {
-        this.reflectProgressBarFromLoader().step("Creating Registries")
+    fun showPreInitializationCreationBar() {
+        this.reflectProgressBarFromLoader().step(PRE_INIT_MARKER)
     }
 
     @JvmStatic
