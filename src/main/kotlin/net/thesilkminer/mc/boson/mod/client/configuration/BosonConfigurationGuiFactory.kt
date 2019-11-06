@@ -14,6 +14,7 @@ import net.thesilkminer.mc.boson.MOD_ID
 import net.thesilkminer.mc.boson.MOD_NAME
 import net.thesilkminer.mc.boson.api.configuration.Category
 import net.thesilkminer.mc.boson.api.configuration.Configuration
+import net.thesilkminer.mc.boson.api.configuration.ConfigurationFormat
 import net.thesilkminer.mc.boson.api.configuration.Entry
 import net.thesilkminer.mc.boson.api.configuration.EntryType
 import net.thesilkminer.mc.boson.implementation.configuration.ConfigurationManager
@@ -50,7 +51,16 @@ class BosonConfigurationGuiFactory(private val id: String, private val title: St
 
     private fun List<Configuration>.toConfigurationConfigElements(): List<IConfigElement> = this.map { it.toConfigElement() }
     private fun Configuration.toConfigElement() =
-            DummyConfigElement.DummyCategoryElement(this.name, "${this.owner}.configuration.${this.name}", this.categories.toFilteredConfigElements(this, null))
+            DummyConfigElement.DummyCategoryElement(this.toButtonName(), "${this.owner}.configuration.${this.name}", this.categories.toFilteredConfigElements(this, null))
+    private fun Configuration.toButtonName() = "${this.name}.${this.format.toExtension()}"
+    private fun ConfigurationFormat.toExtension() = when (this) {
+        ConfigurationFormat.DEFAULT -> throw IllegalStateException("A Configuration cannot be in Default format at this stage")
+        ConfigurationFormat.FORGE_CONFIG -> "cfg"
+        ConfigurationFormat.HOCON -> "conf"
+        ConfigurationFormat.JSON -> "json"
+        ConfigurationFormat.JSON5 -> "json5"
+        ConfigurationFormat.TOML -> "toml"
+    }
     private fun List<Category>.toFilteredConfigElements(parent: Configuration, pc: Category?) = this.toCategoryConfigElements(parent, pc) // TODO()
     private fun List<Category>.toCategoryConfigElements(parent: Configuration, pc: Category?): List<IConfigElement> = this.map { it.toConfigElement(parent, pc) }
     private fun Category.toConfigElement(parent: Configuration, parentCategory: Category?) =
