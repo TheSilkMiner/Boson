@@ -20,9 +20,8 @@ object ProgressManagerHook {
     }
 
     @JvmStatic
-    fun checkForRegistryCreationMessage(message: String): String = when (message) {
-        PRE_INIT_MESSAGE -> "Creating Registries"
-        PRE_INIT_MARKER -> PRE_INIT_MESSAGE
-        else -> message
+    @Suppress("CascadeIf")
+    fun checkForRegistryCreationMessage(message: String): String {
+        return if (PRE_INIT_MESSAGE == message) "Creating Registries" else if (PRE_INIT_MARKER == message) PRE_INIT_MESSAGE else message
     }
 }
