@@ -26,6 +26,7 @@ object Boson {
     @Mod.EventHandler
     fun onPreInitialization(event: FMLPreInitializationEvent) {
         this.l.info("PreInitialization")
+        ConfigurationManager.gatherConfigurations()
     }
 
     @Mod.EventHandler
