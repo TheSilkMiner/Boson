@@ -2,6 +2,7 @@ package net.thesilkminer.mc.boson.api.configuration
 
 interface Entry {
     class View(private val value: Any) {
+        val boolean: Boolean get() = this.value as Boolean
         val string: String get() = this.value as String
         val int: Int get() = this.long.toInt()
         val short: Short get() = this.long.toShort()

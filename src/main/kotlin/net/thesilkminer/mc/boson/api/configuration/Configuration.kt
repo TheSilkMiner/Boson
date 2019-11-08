@@ -12,6 +12,5 @@ interface Configuration {
     fun save()
     fun load()
 
-    operator fun get(category: String): Category
-    operator fun get(category: String, entry: String): Entry
+    operator fun get(category: String, vararg subCategories: String): Category
 }

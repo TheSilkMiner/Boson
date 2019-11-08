@@ -26,7 +26,7 @@ object ConfigurationManager : ConfigurationRegistry {
         this.l.info("Gathering configurations from mods")
         this.configurations.clear()
         MinecraftForge.EVENT_BUS.post(ConfigurationRegisterEvent(this))
-        this.l.info("Successfully registered a total of ${this.configurations.count()} configurations")
+        this.l.info("Successfully registered a total of ${this.configurations.values.flatten().count()} configurations")
     }
 
     fun getConfigurations(): Map<String, List<Configuration>> = this.configurations.toMap()

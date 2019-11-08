@@ -33,8 +33,7 @@ val bosonApi by lazy {
                 override val categories: List<Category> = listOf()
                 override fun save() = Unit
                 override fun load() = Unit
-                override operator fun get(category: String): Category = error("Category '$category' does not exist")
-                override operator fun get(category: String, entry: String): Entry = error("Entry '$entry' does not exist in category '$category'")
+                override operator fun get(category: String, vararg subCategories: String): Category = error("Category '$category' does not exist")
             }
 
             override val currentDistribution: Distribution = Distribution.DEDICATED_SERVER

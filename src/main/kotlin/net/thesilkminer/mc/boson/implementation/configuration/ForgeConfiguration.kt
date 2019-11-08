@@ -33,8 +33,17 @@ class ForgeConfiguration(builder: ConfigurationBuilder) : Configuration {
     override fun save() = this.backend.save()
     override fun load() = this.backend.load()
 
-    override fun get(category: String) = this.backend.getCategory(category).wrap()
-    override fun get(category: String, entry: String) = this[category][entry]
+    override fun get(category: String, vararg subCategories: String) = this.backend.getCategory(category).wrap().let {
+        val count = subCategories.count()
+        return@let when {
+            count <= 0 -> it
+            count == 1 -> it.getSubCategory(subCategories[0])
+            else -> {
+                val subSubCategories = subCategories.toList().subList(fromIndex = 1, toIndex = count).toTypedArray()
+                it.getSubCategory(subCategories[0], *subSubCategories)
+            }
+        }
+    }
 
     override fun toString(): String = "ForgeConfiguration(format=${this.format}, owner='${this.owner}', name='${this.name}', categories=${this.categories})"
 
@@ -127,7 +136,17 @@ private class ForgeConfigurationCategory(private val forgeCategory: ConfigCatego
     override val categories: List<Category> = this.forgeCategory.children.toList().map { ForgeConfigurationCategory(it) }
     override val entries: List<Entry> = this.forgeCategory.values.toList().map { it.wrap() }
 
-    override fun getSubCategory(category: String) = this.categories.first { it.name == category }
+    override fun getSubCategory(category: String, vararg subCategories: String) = this.categories.first { it.name == category }.let {
+        val count = subCategories.count()
+        return@let when {
+            count <= 0 -> it
+            count == 0 -> it.getSubCategory(subCategories[0])
+            else -> {
+                val subSubCategories = subCategories.toList().subList(fromIndex = 1, toIndex = count).toTypedArray()
+                it.getSubCategory(subCategories[0], *subSubCategories)
+            }
+        }
+    }
 
     override fun get(entry: String): Entry = this.entries.first { it.name == entry }
 
