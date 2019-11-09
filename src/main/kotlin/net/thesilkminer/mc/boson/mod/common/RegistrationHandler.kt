@@ -15,6 +15,6 @@ object RegistrationHandler {
     @JvmStatic
     @SubscribeEvent
     fun onConfigurationRegistration(event: ConfigurationRegisterEvent) {
-        event.configurationRegistry.registerConfigurations(common, client)
+        event.configurationRegistry.registerConfigurations(common)
     }
 }
