@@ -15,13 +15,15 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.oredict.OreDictionary
 import net.thesilkminer.mc.boson.MOD_ID
+import net.thesilkminer.mc.boson.api.locale.Color
+import net.thesilkminer.mc.boson.api.locale.Style
+import net.thesilkminer.mc.boson.api.locale.toLocale
 import net.thesilkminer.mc.boson.mod.client.configuration.client
 import org.lwjgl.input.Keyboard
 import java.util.concurrent.TimeUnit
 
 @Mod.EventBusSubscriber(modid = MOD_ID, value = [Side.CLIENT])
 object AdvancedTooltipHandler {
-
     private const val REPLACE_WITH_NBT = "\$\$\$BOSON\$Replace\$NBT"
 
     private val isEnabled get() = client["advanced_tooltips"]["enabled"]().boolean
@@ -35,7 +37,7 @@ object AdvancedTooltipHandler {
             .build(object: CacheLoader<ItemStack, MutableList<String>>() {
                 override fun load(key: ItemStack): MutableList<String> {
                     val list = mutableListOf<String>()
-                    list += "${TextFormatting.BLUE}${TextFormatting.ITALIC}${I18n.format("boson.client.tooltip.advanced.begin")}${TextFormatting.RESET}"
+                    list += "boson.client.tooltip.advanced.begin".toLocale(color = Color.BLUE, style = Style.ITALIC)
                     if (client["advanced_tooltips", "information"]["metadata"]().boolean) this.addMetadata(key, list)
                     if (client["advanced_tooltips", "information"]["tag"]().boolean) this.addTags(key, list)
                     if (client["advanced_tooltips", "information"]["ore_dictionary"]().boolean) this.addOreDictionary(key, list)
@@ -60,9 +62,9 @@ object AdvancedTooltipHandler {
 
                 private fun addMetadata(key: ItemStack, list: MutableList<String>) {
                     val id = Item.getIdFromItem(key.item)
-                    val metadata = if (key.item.hasSubtypes) "${key.itemDamage}/${key.maxDamage}" else I18n.format("boson.client.tooltip.advanced.metadata.none")
-                    val idString = I18n.format("boson.client.tooltip.advanced.metadata.id", id)
-                    val metaString = I18n.format("boson.client.tooltip.advanced.metadata.meta", metadata)
+                    val metadata = if (key.item.hasSubtypes) "${key.itemDamage}/${key.maxDamage}" else "boson.client.tooltip.advanced.metadata.none".toLocale()
+                    val idString = "boson.client.tooltip.advanced.metadata.id".toLocale(id)
+                    val metaString = "boson.client.tooltip.advanced.metadata.meta".toLocale(metadata)
                     this.add(list, "boson.client.tooltip.advanced.metadata", listOf(idString, metaString))
                 }
 
@@ -75,8 +77,8 @@ object AdvancedTooltipHandler {
                 }
 
                 private fun add(list: MutableList<String>, title: String, values: List<Any>) {
-                    list += "  ${TextFormatting.DARK_AQUA}${I18n.format(title)}${TextFormatting.RESET}"
-                    if (values.isEmpty()) list += "    ${TextFormatting.DARK_GRAY}${I18n.format("boson.client.tooltip.advanced.none")}${TextFormatting.RESET}"
+                    list += "  ${title.toLocale(color = Color.DARK_AQUA)}"
+                    if (values.isEmpty()) list += "    ${"boson.client.tooltip.advanced.none".toLocale(color = Color.DARK_GRAY)}"
                     else values.forEach { list += "    ${TextFormatting.GRAY}- $it${TextFormatting.RESET}" }
                 }
             })
@@ -93,7 +95,7 @@ object AdvancedTooltipHandler {
         // TODO("Modifier API")
         if (this.mustShift && !(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))) {
             // TODO("Easier locale API")
-            e.toolTip += "${TextFormatting.DARK_GRAY}${I18n.format("boson.client.tooltip.advanced.shift")}${TextFormatting.RESET}"
+            e.toolTip += "boson.client.tooltip.advanced.shift".toLocale(color = Color.DARK_GRAY)
             return
         }
         e.toolTip += this.tooltipLinesCache[e.itemStack].apply { this.replaceNbtIfNeeded(e.itemStack) }
@@ -108,7 +110,7 @@ object AdvancedTooltipHandler {
         val injectList = mutableListOf<String>()
         val nbtCompound = key.tagCompound
         if (nbtCompound == null) {
-            injectList += "${TextFormatting.DARK_RED}${I18n.format("boson.client.tooltip.advanced.nbt.null_error")}${TextFormatting.RESET}"
+            injectList += "boson.client.tooltip.advanced.nbt.null_error".toLocale(color = Color.DARK_RED)
         } else {
             nbtCompound.toTooltip(injectList)
         }
