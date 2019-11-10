@@ -33,6 +33,21 @@ val client = configuration {
                             languageKey = "boson.configuration.client.advanced_tooltips.information.tag"
                             default = true
                         }
+                        "nbt"(EntryType.BOOLEAN) {
+                            comment = "Whether to show a JSON representation of the NBT of the item"
+                            languageKey = "boson.configuration.client.advanced_tooltips.information.nbt"
+                            default = true
+                        }
+                        "metadata"(EntryType.BOOLEAN) {
+                            comment = "Whether to show a triple containing ID, metadata, and maximum metadata of an item"
+                            languageKey = "boson.configuration.client.advanced_tooltips.information.metadata"
+                            default = false
+                        }
+                        "language_key"(EntryType.BOOLEAN) {
+                            comment = "Whether to show the language key of the item, used for translation"
+                            languageKey = "boson.configuration.client.advanced_tooltips.information.language_key"
+                            default = true
+                        }
                     }
                 }
             }
