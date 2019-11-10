@@ -6,8 +6,10 @@ import net.thesilkminer.mc.boson.api.configuration.Category
 import net.thesilkminer.mc.boson.api.configuration.Configuration
 import net.thesilkminer.mc.boson.api.configuration.ConfigurationBuilder
 import net.thesilkminer.mc.boson.api.configuration.ConfigurationFormat
-import net.thesilkminer.mc.boson.api.configuration.Entry
 import net.thesilkminer.mc.boson.api.distribution.Distribution
+import net.thesilkminer.mc.boson.api.locale.Color
+import net.thesilkminer.mc.boson.api.locale.Readability
+import net.thesilkminer.mc.boson.api.locale.Style
 import net.thesilkminer.mc.boson.api.log.L
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -37,6 +39,8 @@ val bosonApi by lazy {
             }
 
             override val currentDistribution: Distribution = Distribution.DEDICATED_SERVER
+
+            override fun localizeAndFormat(message: String, color: Color, style: Style, readability: Readability, vararg arguments: Any?) = message
         }
     }
 }
@@ -46,6 +50,8 @@ interface BosonApi {
     fun buildConfiguration(builder: ConfigurationBuilder): Configuration
 
     val currentDistribution: Distribution
+
+    fun localizeAndFormat(message: String, color: Color, style: Style, readability: Readability, vararg arguments: Any?): String
 }
 
 private fun <T : Any> loadWithService(lookUpInterface: KClass<T>, defaultProvider: () -> T) : T {
