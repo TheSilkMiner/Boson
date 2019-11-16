@@ -5,6 +5,7 @@ package net.thesilkminer.mc.boson.implementation.configuration
 import net.thesilkminer.mc.boson.api.bosonApi
 import net.thesilkminer.mc.boson.api.configuration.ConfigurationBuilder
 import net.thesilkminer.mc.boson.api.configuration.ConfigurationFormat
+import java.lang.IllegalStateException
 import java.nio.file.Path
 
 fun ConfigurationBuilder.constructPath(format: ConfigurationFormat): Path = bosonApi.configurationDirectory
@@ -12,11 +13,11 @@ fun ConfigurationBuilder.constructPath(format: ConfigurationFormat): Path = boso
         .normalize()
         .toAbsolutePath()
 
-private fun ConfigurationFormat.toExtension() = when (this) {
-    ConfigurationFormat.DEFAULT -> TODO()
+fun ConfigurationFormat.toExtension() = when (this) {
+    ConfigurationFormat.DEFAULT -> throw IllegalStateException("The configuration cannot be in Default format at this stage")
     ConfigurationFormat.FORGE_CONFIG -> ForgeConfiguration.FORGE_CONFIGURATION_FILE_EXTENSION
-    ConfigurationFormat.HOCON -> TODO()
+    ConfigurationFormat.HOCON -> TODO("conf")
     ConfigurationFormat.JSON -> JsonConfiguration.JSON_CONFIGURATION_FILE_EXTENSION
-    ConfigurationFormat.JSON5 -> TODO()
-    ConfigurationFormat.TOML -> TODO()
+    ConfigurationFormat.JSON5 -> TODO("json5 (maybe? the parser will decide)")
+    ConfigurationFormat.TOML -> TODO("toml")
 }
