@@ -2,7 +2,6 @@ package net.thesilkminer.mc.boson.mod.client.tooltip
 
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
-import net.minecraft.client.resources.I18n
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTBase
@@ -94,7 +93,6 @@ object AdvancedTooltipHandler {
 
         // TODO("Modifier API")
         if (this.mustShift && !(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))) {
-            // TODO("Easier locale API")
             e.toolTip += "boson.client.tooltip.advanced.shift".toLocale(color = Color.DARK_GRAY)
             return
         }

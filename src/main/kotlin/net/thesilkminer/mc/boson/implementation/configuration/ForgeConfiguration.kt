@@ -1,11 +1,10 @@
-@file:JvmName("FCU")
+@file:JvmName("FC")
 
 package net.thesilkminer.mc.boson.implementation.configuration
 
 import com.google.gson.GsonBuilder
 import net.minecraftforge.common.config.ConfigCategory
 import net.minecraftforge.common.config.Property
-import net.thesilkminer.mc.boson.api.bosonApi
 import net.minecraftforge.common.config.Configuration as ForgeConfig
 import net.thesilkminer.mc.boson.api.configuration.Category
 import net.thesilkminer.mc.boson.api.configuration.Configuration
@@ -15,7 +14,6 @@ import net.thesilkminer.mc.boson.api.configuration.ConfigurationEntryBuilder
 import net.thesilkminer.mc.boson.api.configuration.ConfigurationFormat
 import net.thesilkminer.mc.boson.api.configuration.Entry
 import net.thesilkminer.mc.boson.api.configuration.EntryType
-import java.nio.file.Path
 
 class ForgeConfiguration(builder: ConfigurationBuilder) : Configuration {
     companion object {
@@ -27,13 +25,13 @@ class ForgeConfiguration(builder: ConfigurationBuilder) : Configuration {
     override val format = ConfigurationFormat.FORGE_CONFIG
     override val owner = builder.owner
     override val name = builder.name
-    override val location = builder.constructPath()
+    override val location = builder.constructPath(this.format)
     override val categories: List<Category> = this.backend.categoryNames.filter { !it.representsSubCategory() }.map { this.backend.getCategory(it) }.map { it.wrap() }
 
     override fun save() = this.backend.save()
     override fun load() = this.backend.load()
 
-    override fun get(category: String, vararg subCategories: String) = this.backend.getCategory(category).wrap().let {
+    override operator fun get(category: String, vararg subCategories: String) = this.backend.getCategory(category).wrap().let {
         val count = subCategories.count()
         return@let when {
             count <= 0 -> it
@@ -121,10 +119,6 @@ class ForgeConfiguration(builder: ConfigurationBuilder) : Configuration {
         EntryType.BOOLEAN, EntryType.LIST_OF_BOOLEANS -> Property.Type.BOOLEAN
         EntryType.OBJECT, EntryType.LIST_OF_OBJECTS -> Property.Type.STRING // Requires custom serialization techniques
     }
-    private fun ConfigurationBuilder.constructPath(): Path = bosonApi.configurationDirectory
-            .resolve("./${this.owner}/${this.name}.$FORGE_CONFIGURATION_FILE_EXTENSION")
-            .normalize()
-            .toAbsolutePath()
     private fun String.representsSubCategory(): Boolean = this.contains(ForgeConfig.CATEGORY_SPLITTER)
     private fun ConfigCategory.wrap(): Category = ForgeConfigurationCategory(this)
 }
@@ -148,7 +142,7 @@ private class ForgeConfigurationCategory(private val forgeCategory: ConfigCatego
         }
     }
 
-    override fun get(entry: String): Entry = this.entries.first { it.name == entry }
+    override operator fun get(entry: String) = this.entries.first { it.name == entry }
 
     override fun toString() = "ForgeConfigurationCategory(name='${this.name}', comment='${this.comment}', " +
             "languageKey='${this.languageKey}', subcategories=${this.categories}, entries=${this.entries})"
@@ -195,7 +189,7 @@ private class ForgeBooleanConfigurationEntry(private val forgeEntry: Property) :
     override val bounds: Pair<Any?, Any?> = Pair(null, null)
     override var currentValue: Any
         get() = if (this.forgeEntry.isBooleanValue) this.forgeEntry.boolean else this.throwTypeMismatch()
-        set(value) { if (value is Boolean) this.forgeEntry.set(value) else this.throwTypeMismatch(value) }
+        set(value) = if (value is Boolean) this.forgeEntry.set(value) else this.throwTypeMismatch(value)
 }
 
 private class ForgeRealNumberConfigurationEntry(private val forgeEntry: Property) : ForgeConfigurationEntry(forgeEntry) {
@@ -247,7 +241,7 @@ private class ForgeStringConfigurationEntry(private val forgeEntry: Property) : 
     override val bounds: Pair<Any?, Any?> = Pair(null, null)
     override var currentValue: Any
         get() = this.forgeEntry.string
-        set(value) { if (value is String) this.forgeEntry.set(value) else this.throwTypeMismatch(value) }
+        set(value) = if (value is String) this.forgeEntry.set(value) else this.throwTypeMismatch(value)
 }
 
 private class ForgeObjectConfigurationEntry(private val forgeEntry: Property) : ForgeConfigurationEntry(forgeEntry) {
@@ -259,7 +253,7 @@ private class ForgeObjectConfigurationEntry(private val forgeEntry: Property) : 
     override val bounds: Pair<Any?, Any?> = Pair(null, null)
     override var currentValue: Any
         get() = if (this.forgeEntry.string.startsWith(OBJECT_MARKER)) this.forgeEntry.string.toAny() else this.throwTypeMismatch()
-        set(value) { this.forgeEntry.set(value.toConfigurationString()) }
+        set(value) = this.forgeEntry.set(value.toConfigurationString())
 }
 
 private sealed class ForgeListConfigurationEntry(forgeEntry: Property) : ForgeConfigurationEntry(forgeEntry) {
@@ -309,7 +303,6 @@ private class ForgeStringListConfigurationEntry(private val forgeEntry: Property
     override var currentValue: Any
         get() = if (this.forgeEntry.isList) this.forgeEntry.stringList else this.throwTypeMismatch()
         set(value) = this.forgeEntry.set(this.checkAndCast<String>(value).toTypedArray())
-
     override fun isValidType(any: Any?): Boolean = any is String
 }
 

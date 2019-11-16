@@ -14,6 +14,7 @@ import net.thesilkminer.mc.boson.api.locale.Readability
 import net.thesilkminer.mc.boson.api.locale.Style
 import net.thesilkminer.mc.boson.api.log.L
 import net.thesilkminer.mc.boson.implementation.configuration.ForgeConfiguration
+import net.thesilkminer.mc.boson.implementation.configuration.JsonConfiguration
 import java.nio.file.Path
 
 class BosonApiBinding : BosonApi {
@@ -29,6 +30,7 @@ class BosonApiBinding : BosonApi {
     override fun buildConfiguration(builder: ConfigurationBuilder) = when (builder.type) {
         ConfigurationFormat.DEFAULT -> ForgeConfiguration(builder) // The default may vary between Major versions ONLY
         ConfigurationFormat.FORGE_CONFIG -> ForgeConfiguration(builder)
+        ConfigurationFormat.JSON -> JsonConfiguration(builder).apply { this.save() }
         else -> TODO("Not Yet Supported")
     }
 
