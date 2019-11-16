@@ -139,15 +139,25 @@ dependencies {
 
     // Forgelin
     compile group: 'net.shadowfacts', name: 'Forgelin', version: '1.8.4'
-    
+
     /* ======================= SHADED LIBRARIES ======================= */
-    
+
+    // Exposed
+    shade(group: 'org.jetbrains.exposed', name: 'exposed', version: '0.17.7') {
+        exclude group: 'com.h2database'
+        exclude group: 'org.jetbrains.kotlin'
+        exclude group: 'org.jetbrains.kotlinx'
+    }
+
     // JetBrains Annotations
     shade group: 'org.jetbrains', name: 'annotations', version: '17.0.0'
 
+    // Kotlin Commons Lang
+    shade name: 'Kotlin-Commons-Lang-1.0.0-SNAPSHOT'
+
     // Sqlite JDBC
     shade group: 'org.xerial', name: 'sqlite-jdbc', version: '3.28.0'
-    
+
     /* ======================= RUNTIME LIBRARIES ======================= */
 }
 
@@ -159,11 +169,11 @@ processResources {
     // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-                
+
         // replace version and mcversion
         expand 'version':project.version, 'mc_version':project.minecraft.version
     }
-        
+
     // copy everything else except the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
