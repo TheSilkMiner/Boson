@@ -3,9 +3,7 @@
 
 package net.thesilkminer.mc.boson.api.modid
 
-import net.thesilkminer.mc.boson.MOD_ID
-
-const val BOSON = MOD_ID
+const val BOSON = "boson"
 const val BOSON_ASM = "$BOSON.asm"
 const val CRAFT_TWEAKER_2 = "crafttweaker"
 const val CRAFT_TWEAKER_GUI = "ctgui"

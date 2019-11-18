@@ -1,9 +1,10 @@
 package net.thesilkminer.mc.boson
 
+import net.thesilkminer.mc.boson.api.modid.BOSON
 import net.thesilkminer.mc.boson.api.modid.FERMION
 import net.thesilkminer.mc.boson.api.modid.FORGELIN
 
-const val MOD_ID = "boson"
+const val MOD_ID = BOSON
 const val MOD_NAME = "Boson"
 const val MOD_VERSION = "@VERSION@"
 const val MOD_MC_VERSION = "1.12.2"

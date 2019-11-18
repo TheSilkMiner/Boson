@@ -9,12 +9,14 @@ import net.thesilkminer.mc.boson.api.configuration.ConfigurationBuilder
 import net.thesilkminer.mc.boson.api.configuration.ConfigurationFormat
 import net.thesilkminer.mc.boson.api.distribution.Distribution
 import net.thesilkminer.mc.boson.api.distribution.runSided
+import net.thesilkminer.mc.boson.api.id.NameSpacedString
 import net.thesilkminer.mc.boson.api.locale.Color
 import net.thesilkminer.mc.boson.api.locale.Readability
 import net.thesilkminer.mc.boson.api.locale.Style
 import net.thesilkminer.mc.boson.api.log.L
 import net.thesilkminer.mc.boson.implementation.configuration.ForgeConfiguration
 import net.thesilkminer.mc.boson.implementation.configuration.JsonConfiguration
+import net.thesilkminer.mc.boson.implementation.naming.ResourceLocationBackedNameSpacedString
 import java.nio.file.Path
 
 class BosonApiBinding : BosonApi {
@@ -38,6 +40,8 @@ class BosonApiBinding : BosonApi {
 
     override fun localizeAndFormat(message: String, color: Color, style: Style, readability: Readability, vararg arguments: Any?): String =
             runSided(server = { { message } }, client = { { I18n.format(message, arguments).apply(color, style, readability) } })
+
+    override fun constructNameSpacedString(nameSpace: String?, path: String): NameSpacedString = ResourceLocationBackedNameSpacedString(nameSpace, path)
 
     private fun String.apply(color: Color, style: Style, readability: Readability): String {
         fun Color.toTextFormatting() = when (this) {

@@ -7,6 +7,7 @@ import net.thesilkminer.mc.boson.api.configuration.Configuration
 import net.thesilkminer.mc.boson.api.configuration.ConfigurationBuilder
 import net.thesilkminer.mc.boson.api.configuration.ConfigurationFormat
 import net.thesilkminer.mc.boson.api.distribution.Distribution
+import net.thesilkminer.mc.boson.api.id.NameSpacedString
 import net.thesilkminer.mc.boson.api.locale.Color
 import net.thesilkminer.mc.boson.api.locale.Readability
 import net.thesilkminer.mc.boson.api.locale.Style
@@ -41,6 +42,12 @@ val bosonApi by lazy {
             override val currentDistribution: Distribution = Distribution.DEDICATED_SERVER
 
             override fun localizeAndFormat(message: String, color: Color, style: Style, readability: Readability, vararg arguments: Any?) = message
+
+            override fun constructNameSpacedString(nameSpace: String?, path: String) = object : NameSpacedString {
+                override val nameSpace = nameSpace ?: "null"
+                override val path = path
+                override fun compareTo(other: NameSpacedString) = this.nameSpace.compareTo(other.nameSpace).let { return@let if (it == 0) 0 else this.path.compareTo(other.path) }
+            }
         }
     }
 }
@@ -52,6 +59,8 @@ interface BosonApi {
     val currentDistribution: Distribution
 
     fun localizeAndFormat(message: String, color: Color, style: Style, readability: Readability, vararg arguments: Any?): String
+
+    fun constructNameSpacedString(nameSpace: String?, path: String): NameSpacedString
 }
 
 private fun <T : Any> loadWithService(lookUpInterface: KClass<T>, defaultProvider: () -> T) : T {
