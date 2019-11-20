@@ -8,6 +8,9 @@ import net.thesilkminer.mc.boson.api.configuration.ConfigurationBuilder
 import net.thesilkminer.mc.boson.api.configuration.ConfigurationFormat
 import net.thesilkminer.mc.boson.api.distribution.Distribution
 import net.thesilkminer.mc.boson.api.id.NameSpacedString
+import net.thesilkminer.mc.boson.api.loader.ContextKey
+import net.thesilkminer.mc.boson.api.loader.Loader
+import net.thesilkminer.mc.boson.api.loader.LoaderBuilder
 import net.thesilkminer.mc.boson.api.locale.Color
 import net.thesilkminer.mc.boson.api.locale.Readability
 import net.thesilkminer.mc.boson.api.locale.Style
@@ -48,6 +51,15 @@ val bosonApi by lazy {
                 override val path = path
                 override fun compareTo(other: NameSpacedString) = this.nameSpace.compareTo(other.nameSpace).let { return@let if (it == 0) 0 else this.path.compareTo(other.path) }
             }
+
+            override fun <T : Any> createLoaderContextKey(name: String, type: KClass<T>): ContextKey<T> = object : ContextKey<T> {
+                override val name: String = name
+                override val type: KClass<T> = type
+            }
+
+            override fun buildLoader(builder: LoaderBuilder) = object : Loader {
+                override fun load() = Unit
+            }
         }
     }
 }
@@ -61,6 +73,9 @@ interface BosonApi {
     fun localizeAndFormat(message: String, color: Color, style: Style, readability: Readability, vararg arguments: Any?): String
 
     fun constructNameSpacedString(nameSpace: String?, path: String): NameSpacedString
+
+    fun <T : Any> createLoaderContextKey(name: String, type: KClass<T>): ContextKey<T>
+    fun buildLoader(builder: LoaderBuilder): Loader
 }
 
 private fun <T : Any> loadWithService(lookUpInterface: KClass<T>, defaultProvider: () -> T) : T {

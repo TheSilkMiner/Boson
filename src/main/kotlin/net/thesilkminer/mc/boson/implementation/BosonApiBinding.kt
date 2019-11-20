@@ -10,14 +10,19 @@ import net.thesilkminer.mc.boson.api.configuration.ConfigurationFormat
 import net.thesilkminer.mc.boson.api.distribution.Distribution
 import net.thesilkminer.mc.boson.api.distribution.runSided
 import net.thesilkminer.mc.boson.api.id.NameSpacedString
+import net.thesilkminer.mc.boson.api.loader.ContextKey
+import net.thesilkminer.mc.boson.api.loader.LoaderBuilder
 import net.thesilkminer.mc.boson.api.locale.Color
 import net.thesilkminer.mc.boson.api.locale.Readability
 import net.thesilkminer.mc.boson.api.locale.Style
 import net.thesilkminer.mc.boson.api.log.L
 import net.thesilkminer.mc.boson.implementation.configuration.ForgeConfiguration
 import net.thesilkminer.mc.boson.implementation.configuration.JsonConfiguration
+import net.thesilkminer.mc.boson.implementation.loader.BosonContextKey
+import net.thesilkminer.mc.boson.implementation.loader.BosonLoader
 import net.thesilkminer.mc.boson.implementation.naming.ResourceLocationBackedNameSpacedString
 import java.nio.file.Path
+import kotlin.reflect.KClass
 
 class BosonApiBinding : BosonApi {
     private val l = L("Boson API", "BosonApiBinding")
@@ -42,6 +47,10 @@ class BosonApiBinding : BosonApi {
             runSided(server = { { message } }, client = { { I18n.format(message, arguments).apply(color, style, readability) } })
 
     override fun constructNameSpacedString(nameSpace: String?, path: String): NameSpacedString = ResourceLocationBackedNameSpacedString(nameSpace, path)
+
+    override fun <T : Any> createLoaderContextKey(name: String, type: KClass<T>): ContextKey<T> = BosonContextKey(name, type)
+
+    override fun buildLoader(builder: LoaderBuilder): net.thesilkminer.mc.boson.api.loader.Loader = BosonLoader(builder)
 
     private fun String.apply(color: Color, style: Style, readability: Readability): String {
         fun Color.toTextFormatting() = when (this) {
