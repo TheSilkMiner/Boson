@@ -1,3 +1,5 @@
+@file:JvmName("C")
+
 package net.thesilkminer.mc.boson
 
 import net.thesilkminer.mc.boson.api.modid.BOSON

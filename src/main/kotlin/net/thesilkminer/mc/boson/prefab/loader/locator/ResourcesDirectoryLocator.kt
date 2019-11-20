@@ -22,29 +22,35 @@ class ResourcesDirectoryLocator(private val targetDirectory: String, private val
         DATA("data")
     }
 
-    private val lazyLocations : List<Lazy<Location>>
-        get() {
-            l.info("Attempting to load data from the 'resources/' directory, situated in your main game directory.")
-            l.info("We are currently looking in the '${this.targetDirectory}' directory with kind ${this.kind}")
-            return this.scanResourcesDirectory(Paths.get(".").resolve("./resources").normalize().toAbsolutePath())
-        }
+    private val lazyLocations : List<Lazy<Location>> by lazy {
+        l.info("Attempting to load data from the 'resources/' directory, situated in your main game directory.")
+        l.info("We are currently looking in the '${this.targetDirectory}' directory with kind ${this.kind}")
+        this.scanResourcesDirectory(Paths.get(".").resolve("./resources").normalize().toAbsolutePath())
+    }
 
     override val locations: List<Lazy<Location>> get() = this.lazyLocations
 
     private fun scanResourcesDirectory(resources: Path) =
             this.scanAllDirectories(resources.resolve("./${this.kind.directoryName}/").normalize().toAbsolutePath(), resources)
-    private fun scanAllDirectories(data: Path, resources: Path) =
-            Files.walk(data, 1).asSequence().flatMap { this.scanDirectory(it, resources) }.toList()
+    private fun scanAllDirectories(data: Path, resources: Path) = if (Files.exists(data)) {
+        Files.walk(data, 1).asSequence().flatMap { this.scanDirectory(it, resources) }.toList()
+    } else {
+        l.info("Directory '$data' doesn't exist: skipping resources loading")
+        listOf()
+    }
     private fun scanDirectory(id: Path, resources: Path) =
             this.scanForFiles(id.resolve("./${this.targetDirectory}").normalize().toAbsolutePath(), id, resources)
-    private fun scanForFiles(target: Path, id: Path, resources: Path): Sequence<Lazy<Location>> = if (!Files.exists(target)) {
-        l.warn("Directory '${resources.relativize(target)}' doesn't exist: skipping loading of files")
-        emptySequence()
-    } else {
-        l.info("Successfully identified directory '${resources.relativize(target)}': proceeding with loading of files")
+    private fun scanForFiles(target: Path, id: Path, resources: Path) = this.let {
         val modId = id.fileName.toString()
-        sequenceOf(lazy { BaseLocation(target.toAbsolutePath(), "$modId - User-Added Resources", BaseContext().apply {
-            this[modIdContextKey] = modId
-        }) })
+        if (!Files.exists(target)) {
+            l.warn("Directory '${resources.relativize(target)}' doesn't exist: skipping loading of files")
+        } else {
+            l.info("Successfully identified directory '${resources.relativize(target)}': proceeding with loading of files")
+        }
+        sequenceOf(lazy {
+            BaseLocation(target.toAbsolutePath(), "$modId - User-Added Resources", BaseContext().apply {
+                this[modIdContextKey] = modId
+            })
+        })
     }
 }

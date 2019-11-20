@@ -54,6 +54,9 @@ class BosonLoader(builder: LoaderBuilder) : Loader {
             this.l.info("Reached end of phase ${phase.name} successfully")
         }
 
+        this.l.info("Cleaning up loader resources")
+        this.locators.forEach { it.clean() }
+
         this.l.info("Loading process completed")
         this.progressReporter?.endVisit() ?: Unit // Okay, what?
     } catch (e: Exception) {
@@ -69,25 +72,30 @@ class BosonLoader(builder: LoaderBuilder) : Loader {
     private fun LoadingPhase<Any>.goThroughPhase(globalContext: Context?) {
         this@BosonLoader.progressReporter?.visitPhase(this)
 
-        val itemsToLoad = this@BosonLoader.locators.flatMap { it.locations }
+        val locators = this@BosonLoader.locators
+        val itemsToLoad = locators.flatMap { it.locations }
         this@BosonLoader.l.debug("Attempting to load a total of ${itemsToLoad.count()} items")
         this@BosonLoader.progressReporter?.visitItemsTotal(itemsToLoad.count())
 
         val phaseContext = this.contextBuilder?.buildContext(this)
 
-        this@BosonLoader.locators.forEach { it.loadThroughLocator(this, globalContext, phaseContext) }
+        locators.forEach { it.loadThroughLocator(this, globalContext, phaseContext) }
     }
 
     private fun Locator.loadThroughLocator(phase: LoadingPhase<Any>, globalContext: Context?, phaseContext: Context?) {
         this@BosonLoader.l.debug("Attempting to load data through locator $this")
-        this@BosonLoader.progressReporter?.visitItems(this.locations.count())
-        this.locations.forEach { it.value.processLocation(phase, globalContext, phaseContext) }
+        val locations = this.locations
+        this@BosonLoader.progressReporter?.visitItems(locations.count())
+        locations.forEach { it.value.processLocation(phase, globalContext, phaseContext) }
     }
 
     private fun Location.processLocation(phase: LoadingPhase<Any>, globalContext: Context?, phaseContext: Context?) {
         this@BosonLoader.progressReporter?.visitLocation(this, this.isDirectory())
-        if (this.isDirectory()) this.processDirectory(phase, globalContext, phaseContext)
-        else this.processFile(phase, globalContext, phaseContext)
+        when {
+            this.isDirectory() -> this.processDirectory(phase, globalContext, phaseContext)
+            this.exists() -> this.processFile(phase, globalContext, phaseContext)
+            else -> this@BosonLoader.l.debug("Skipping location '$this' because it does not exist: please complain to your nearest cat")
+        }
     }
 
     private fun Location.processDirectory(phase: LoadingPhase<Any>, globalContext: Context?, phaseContext: Context?) {
@@ -113,7 +121,9 @@ class BosonLoader(builder: LoaderBuilder) : Loader {
     }
 
     private fun Location.isFiltered(phase: LoadingPhase<*>) = phase.filters.any { !it.canLoad(this) }
+    private fun Location.exists() = this.path.exists()
     private fun Location.isDirectory() = this.path.isDirectory()
+    private fun Path.exists() = Files.exists(this)
     private fun Path.isDirectory() = Files.isDirectory(this)
     private fun Path.toLocation(context: Context?) = LocationPathWrapper(this, context)
 }

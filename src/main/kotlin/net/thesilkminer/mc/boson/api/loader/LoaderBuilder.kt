@@ -42,8 +42,8 @@ class LoaderLocators : ArrayList<Locator>() {
 
 @LoaderDsl
 class LoaderPhases : ArrayList<LoaderPhaseBuilder>() {
-    fun phase(name: String, block: LoaderPhaseBuilder.() -> Unit) {
-        this.add(LoaderPhaseBuilder(name).apply(block))
+    operator fun String.invoke(block: LoaderPhaseBuilder.() -> Unit) {
+        this@LoaderPhases.add(LoaderPhaseBuilder(this).apply(block))
     }
 }
 
