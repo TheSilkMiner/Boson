@@ -9,10 +9,10 @@ import kotlin.reflect.full.cast
 class BaseContext : Context {
     private val map = mutableMapOf<ContextKey<*>, Any>()
 
-    override fun <T : Any> get(key: ContextKey<T>): T? = key.type.cast(this.map[key])
-    override fun <T : Any> set(key: ContextKey<T>, value: T) = this.let { this.map[key] = value }
-    override fun <T : Any> computeIfAbsent(key: ContextKey<T>, supplier: (ContextKey<*>) -> T): T = key.type.cast(this.map.computeIfAbsent(key) { supplier(it) })
-    override fun <T : Any, R> ifPresent(key: ContextKey<T>, consumer: (T) -> R): R? = this.map[key]?.let { consumer(key.type.cast(it)) }
+    override fun <T : Any> get(key: ContextKey<out T>): T? = key.type.cast(this.map[key])
+    override fun <T : Any> set(key: ContextKey<out T>, value: T) = this.let { this.map[key] = value }
+    override fun <T : Any> computeIfAbsent(key: ContextKey<out T>, supplier: (ContextKey<*>) -> T): T = key.type.cast(this.map.computeIfAbsent(key) { supplier(it) })
+    override fun <T : Any, R> ifPresent(key: ContextKey<out T>, consumer: (T) -> R): R? = this.map[key]?.let { consumer(key.type.cast(it)) }
 }
 
 class BaseContextBuilder : ContextBuilder {
