@@ -11,6 +11,6 @@ class DefaultIdentifierBuilder : IdentifierBuilder {
     override fun makeIdentifier(location: Location, globalContext: Context?, phaseContext: Context?) =
             bosonApi.constructNameSpacedString(
                     nameSpace = location.additionalContext?.get(modIdContextKey) ?: Loader.instance().activeModContainer()?.modId,
-                    path = location.path.fileName.toString()
+                    path = location.path.toString().replace(Regex("\\\\"), "/")
             )
 }

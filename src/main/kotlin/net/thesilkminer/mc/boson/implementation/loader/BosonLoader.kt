@@ -37,7 +37,11 @@ class BosonLoader(builder: LoaderBuilder) : Loader {
         this.debug("Locators: ${this@BosonLoader.locators}")
         this.debug("Identifier builder: ${this@BosonLoader.identifierBuilder}")
         this.debug("Progress Visitor: ${this@BosonLoader.progressReporter}")
-        this@BosonLoader.doLoading()
+        try {
+            this@BosonLoader.doLoading()
+        } catch (e: Exception) {
+            throw LoaderException("An exception has occurred while attempting to load with loader '${this@BosonLoader.name}'", e)
+        }
     }
 
     private fun doLoading() = try {
@@ -50,7 +54,11 @@ class BosonLoader(builder: LoaderBuilder) : Loader {
         this.progressReporter?.visitPhases(this.phases.count())
         this.phases.forEachIndexed { index, phase ->
             this.l.info("Beginning phase $index: ${phase.name}")
-            phase.attemptPhase(globalContext)
+            try {
+                phase.attemptPhase(globalContext)
+            } catch (e: Exception) {
+                throw PhaseException("Unable to reach end of phase $index '${phase.name}' cleanly due to an error", e)
+            }
             this.l.info("Reached end of phase ${phase.name} successfully")
         }
 
@@ -66,7 +74,7 @@ class BosonLoader(builder: LoaderBuilder) : Loader {
     private fun LoadingPhase<Any>.attemptPhase(globalContext: Context?) = try {
         this.goThroughPhase(globalContext)
     } catch (e: Exception) {
-        throw PhaseException("An error has occurred while executing phase ${this.name}", e)
+        throw PhaseException("An error has occurred while executing phase '${this.name}'", e)
     }
 
     private fun LoadingPhase<Any>.goThroughPhase(globalContext: Context?) {
@@ -93,24 +101,28 @@ class BosonLoader(builder: LoaderBuilder) : Loader {
         this@BosonLoader.progressReporter?.visitLocation(this, this.isDirectory())
         when {
             this.isDirectory() -> this.processDirectory(phase, globalContext, phaseContext)
-            this.exists() -> this.processFile(phase, globalContext, phaseContext)
+            this.exists() -> this.processFile(this, phase, globalContext, phaseContext)
             else -> this@BosonLoader.l.debug("Skipping location '$this' because it does not exist: please complain to your nearest cat")
         }
     }
 
     private fun Location.processDirectory(phase: LoadingPhase<Any>, globalContext: Context?, phaseContext: Context?) {
         this@BosonLoader.l.info("Attempting to read all files inside the directory '$this'")
-        Files.walk(this.path, 1).forEach { it.relativize(this.path).toLocation(this.additionalContext).processFile(phase, globalContext, phaseContext) }
+        Files.walk(this.path).forEach { it.toLocation(this.additionalContext).processFile(this.path.relativize(it).toLocation(this.additionalContext), phase, globalContext, phaseContext) }
     }
 
-    private fun Location.processFile(phase: LoadingPhase<Any>, globalContext: Context?, phaseContext: Context?) {
-        this@BosonLoader.l.debug("Attempting to read file '$this'")
-        val name = this@BosonLoader.identifierBuilder.makeIdentifier(this, globalContext, phaseContext)
+    private fun Location.processFile(relative: Location, phase: LoadingPhase<Any>, globalContext: Context?, phaseContext: Context?) {
+        this@BosonLoader.l.debug("Attempting to read file '$this' (relative: $relative)")
+        val name = this@BosonLoader.identifierBuilder.makeIdentifier(relative, globalContext, phaseContext)
         if (this.isFiltered(phase)) {
-            this@BosonLoader.l.info("Skipping processing of file '$name' because it was filtered")
+            this@BosonLoader.l.debug("Skipping processing of file '$name' because it was filtered")
             return
         }
-        this.process(phase, name, globalContext, phaseContext)
+        try {
+            this.process(phase, name, globalContext, phaseContext)
+        } catch (e: Exception) {
+            throw ProcessingException("An error has occurred while attempting to process location '$this' (name is '$name')", e)
+        }
     }
 
     private fun Location.process(phase: LoadingPhase<Any>, name: NameSpacedString, globalContext: Context?, phaseContext: Context?) {
@@ -138,7 +150,9 @@ private class BosonLoadingPhase<T : Any>(builder: LoaderPhaseBuilder) : LoadingP
 
 private class LocationPathWrapper(override val path: Path, override val additionalContext: Context?) : Location {
     override val friendlyName: String? = null
+    override fun toString() = "${super.toString()}{wrapping '${this.path}'}"
 }
 
 private class LoaderException(message: String, cause: Throwable) : Exception(message, cause)
 private class PhaseException(message: String, cause: Throwable) : Exception(message, cause)
+private class ProcessingException(message: String, cause: Throwable) : Exception(message, cause)

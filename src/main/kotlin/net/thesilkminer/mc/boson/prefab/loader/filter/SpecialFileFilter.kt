@@ -8,7 +8,7 @@ class SpecialFileFilter(private val kind: Kind, private val inverted: Boolean = 
 
     enum class Kind(val matcher: (Path) -> Boolean) {
         FACTORIES({ it.fileName.toString().startsWith("_factories") }),
-        JSON_SCHEMA({ it.fileName.toString() == "schema.json" }),
+        JSON_SCHEMA({ it.fileName.toString() == "pattern.json" }),
         UNDERSCORE_PREFIX({ it.fileName.toString().startsWith("_") })
     }
 

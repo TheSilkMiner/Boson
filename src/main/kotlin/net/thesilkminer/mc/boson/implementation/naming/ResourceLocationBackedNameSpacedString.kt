@@ -9,4 +9,7 @@ class ResourceLocationBackedNameSpacedString(domain: String?, path: String) : Na
     override val nameSpace: String = this.backend.namespace
     override val path: String = this.backend.path
     override fun compareTo(other: NameSpacedString) = this.backend.compareTo(ResourceLocation(other.nameSpace, other.path))
+    override fun equals(other: Any?) = this.backend == other
+    override fun hashCode() = this.backend.hashCode()
+    override fun toString() = this.backend.toString()
 }
