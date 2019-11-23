@@ -129,7 +129,13 @@ class BosonLoader(builder: LoaderBuilder) : Loader {
         this@BosonLoader.progressReporter?.visitItem(name)
         this@BosonLoader.l.debug("Reading data from '$name'")
         val content = Files.newBufferedReader(this.path).lines().asSequence().joinToString(separator = "\n") { it }
-        phase.processor.process(phase.preprocessor?.preProcessData(content, name, globalContext, phaseContext) ?: content, name, globalContext, phaseContext)
+        val pre = phase.preprocessor
+        if (pre == null) {
+            phase.processor.process(content, name, globalContext, phaseContext)
+        } else {
+            val preContent = pre.preProcessData(content, name, globalContext, phaseContext) ?: return
+            phase.processor.process(preContent, name, globalContext, phaseContext)
+        }
     }
 
     private fun Location.isFiltered(phase: LoadingPhase<*>) = phase.filters.any { !it.canLoad(this) }
