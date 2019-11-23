@@ -39,7 +39,7 @@ class L(id: String, marker: String = "") : Logger by LogManager.getLogger("$id${
     private fun doBigMessage(message: String, dsb: DumpStackBehavior, logFun: (String) -> Any?) {
         val messageBuilder = StringBuilder()
 
-        val lines = message.addDumpIfNeeded(dsb).injectStartAndStopNewLine().lines()
+        val lines = message.addDumpIfNeeded(dsb).injectStartAndStopNewLine().replaceAllTabs().lines()
         val maxLineLength = (lines.asSequence().map { it.length }.max() ?: 0)
         val maxLength = maxLineLength + 4
 
@@ -61,6 +61,7 @@ class L(id: String, marker: String = "") : Logger by LogManager.getLogger("$id${
     }
 
     private fun String.injectStartAndStopNewLine() = " \n${this}\n "
+    private fun String.replaceAllTabs() = this.replace("\t", "    ")
     private fun String.addDumpIfNeeded(dsb: DumpStackBehavior) = if (dsb == DumpStackBehavior.DO_NOT_DUMP) this else doDump(this, dsb)
 }
 
