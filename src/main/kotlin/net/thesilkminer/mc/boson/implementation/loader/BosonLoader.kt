@@ -108,7 +108,9 @@ class BosonLoader(builder: LoaderBuilder) : Loader {
 
     private fun Location.processDirectory(phase: LoadingPhase<Any>, globalContext: Context?, phaseContext: Context?) {
         this@BosonLoader.l.info("Attempting to read all files inside the directory '$this'")
-        Files.walk(this.path).forEach { it.toLocation(this.additionalContext).processFile(this.path.relativize(it).toLocation(this.additionalContext), phase, globalContext, phaseContext) }
+        Files.walk(this.path).use { file ->
+            file.forEach { it.toLocation(this.additionalContext).processFile(this.path.relativize(it).toLocation(this.additionalContext), phase, globalContext, phaseContext) }
+        }
     }
 
     private fun Location.processFile(relative: Location, phase: LoadingPhase<Any>, globalContext: Context?, phaseContext: Context?) {
@@ -128,7 +130,9 @@ class BosonLoader(builder: LoaderBuilder) : Loader {
     private fun Location.process(phase: LoadingPhase<Any>, name: NameSpacedString, globalContext: Context?, phaseContext: Context?) {
         this@BosonLoader.progressReporter?.visitItem(name)
         this@BosonLoader.l.debug("Reading data from '$name'")
-        val content = Files.newBufferedReader(this.path).lines().asSequence().joinToString(separator = "\n") { it }
+        val content = Files.newBufferedReader(this.path).use { file ->
+            file.lines().asSequence().joinToString(separator = "\n") { it }
+        }
         val pre = phase.preprocessor
         if (pre == null) {
             phase.processor.process(content, name, globalContext, phaseContext)

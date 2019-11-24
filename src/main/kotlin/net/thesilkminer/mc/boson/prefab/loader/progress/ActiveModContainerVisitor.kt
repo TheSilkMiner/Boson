@@ -16,6 +16,6 @@ class ActiveModContainerVisitor : ProgressVisitor {
     override fun visitItemsTotal(total: Int) = Unit
     override fun visitLocation(location: Location, isDirectory: Boolean) = Unit
     override fun visitItems(amount: Int) = Unit
-    override fun visitItem(name: NameSpacedString) = Loader.instance().setActiveModContainer(Loader.instance().modList.find { it.modId == name.nameSpace })
+    override fun visitItem(name: NameSpacedString) = Loader.instance().setActiveModContainer(Loader.instance().modList.find { it.modId == name.nameSpace } ?: this.activeModContainer)
     override fun endVisit() = Loader.instance().setActiveModContainer(this.activeModContainer)
 }

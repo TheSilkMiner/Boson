@@ -22,6 +22,8 @@ class ResourcesDirectoryLocator(private val targetDirectory: String, private val
         DATA("data")
     }
 
+    private val walkStack = mutableListOf<AutoCloseable>()
+
     private val lazyLocations : List<Lazy<Location>> by lazy {
         l.info("Attempting to load data from the 'resources/' directory, situated in your main game directory.")
         l.info("We are currently looking in the '${this.targetDirectory}' directory with kind ${this.kind}")
@@ -33,7 +35,7 @@ class ResourcesDirectoryLocator(private val targetDirectory: String, private val
     private fun scanResourcesDirectory(resources: Path) =
             this.scanAllDirectories(resources.resolve("./${this.kind.directoryName}/").normalize().toAbsolutePath(), resources)
     private fun scanAllDirectories(data: Path, resources: Path) = if (Files.exists(data)) {
-        Files.walk(data, 1).asSequence().flatMap { this.scanDirectory(it, resources) }.toList()
+        Files.walk(data, 1).apply { this@ResourcesDirectoryLocator.walkStack += this }.asSequence().flatMap { this.scanDirectory(it, resources) }.toList()
     } else {
         l.info("Directory '$data' doesn't exist: skipping resources loading")
         listOf()
@@ -53,4 +55,6 @@ class ResourcesDirectoryLocator(private val targetDirectory: String, private val
             })
         })
     }
+
+    override fun clean() = this.walkStack.reversed().forEach { it.close() }
 }
