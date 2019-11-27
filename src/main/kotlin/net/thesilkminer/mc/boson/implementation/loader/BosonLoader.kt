@@ -107,7 +107,7 @@ class BosonLoader(builder: LoaderBuilder) : Loader {
     }
 
     private fun Location.processDirectory(phase: LoadingPhase<Any>, globalContext: Context?, phaseContext: Context?) {
-        this@BosonLoader.l.info("Attempting to read all files inside the directory '$this'")
+        this@BosonLoader.l.debug("Attempting to read all files inside the directory '$this'")
         Files.walk(this.path).use { file ->
             file.forEach { it.toLocation(this.additionalContext).processFile(this.path.relativize(it).toLocation(this.additionalContext), phase, globalContext, phaseContext) }
         }
