@@ -1,0 +1,11 @@
+{
+  "conditions": {
+    "true": "net.thesilkminer.mc.boson.mod.common.recipe.TrueConditionFactory"
+  },
+  "ingredients": {
+    "tag": "net.thesilkminer.mc.boson.mod.common.recipe.TagIngredientFactory"
+  },
+  "recipes": {
+    "minecraft:smelting": "net.thesilkminer.mc.boson.mod.common.recipe.SmeltingRecipeFactory"
+  }
+}

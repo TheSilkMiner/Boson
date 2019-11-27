@@ -1,0 +1,21 @@
+{
+  "recipes": {
+    "minecraft:blasting": "net.thesilkminer.mc.boson.mod.common.recipe.BlastingLateBoundRecipeFactory",
+    "minecraft:campfire_cooking": "net.thesilkminer.mc.boson.mod.common.recipe.CampfireCookingLateBoundRecipeFactory",
+    "minecraft:crafting_special_armordye": "net.thesilkminer.mc.boson.mod.common.recipe.CraftingSpecialArmorDyeLateBoundRecipeFactory",
+    "minecraft:crafting_special_bannerduplicate": "net.thesilkminer.mc.boson.mod.common.recipe.CraftingSpecialBannerDuplicateLateBoundRecipeFactory",
+    "minecraft:crafting_special_bookcloning": "net.thesilkminer.mc.boson.mod.common.recipe.CraftingSpecialBookCloningLateBoundRecipeFactory",
+    "minecraft:crafting_special_firework_rocket": "net.thesilkminer.mc.boson.mod.common.recipe.CraftingSpecialFireworkRocketLateBoundRecipeFactory",
+    "minecraft:crafting_special_firework_star": "net.thesilkminer.mc.boson.mod.common.recipe.CraftingSpecialFireworkStarLateBoundRecipeFactory",
+    "minecraft:crafting_special_firework_star_fade": "net.thesilkminer.mc.boson.mod.common.recipe.CraftingSpecialFireworkStarFadeLateBoundRecipeFactory",
+    "minecraft:crafting_special_mapcloning": "net.thesilkminer.mc.boson.mod.common.recipe.CraftingSpecialMapCloningLateBoundRecipeFactory",
+    "minecraft:crafting_special_mapextending": "net.thesilkminer.mc.boson.mod.common.recipe.CraftingSpecialMapExtendingLateBoundRecipeFactory",
+    "minecraft:crafting_special_repairitem": "net.thesilkminer.mc.boson.mod.common.recipe.CraftingSpecialRepairItemLateBoundRecipeFactory",
+    "minecraft:crafting_special_shielddecoration": "net.thesilkminer.mc.boson.mod.common.recipe.CraftingSpecialShieldDecorationLateBoundRecipeFactory",
+    "minecraft:crafting_special_shulkerboxcoloring": "net.thesilkminer.mc.boson.mod.common.recipe.CraftingSpecialShulkerBoxColoringLateBoundRecipeFactory",
+    "minecraft:crafting_special_tippedarrow": "net.thesilkminer.mc.boson.mod.common.recipe.CraftingSpecialTippedArrowLateBoundRecipeFactory",
+    "minecraft:crafting_special_suspiciousstew": "net.thesilkminer.mc.boson.mod.common.recipe.CraftingSpecialSuspiciousStewLateBoundRecipeFactory",
+    "minecraft:smoking": "net.thesilkminer.mc.boson.mod.common.recipe.SmokingLateBoundRecipeFactory",
+    "minecraft:stonecutting": "net.thesilkminer.mc.boson.mod.common.recipe.StoneCuttingLateBoundRecipeFactory"
+  }
+}

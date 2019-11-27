@@ -1,0 +1,22 @@
+{
+  "conditions": {
+    "forge:and": "net.thesilkminer.mc.boson.mod.common.recipe.AndDefaultConditionFactory",
+    "forge:false": "net.thesilkminer.mc.boson.mod.common.recipe.FalseDefaultConditionFactory",
+    "forge:mod_loaded": "net.thesilkminer.mc.boson.mod.common.recipe.ModLoadedDefaultConditionFactory",
+    "forge:not": "net.thesilkminer.mc.boson.mod.common.recipe.NotDefaultConditionFactory",
+    "forge:or": "net.thesilkminer.mc.boson.mod.common.recipe.OrDefaultConditionFactory",
+    "minecraft:item_exists": "net.thesilkminer.mc.boson.mod.common.recipe.ItemExistsDefaultConditionFactory"
+  },
+  "ingredients": {
+    "forge:ore_dict": "net.thesilkminer.mc.boson.mod.common.recipe.OreDictionaryDefaultIngredientFactory",
+    "minecraft:empty": "net.thesilkminer.mc.boson.mod.common.recipe.EmptyDefaultIngredientFactory",
+    "minecraft:item": "net.thesilkminer.mc.boson.mod.common.recipe.ItemDefaultIngredientFactory",
+    "minecraft:item_nbt": "net.thesilkminer.mc.boson.mod.common.recipe.ItemWithNbtDefaultIngredientFactory"
+  },
+  "recipes": {
+    "forge:ore_shaped": "net.thesilkminer.mc.boson.mod.common.recipe.ShapedOreCraftingDefaultRecipeFactory",
+    "forge:ore_shapeless": "net.thesilkminer.mc.boson.mod.common.recipe.ShapelessOreCraftingDefaultRecipeFactory",
+    "minecraft:crafting_shaped": "net.thesilkminer.mc.boson.mod.common.recipe.ShapedCraftingDefaultRecipeFactory",
+    "minecraft:crafting_shapeless": "net.thesilkminer.mc.boson.mod.common.recipe.ShapelessCraftingDefaultRecipeFactory"
+  }
+}
