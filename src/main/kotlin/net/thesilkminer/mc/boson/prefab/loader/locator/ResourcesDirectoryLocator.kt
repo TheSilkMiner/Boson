@@ -35,7 +35,12 @@ class ResourcesDirectoryLocator(private val targetDirectory: String, private val
     private fun scanResourcesDirectory(resources: Path) =
             this.scanAllDirectories(resources.resolve("./${this.kind.directoryName}/").normalize().toAbsolutePath(), resources)
     private fun scanAllDirectories(data: Path, resources: Path) = if (Files.exists(data)) {
-        Files.walk(data, 1).apply { this@ResourcesDirectoryLocator.walkStack += this }.asSequence().flatMap { this.scanDirectory(it, resources) }.toList()
+        Files.walk(data, 1)
+                .apply { this@ResourcesDirectoryLocator.walkStack += this }
+                .asSequence()
+                .filter { !it.parent.fileName.toString().endsWith("resources") }
+                .flatMap { this.scanDirectory(it, resources) }
+                .toList()
     } else {
         l.info("Directory '$data' doesn't exist: skipping resources loading")
         listOf()
