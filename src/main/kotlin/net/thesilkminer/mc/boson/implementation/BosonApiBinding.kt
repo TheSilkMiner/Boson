@@ -16,11 +16,17 @@ import net.thesilkminer.mc.boson.api.locale.Color
 import net.thesilkminer.mc.boson.api.locale.Readability
 import net.thesilkminer.mc.boson.api.locale.Style
 import net.thesilkminer.mc.boson.api.log.L
+import net.thesilkminer.mc.boson.api.tag.Tag
+import net.thesilkminer.mc.boson.api.tag.TagRegistry
+import net.thesilkminer.mc.boson.api.tag.TagType
 import net.thesilkminer.mc.boson.implementation.configuration.ForgeConfiguration
 import net.thesilkminer.mc.boson.implementation.configuration.JsonConfiguration
 import net.thesilkminer.mc.boson.implementation.loader.BosonContextKey
 import net.thesilkminer.mc.boson.implementation.loader.BosonLoader
 import net.thesilkminer.mc.boson.implementation.naming.ResourceLocationBackedNameSpacedString
+import net.thesilkminer.mc.boson.implementation.tag.BosonTag
+import net.thesilkminer.mc.boson.implementation.tag.BosonTagManager
+import net.thesilkminer.mc.boson.implementation.tag.BosonTagType
 import java.nio.file.Path
 import kotlin.reflect.KClass
 
@@ -51,6 +57,14 @@ class BosonApiBinding : BosonApi {
     override fun <T : Any> createLoaderContextKey(name: String, type: KClass<T>): ContextKey<T> = BosonContextKey(name, type)
 
     override fun buildLoader(builder: LoaderBuilder): net.thesilkminer.mc.boson.api.loader.Loader = BosonLoader(builder)
+
+    override val tagRegistry: TagRegistry = BosonTagManager
+
+    override fun <T : Any> createTagType(type: KClass<out T>, directoryName: String, toElement: (NameSpacedString) -> T): TagType<T> = BosonTagType(type, directoryName, toElement)
+
+    override fun <T : Any> createTag(tagType: TagType<T>, name: NameSpacedString, vararg initialElements: T): Tag<T> = BosonTag(name, tagType).apply {
+        this += initialElements.toSet()
+    }
 
     private fun String.apply(color: Color, style: Style, readability: Readability): String {
         fun Color.toTextFormatting() = when (this) {

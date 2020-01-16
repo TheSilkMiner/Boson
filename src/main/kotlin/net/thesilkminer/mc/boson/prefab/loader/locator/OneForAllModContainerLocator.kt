@@ -19,7 +19,7 @@ import java.nio.file.Paths
 
 class OneForAllModContainerLocator(private val lookupContainer: ModContainer, private val targetDirectory: String, private val kind: Kind = Kind.DATA) : Locator {
     companion object {
-        private val l = L(MOD_NAME, "ModContainerLocator")
+        private val l = L(MOD_NAME, "OneForAllModContainerLocator")
         private val pathThatDoesNotExist by lazy {
             var path = Paths.get("path.that.does.not.exist.because.is.illegal.in.most.file.systems.and.operating.systems")
             while (Files.exists(path)) path = path.resolve("path.that.does.not.exist.because.is.illegal.in.most.file.systems.and.operating.systems")

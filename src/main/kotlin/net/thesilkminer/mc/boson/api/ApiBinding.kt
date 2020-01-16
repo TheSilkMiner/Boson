@@ -2,6 +2,7 @@
 
 package net.thesilkminer.mc.boson.api
 
+import net.thesilkminer.kotlin.commons.lang.uncheckedCast
 import net.thesilkminer.mc.boson.api.configuration.Category
 import net.thesilkminer.mc.boson.api.configuration.Configuration
 import net.thesilkminer.mc.boson.api.configuration.ConfigurationBuilder
@@ -15,6 +16,9 @@ import net.thesilkminer.mc.boson.api.locale.Color
 import net.thesilkminer.mc.boson.api.locale.Readability
 import net.thesilkminer.mc.boson.api.locale.Style
 import net.thesilkminer.mc.boson.api.log.L
+import net.thesilkminer.mc.boson.api.tag.Tag
+import net.thesilkminer.mc.boson.api.tag.TagRegistry
+import net.thesilkminer.mc.boson.api.tag.TagType
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.ServiceLoader
@@ -32,11 +36,11 @@ val bosonApi by lazy {
             override val configurationDirectory: Path get() = Paths.get(".")
 
             override fun buildConfiguration(builder: ConfigurationBuilder) = object : Configuration {
-                override val format: ConfigurationFormat = ConfigurationFormat.DEFAULT
-                override val owner: String = "dummy"
-                override val name: String = "dummy"
-                override val location: Path = Paths.get(".")
-                override val categories: List<Category> = listOf()
+                override val format = ConfigurationFormat.DEFAULT
+                override val owner = "dummy"
+                override val name = "dummy"
+                override val location = Paths.get(".")
+                override val categories = listOf<Category>()
                 override fun save() = Unit
                 override fun load() = Unit
                 override operator fun get(category: String, vararg subCategories: String): Category = error("Category '$category' does not exist")
@@ -53,12 +57,53 @@ val bosonApi by lazy {
             }
 
             override fun <T : Any> createLoaderContextKey(name: String, type: KClass<T>): ContextKey<T> = object : ContextKey<T> {
-                override val name: String = name
-                override val type: KClass<T> = type
+                override val name = name
+                override val type = type
             }
 
             override fun buildLoader(builder: LoaderBuilder) = object : Loader {
                 override fun load() = Unit
+            }
+
+            override val tagRegistry = object: TagRegistry {
+                private val EMPTY_TAG = object: Tag<Any> {
+                    override val name = NameSpacedString("empty")
+                    override val type = object: TagType<Any> {
+                        override val type = Any::class
+                        override val directoryName = "null"
+                        override val toElement = { _: NameSpacedString -> Any() }
+                    }
+                    override val elements = setOf<Any>()
+                    override fun add(elements: Set<Any>) = Unit
+                    override fun addFrom(other: Tag<out Any>) = Unit
+                    override fun replace(elements: Set<Any>) = Unit
+                    override fun replaceWith(other: Tag<out Any>) = Unit
+                    override fun remove(elements: Set<Any>) = Unit
+                    override fun removeFrom(other: Tag<out Any>) = Unit
+                    override fun clear() = Unit
+                }
+
+                override fun <T : Any> findTag(type: TagType<T>, name: NameSpacedString) = EMPTY_TAG.uncheckedCast<Tag<T>>()
+                override fun <T : Any> findFor(target: T, type: TagType<T>): List<Tag<T>> = listOf()
+            }
+
+            override fun <T : Any> createTagType(type: KClass<out T>, directoryName: String, toElement: (NameSpacedString) -> T) = object : TagType<T> {
+                override val type = type
+                override val directoryName = directoryName
+                override val toElement = toElement
+            }
+
+            override fun <T : Any> createTag(tagType: TagType<T>, name: NameSpacedString, vararg initialElements: T) = object : Tag<T> {
+                override val name = name
+                override val type = tagType
+                override val elements = setOf<T>()
+                override fun add(elements: Set<T>) = Unit
+                override fun addFrom(other: Tag<out T>) = Unit
+                override fun replace(elements: Set<T>) = Unit
+                override fun replaceWith(other: Tag<out T>) = Unit
+                override fun remove(elements: Set<T>) = Unit
+                override fun removeFrom(other: Tag<out T>) = Unit
+                override fun clear() = Unit
             }
         }
     }
@@ -76,6 +121,10 @@ interface BosonApi {
 
     fun <T : Any> createLoaderContextKey(name: String, type: KClass<T>): ContextKey<T>
     fun buildLoader(builder: LoaderBuilder): Loader
+
+    val tagRegistry: TagRegistry
+    fun <T : Any> createTagType(type: KClass<out T>, directoryName: String, toElement: (NameSpacedString) -> T): TagType<T>
+    fun <T : Any> createTag(tagType: TagType<T>, name: NameSpacedString, vararg initialElements: T): Tag<T>
 }
 
 private fun <T : Any> loadWithService(lookUpInterface: KClass<T>, defaultProvider: () -> T) : T {
