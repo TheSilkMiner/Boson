@@ -105,6 +105,8 @@ val bosonApi by lazy {
                 override fun removeFrom(other: Tag<out T>) = Unit
                 override fun clear() = Unit
             }
+
+            override fun <T : Any> findTagType(directoryName: String) = null as TagType<T>?
         }
     }
 }
@@ -125,6 +127,7 @@ interface BosonApi {
     val tagRegistry: TagRegistry
     fun <T : Any> createTagType(type: KClass<out T>, directoryName: String, toElement: (NameSpacedString) -> T): TagType<T>
     fun <T : Any> createTag(tagType: TagType<T>, name: NameSpacedString, vararg initialElements: T): Tag<T>
+    fun <T : Any> findTagType(directoryName: String): TagType<T>?
 }
 
 private fun <T : Any> loadWithService(lookUpInterface: KClass<T>, defaultProvider: () -> T) : T {
