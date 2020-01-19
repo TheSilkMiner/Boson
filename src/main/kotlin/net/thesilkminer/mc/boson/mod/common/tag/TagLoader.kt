@@ -3,7 +3,6 @@
 package net.thesilkminer.mc.boson.mod.common.tag
 
 import com.google.common.base.CaseFormat
-import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.common.Loader
 import net.minecraftforge.fml.common.ModContainer
@@ -200,42 +199,21 @@ fun loadTags() {
 
 fun initializeTagOreDictCompatibilityLayer() {
     l.info("Initializing ore dictionary compatibility layer: attempting to tag all items of the ore dictionary!")
-    l.warn("The ore dictionary is deprecated It won't survive a 1.13+ update: consider using tags")
-    val tagType = TagType.find<Item>("items")!!
+    l.warn("The ore dictionary is deprecated and it WON'T survive a 1.13+ update: consider using tags")
+    var compatElements = 0
+    val tagType = TagType.find<ItemStack>("items")!!
     OreDictionary.getOreNames()
             .asSequence()
             .map { OreDictionary.getOres(it).toList().map { stack -> it!! to stack!! } }
             .flatten()
-            .filter { it.filterOutInvalidMetadata() }
-            .map { it.first to it.second.item }
             .distinct()
-            .forEach { bosonApi.tagRegistry[tagType, it.createTagName()] += it.second }
-    l.info("Compatibility layer initialized")
-}
-
-private fun Pair<String, Item>.createTagName(): NameSpacedString = this.first.createTagName()
-
-private fun Pair<String, ItemStack>.filterOutInvalidMetadata(): Boolean {
-    val stack = this.second
-    if (stack.metadata == 0) {
-        val otherStacks = OreDictionary.getOreNames()
-                .map(OreDictionary::getOres)
-                .toList()
-                .flatten()
-                .filter { stack.item.registryName == it.item.registryName }
-        val otherWithMeta = otherStacks.find { it.metadata != 0 }
-        if (otherWithMeta != null) {
-            l.warn("Found ore dictionary entry '${this.first}' with metadata ${stack.metadata} " +
-                    "that conflicts with '${otherWithMeta.item.registryName}@${otherWithMeta.metadata}': skipping compatibility")
-        }
-        return otherWithMeta == null
-    }
-    if (stack.metadata == OreDictionary.WILDCARD_VALUE) {
-        l.info("Found ore dictionary entry '${this.first}' with a wildcard: this will be registered anyway, but it may cause weird issues")
-        return true
-    }
-    l.warn("Found ore dictionary entry '${this.first}' with metadata ${stack.metadata}: this cannot be registered reliably! Skipping compatibility")
-    return false
+            .forEach {
+                val name = it.first.createTagName()
+                l.debug("Registering '${it.second}' to tag named '$name' (type '${tagType.name}')")
+                bosonApi.tagRegistry[tagType, name] += it.second
+                ++compatElements
+            }
+    l.info("Compatibility layer successfully initialized: registered compatibility for $compatElements ore dictionary names")
 }
 
 @Suppress("SpellCheckingInspection")
