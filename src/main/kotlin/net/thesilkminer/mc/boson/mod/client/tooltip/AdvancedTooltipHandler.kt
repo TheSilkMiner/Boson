@@ -14,10 +14,13 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.oredict.OreDictionary
 import net.thesilkminer.mc.boson.MOD_ID
+import net.thesilkminer.mc.boson.api.bosonApi
 import net.thesilkminer.mc.boson.api.locale.Color
 import net.thesilkminer.mc.boson.api.locale.Style
 import net.thesilkminer.mc.boson.api.locale.toLocale
+import net.thesilkminer.mc.boson.api.tag.TagType
 import net.thesilkminer.mc.boson.mod.client.configuration.client
+import net.thesilkminer.mc.boson.prefab.tag.has
 import org.lwjgl.input.Keyboard
 import java.util.concurrent.TimeUnit
 
@@ -52,7 +55,9 @@ object AdvancedTooltipHandler {
                 }
 
                 private fun addTags(key: ItemStack, list: MutableList<String>) {
-                    this.add(list, "boson.client.tooltip.advanced.tags", listOf(key.count)) // TODO()
+                    val itemTagType = TagType.find<ItemStack>("items")!!
+                    val tagKeys = bosonApi.tagRegistry[itemTagType].filter { it has key }.map { it.name }.toList()
+                    this.add(list, "boson.client.tooltip.advanced.tags", tagKeys)
                 }
 
                 private fun addNbt(key: ItemStack, list: MutableList<String>) {
