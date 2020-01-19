@@ -7,8 +7,12 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.thesilkminer.mc.boson.MOD_ID
 import net.thesilkminer.mc.boson.MOD_NAME
 import net.thesilkminer.mc.boson.api.event.ConfigurationRegisterEvent
+import net.thesilkminer.mc.boson.api.event.TagTypeRegisterEvent
 import net.thesilkminer.mc.boson.api.log.L
 import net.thesilkminer.mc.boson.mod.common.recipe.loadDataPackRecipes
+import net.thesilkminer.mc.boson.prefab.tag.blockTagType
+import net.thesilkminer.mc.boson.prefab.tag.fluidTagType
+import net.thesilkminer.mc.boson.prefab.tag.itemTagType
 
 @Mod.EventBusSubscriber(modid = MOD_ID)
 @Suppress("unused")
@@ -26,5 +30,11 @@ object RegistrationHandler {
     fun onRecipeRegistry(event: RegistryEvent.Register<IRecipe>) {
         l.info("Received Register event for Recipes: starting loading of data-pack-based JSON recipes")
         loadDataPackRecipes()
+    }
+
+    @JvmStatic
+    @SubscribeEvent
+    fun onTagTypeRegistration(event: TagTypeRegisterEvent) {
+        listOf(blockTagType, fluidTagType, itemTagType).forEach(event.tagTypeRegistry::registerTagType)
     }
 }

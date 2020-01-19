@@ -11,6 +11,9 @@ import net.thesilkminer.mc.boson.api.event.BosonPreAvailableEvent
 import net.thesilkminer.mc.boson.api.fingerprint.logViolationMessage
 import net.thesilkminer.mc.boson.api.log.L
 import net.thesilkminer.mc.boson.implementation.configuration.ConfigurationManager
+import net.thesilkminer.mc.boson.implementation.tag.BosonTagManager
+import net.thesilkminer.mc.boson.mod.common.tag.initializeTagOreDictCompatibilityLayer
+import net.thesilkminer.mc.boson.mod.common.tag.loadTags
 
 @Mod(modid = MOD_ID, name = MOD_NAME, version = MOD_VERSION, dependencies = MOD_DEPENDENCIES,
         acceptedMinecraftVersions = MOD_MC_VERSION, certificateFingerprint = MOD_CERTIFICATE_FINGERPRINT,
@@ -32,6 +35,8 @@ object Boson {
     @Mod.EventHandler
     fun onInitialization(event: FMLInitializationEvent) {
         this.l.info("Initialization")
+        BosonTagManager.fireTagTypeRegistrationEvent()
+        loadTags()
     }
 
     @Mod.EventHandler
@@ -42,6 +47,7 @@ object Boson {
     @Mod.EventHandler
     fun onLoadFinished(event: BosonPreAvailableEvent) {
         this.l.info("BosonPreAvailable")
+        initializeTagOreDictCompatibilityLayer()
     }
 
     @Mod.EventHandler
