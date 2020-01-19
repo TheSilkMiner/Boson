@@ -18,11 +18,11 @@ object BosonTagManager : TagRegistry, TagTypeRegistry {
     private val tagMap = mutableMapOf<TagType<*>, MutableList<Tag<*>>>()
 
     override fun <T : Any> registerTagType(tagType: TagType<T>) {
-        val name = tagType.directoryName
-        val already = this.tagMap.asSequence().find { it.key.directoryName == name }
+        val targetDirectory = tagType.directoryName
+        val already = this.tagMap.asSequence().find { it.key.directoryName == targetDirectory }
         if (already != null) {
             this.l.bigError("""
-                The given tag '$name' has already been registered! Duplicate tag registration is a serious error!
+                The given tag '${tagType.name}' has already been registered! Duplicate tag registration is a SERIOUS error!
                 You shouldn't attempt to register tags twice: this attempt will now be blocked, but the game won't
                 crash. Note that this doesn't mean this is good!
                 
@@ -30,28 +30,26 @@ object BosonTagManager : TagRegistry, TagTypeRegistry {
             """.trimIndent())
             return
         }
-        this.l.info("Registered tag type $tagType targeting ${tagType.directoryName}")
+        this.l.info("Registered tag type '${tagType.name}' -> $tagType targeting 'data/**/tags/${tagType.directoryName}/**'")
         this.tagMap[tagType] = mutableListOf()
     }
 
+    override fun <T : Any> findAllTagsOf(type: TagType<T>) = this.listForType(type)
+            .asSequence()
+            .map { it.uncheckedCast<Tag<T>>() }
+            .toList()
+
     override fun <T : Any> findTag(type: TagType<T>, name: NameSpacedString): Tag<T> {
-        val targetList = this.tagMap[type] ?: throw IllegalStateException("Tag Type $type is not known to the Tag registry")
+        val targetList = this.listForType(type)
         val probableTag = targetList.firstOrNull { it.name == name }
         if (probableTag != null) return probableTag.uncheckedCast()
-        this.l.debug("Tag $name for type $type does not exist: a new one will be created")
-        val new = bosonApi.createTag(type, name)
-        targetList += new
-        return new
+        this.l.debug("Tag '$name' for type '${type.name}' does not exist: a new one will be created")
+        return bosonApi.createTag(type, name).apply { targetList += this }
     }
 
-    override fun <T : Any> findFor(target: T, type: TagType<T>) =
-            (this.tagMap[type] ?: throw IllegalStateException("Tag Type $type is not known to the Tag registry"))
-                    .asSequence()
-                    .map { it.uncheckedCast<Tag<T>>() }
-                    .filter { target in it }
-                    .toList()
+    override fun <T : Any> findFor(target: T, type: TagType<T>) = this.findAllTagsOf(type).filter { target in it }
 
-    fun <T : Any> findTagType(directoryName: String) = this.tagMap.keys.firstOrNull { it.directoryName == directoryName }?.uncheckedCast<TagType<T>>()
+    fun <T : Any> findTagType(name: String) = this.tagMap.keys.firstOrNull { it.name == name }?.uncheckedCast<TagType<T>>()
 
     fun fireTagTypeRegistrationEvent() {
         this.l.info("Attempting to gather all tag types into registry")
@@ -62,4 +60,6 @@ object BosonTagManager : TagRegistry, TagTypeRegistry {
         this.l.debug("Dumping found tags:")
         this.tagMap.forEach { (k, v) -> this.l.debug("  $k -> $v")}
     }
+
+    private fun <T : Any> listForType(type: TagType<T>) = this.tagMap[type] ?: throw IllegalStateException("Tag type '${type.name}' is not known to the Tag registry")
 }

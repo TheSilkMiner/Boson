@@ -4,8 +4,8 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParseException
 import com.google.gson.JsonSyntaxException
-import net.minecraft.block.Block
-import net.minecraft.item.Item
+import net.minecraft.block.state.IBlockState
+import net.minecraft.item.ItemStack
 import net.minecraft.util.JsonUtils
 import net.thesilkminer.kotlin.commons.lang.uncheckedCast
 import net.thesilkminer.mc.boson.MOD_NAME
@@ -106,42 +106,42 @@ class TagLoadingProcessor(isFirstPass: Boolean) : Processor<JsonObject> {
 
     private fun <T : Any> String.processMetadataEntry(tagType: TagType<T>, targetTag: Tag<T>) {
         if (!tagType.isValidTypeForMetadata()) {
-            throw JsonParseException("Unable to parse a metadata-enabled tag inside a tag of type '${tagType.directoryName}': only 'items' is supported")
+            throw JsonParseException("Unable to parse a metadata-enabled tag inside a tag of type '${tagType.name}': only 'items' is supported")
         }
         this.processStackMetadataEntry(tagType.uncheckedCast(), targetTag.uncheckedCast())
     }
 
-    private fun String.processStackMetadataEntry(tagType: TagType<Item>, targetTag: Tag<Item>) {
+    private fun String.processStackMetadataEntry(tagType: TagType<ItemStack>, targetTag: Tag<ItemStack>) {
         val lastColon = this.lastIndexOf(':')
         val probablyMeta = this.substring(startIndex = lastColon + 1)
         val meta = probablyMeta.toIntOrNull() ?: return this.processWildcardEntry(tagType, targetTag)
         this.processMetadataEntry(tagType, targetTag, meta)
     }
 
-    private fun String.processWildcardEntry(@Suppress("UNUSED_PARAMETER") tagType: TagType<Item>, targetTag: Tag<Item>) {
+    private fun String.processWildcardEntry(@Suppress("UNUSED_PARAMETER") tagType: TagType<ItemStack>, targetTag: Tag<ItemStack>) {
         l.warn("Found wildcard entry '$this' inside tag '${targetTag.name}': this is not currently supported! Addition will be skipped")
         // TODO()
     }
 
-    private fun String.processMetadataEntry(@Suppress("UNUSED_PARAMETER") tagType: TagType<Item>, targetTag: Tag<Item>, metadata: Int) {
+    private fun String.processMetadataEntry(@Suppress("UNUSED_PARAMETER") tagType: TagType<ItemStack>, targetTag: Tag<ItemStack>, metadata: Int) {
         l.warn("Found metadata entry '$this' (meta: $metadata) inside tag '${targetTag.name}': this is not currently supported! Addition will be skipped")
         // TODO()
     }
 
     private fun <T : Any> String.processStateEntry(tagType: TagType<T>, targetTag: Tag<T>) {
         if (!tagType.isValidTypeForState()) {
-            throw JsonParseException("Unable to parse a state-enabled tag inside a tag of type '${tagType.directoryName}': only 'blocks' is supported")
+            throw JsonParseException("Unable to parse a state-enabled tag inside a tag of type '${tagType.name}': only 'blocks' is supported")
         }
         this.processBlockStateEntry(tagType.uncheckedCast(), targetTag.uncheckedCast())
     }
 
-    private fun String.processBlockStateEntry(@Suppress("UNUSED_PARAMETER") tagType: TagType<Block>, targetTag: Tag<Block>) {
+    private fun String.processBlockStateEntry(@Suppress("UNUSED_PARAMETER") tagType: TagType<IBlockState>, targetTag: Tag<IBlockState>) {
         l.warn("Found sate entry '$this' inside tag '${targetTag.name}': this is not currently supported! Addition will be skipped")
         // TODO()
     }
 
-    private fun <T : Any> TagType<T>.isValidTypeForMetadata() = with (this.type) { Item::class.isSuperclassOf(this) }
-    private fun <T : Any> TagType<T>.isValidTypeForState() = with (this.type) { Block::class.isSuperclassOf(this) }
+    private fun <T : Any> TagType<T>.isValidTypeForMetadata() = with (this.type) { ItemStack::class.isSuperclassOf(this) }
+    private fun <T : Any> TagType<T>.isValidTypeForState() = with (this.type) { IBlockState::class.isSuperclassOf(this) }
 
     private fun String.toNameSpacedString(): NameSpacedString = with (this.split(':', limit = 2)) {
         if (this.count() == 1) NameSpacedString(this[0]) else NameSpacedString(this[0], this[1])

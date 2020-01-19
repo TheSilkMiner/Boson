@@ -13,4 +13,5 @@ interface TagType<out T : Any> {
     val type: KClass<out T>
     val directoryName: String
     val toElement: (NameSpacedString) -> T
+    val name: String get() = this.directoryName
 }

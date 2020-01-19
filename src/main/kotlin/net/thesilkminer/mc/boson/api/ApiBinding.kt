@@ -83,8 +83,9 @@ val bosonApi by lazy {
                     override fun clear() = Unit
                 }
 
+                override fun <T : Any> findAllTagsOf(type: TagType<T>) = listOf<Tag<T>>()
                 override fun <T : Any> findTag(type: TagType<T>, name: NameSpacedString) = EMPTY_TAG.uncheckedCast<Tag<T>>()
-                override fun <T : Any> findFor(target: T, type: TagType<T>): List<Tag<T>> = listOf()
+                override fun <T : Any> findFor(target: T, type: TagType<T>) = listOf<Tag<T>>()
             }
 
             override fun <T : Any> createTagType(type: KClass<out T>, directoryName: String, toElement: (NameSpacedString) -> T) = object : TagType<T> {
@@ -106,7 +107,7 @@ val bosonApi by lazy {
                 override fun clear() = Unit
             }
 
-            override fun <T : Any> findTagType(directoryName: String) = null as TagType<T>?
+            override fun <T : Any> findTagType(name: String) = null as TagType<T>?
         }
     }
 }
@@ -127,7 +128,7 @@ interface BosonApi {
     val tagRegistry: TagRegistry
     fun <T : Any> createTagType(type: KClass<out T>, directoryName: String, toElement: (NameSpacedString) -> T): TagType<T>
     fun <T : Any> createTag(tagType: TagType<T>, name: NameSpacedString, vararg initialElements: T): Tag<T>
-    fun <T : Any> findTagType(directoryName: String): TagType<T>?
+    fun <T : Any> findTagType(name: String): TagType<T>?
 }
 
 private fun <T : Any> loadWithService(lookUpInterface: KClass<T>, defaultProvider: () -> T) : T {

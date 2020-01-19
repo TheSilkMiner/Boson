@@ -66,7 +66,7 @@ class BosonApiBinding : BosonApi {
         this += initialElements.toSet()
     }
 
-    override fun <T : Any> findTagType(directoryName: String): TagType<T>? = BosonTagManager.findTagType(directoryName)
+    override fun <T : Any> findTagType(name: String): TagType<T>? = BosonTagManager.findTagType(name)
 
     private fun String.apply(color: Color, style: Style, readability: Readability): String {
         fun Color.toTextFormatting() = when (this) {
