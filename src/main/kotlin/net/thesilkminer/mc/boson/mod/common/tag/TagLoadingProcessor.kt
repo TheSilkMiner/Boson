@@ -4,9 +4,12 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParseException
 import com.google.gson.JsonSyntaxException
+import net.minecraft.block.properties.IProperty
+import net.minecraft.block.state.BlockStateContainer
 import net.minecraft.block.state.IBlockState
 import net.minecraft.item.ItemStack
 import net.minecraft.util.JsonUtils
+import net.minecraftforge.oredict.OreDictionary
 import net.thesilkminer.kotlin.commons.lang.uncheckedCast
 import net.thesilkminer.mc.boson.MOD_NAME
 import net.thesilkminer.mc.boson.api.bosonApi
@@ -25,9 +28,9 @@ class TagLoadingProcessor(isFirstPass: Boolean) : Processor<JsonObject> {
      *   "values": [
      *     "minecraft:item",
      *     "#minecraft:tag",
-     *     "@minecraft:item_with_wildcard", // TODO("Support this")
-     *     "@minecraft:item_with_metadata:1", // TODO("Support this")
-     *     "$minecraft:block[with=state]" // TODO("Support this")
+     *     "@minecraft:item_with_wildcard",
+     *     "@minecraft:item_with_metadata:1",
+     *     "$minecraft:block[with=state]"
      *   ]
      * }
      */
@@ -72,7 +75,7 @@ class TagLoadingProcessor(isFirstPass: Boolean) : Processor<JsonObject> {
         try {
             JsonUtils.getJsonArray(content, "values").forEach { it.processTagEntry(tagType, targetTag) }
         } catch (e: JsonParseException) {
-            throw JsonParseException("Unable to parse tag '${namingFun(identifier)}' for tag type '$tagType' (full name: '$identifier'): ${e.message}", e)
+            throw JsonParseException("Unable to parse tag '${namingFun(identifier)}' for tag type '${tagType.name}' (full name: '$identifier'): ${e.message}", e)
         }
     }
 
@@ -114,18 +117,19 @@ class TagLoadingProcessor(isFirstPass: Boolean) : Processor<JsonObject> {
     private fun String.processStackMetadataEntry(tagType: TagType<ItemStack>, targetTag: Tag<ItemStack>) {
         val lastColon = this.lastIndexOf(':')
         val probablyMeta = this.substring(startIndex = lastColon + 1)
+        @Suppress("GrazieInspection")
+        if (probablyMeta.isEmpty()) throw JsonSyntaxException("Invalid item metadata definition '$this' for tag '${targetTag.name}': extraneous colon at the end of the line")
         val meta = probablyMeta.toIntOrNull() ?: return this.processWildcardEntry(tagType, targetTag)
-        this.processMetadataEntry(tagType, targetTag, meta)
+        this.substring(startIndex = 0, endIndex = lastColon).processMetadataEntry(tagType, targetTag, meta)
     }
 
-    private fun String.processWildcardEntry(@Suppress("UNUSED_PARAMETER") tagType: TagType<ItemStack>, targetTag: Tag<ItemStack>) {
-        l.warn("Found wildcard entry '$this' inside tag '${targetTag.name}': this is not currently supported! Addition will be skipped")
-        // TODO()
+    private fun String.processWildcardEntry(tagType: TagType<ItemStack>, targetTag: Tag<ItemStack>) {
+        this.processMetadataEntry(tagType, targetTag, OreDictionary.WILDCARD_VALUE)
     }
 
-    private fun String.processMetadataEntry(@Suppress("UNUSED_PARAMETER") tagType: TagType<ItemStack>, targetTag: Tag<ItemStack>, metadata: Int) {
-        l.warn("Found metadata entry '$this' (meta: $metadata) inside tag '${targetTag.name}': this is not currently supported! Addition will be skipped")
-        // TODO()
+    private fun String.processMetadataEntry(tagType: TagType<ItemStack>, targetTag: Tag<ItemStack>, metadata: Int) {
+        val normalStack = tagType.toElement(this.toNameSpacedString())
+        targetTag += ItemStack(normalStack.item, 1, metadata)
     }
 
     private fun <T : Any> String.processStateEntry(tagType: TagType<T>, targetTag: Tag<T>) {
@@ -135,10 +139,60 @@ class TagLoadingProcessor(isFirstPass: Boolean) : Processor<JsonObject> {
         this.processBlockStateEntry(tagType.uncheckedCast(), targetTag.uncheckedCast())
     }
 
-    private fun String.processBlockStateEntry(@Suppress("UNUSED_PARAMETER") tagType: TagType<IBlockState>, targetTag: Tag<IBlockState>) {
-        l.warn("Found sate entry '$this' inside tag '${targetTag.name}': this is not currently supported! Addition will be skipped")
-        // TODO()
+    private fun String.processBlockStateEntry(tagType: TagType<IBlockState>, targetTag: Tag<IBlockState>) {
+        if (this.isEmpty() || this.last() != ']') throw JsonSyntaxException("Invalid block state definition '$this' for tag '${targetTag.name}': missing ]")
+        val beginning = this.indexOf('[').apply { if (this == -1) throw JsonSyntaxException("Invalid block state definition '$this' for tag '${targetTag.name}': missing block state") }
+        val propertiesList = this.substring(startIndex = beginning + 1).removeSuffix("]").split(',')
+        val name = this.substring(startIndex = 0, endIndex = beginning)
+        val defaultState = tagType.toElement(name.toNameSpacedString()).block.blockState
+        val actualStates = try {
+            defaultState.populateWithProperties(propertiesList)
+        } catch (e: JsonParseException) {
+            throw JsonParseException("Invalid block state definition '$this' for tag '${targetTag.name}': ${e.message}", e)
+        }
+        actualStates.forEach { targetTag += it }
     }
+
+    private fun BlockStateContainer.populateWithProperties(properties: List<String>): List<IBlockState> {
+        return this.populateWithProperties(properties.asSequence().map { it.split('=', limit = 2) }.map { it[0] to it[1] }.toMap())
+    }
+
+    private fun BlockStateContainer.populateWithProperties(properties: Map<String, String>): List<IBlockState> {
+        val allProperties = this.properties.asSequence()
+                .map { it.getName() as String to it }
+                .toMap()
+                .toMutableMap()
+
+        var defaultedBlockState = this.baseState
+
+        properties.forEach { (name, value) ->
+            if (name !in allProperties) throw JsonParseException("No property '$name' can be found inside the block state container")
+            val property = allProperties.getOrElse(name) { throw IllegalStateException("null over $name in $allProperties") }
+            allProperties.remove(name)
+            val propertyValue = property.parseValue(value).toJavaUtil().orElseThrow { JsonParseException("Value '$value' is not a valid value for the block state property '$name'") }
+            defaultedBlockState = defaultedBlockState.applyProperty<Comparable<Any>>(property.uncheckedCast(), propertyValue)
+        }
+
+        val validBlockStates = mutableListOf<IBlockState>()
+        defaultedBlockState.createCombinatorics(allProperties.toMap(), validBlockStates)
+        return validBlockStates
+    }
+
+    private fun IBlockState.createCombinatorics(properties: Map<String, IProperty<*>>, list: MutableList<IBlockState>) {
+        if (properties.count() == 0) {
+            list += this
+            return
+        }
+        val thisPropertyEntry = properties.asSequence().first()
+        val allTheOthers = properties.toMutableMap().apply { this.remove(thisPropertyEntry.key) }.toMap()
+        val allowedValues = thisPropertyEntry.value.getAllowedValues()
+        allowedValues.forEach {
+            val nextBlockState = this.applyProperty<Comparable<Any>>(thisPropertyEntry.value.uncheckedCast(), it)
+            nextBlockState.createCombinatorics(allTheOthers, list)
+        }
+    }
+
+    private fun <T : Comparable<T>> IBlockState.applyProperty(property: IProperty<T>, value: Comparable<*>) = this.withProperty(property, value.uncheckedCast())
 
     private fun <T : Any> TagType<T>.isValidTypeForMetadata() = with (this.type) { ItemStack::class.isSuperclassOf(this) }
     private fun <T : Any> TagType<T>.isValidTypeForState() = with (this.type) { IBlockState::class.isSuperclassOf(this) }
