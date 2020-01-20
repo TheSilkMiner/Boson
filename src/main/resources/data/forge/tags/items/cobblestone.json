@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:cobblestone",
+    "@minecraft:monster_egg:1",
+    "minecraft:mossy_cobblestone"
+  ]
+}

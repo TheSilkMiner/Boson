@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "$minecraft:beetroots[]",
+    "$minecraft:carrots[]",
+    "$minecraft:potatoes[]",
+    "$minecraft:wheat[]",
+    "$minecraft:pumpkin_stem[]",
+    "$minecraft:melon_stem[]"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "@minecraft:double_plant:0",
+    "@minecraft:double_plant:1",
+    "@minecraft:double_plant:5",
+    "@minecraft:double_plant:4"
+  ]
+}

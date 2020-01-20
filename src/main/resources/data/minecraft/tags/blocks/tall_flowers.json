@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "$minecraft:double_plant[variant=sunflower]",
+    "$minecraft:double_plant[variant=syringa]",
+    "$minecraft:double_plant[variant=paeonia]",
+    "$minecraft:double_plant[variant=double_rose]"
+  ]
+}

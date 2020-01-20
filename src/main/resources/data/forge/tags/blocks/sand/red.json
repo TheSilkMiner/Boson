@@ -1,0 +1,6 @@
+{
+  "replace": false,
+  "values": [
+    "$minecraft:sand[variant=red_sand]"
+  ]
+}

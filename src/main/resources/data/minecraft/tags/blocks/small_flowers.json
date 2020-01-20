@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "$minecraft:yellow_flower[type=dandelion]",
+    "$minecraft:red_flower[type=poppy]",
+    "$minecraft:red_flower[type=blue_orchid]",
+    "$minecraft:red_flower[type=allium]",
+    "$minecraft:red_flower[type=houstonia]",
+    "$minecraft:red_flower[type=red_tulip]",
+    "$minecraft:red_flower[type=orange_tulip]",
+    "$minecraft:red_flower[type=white_tulip]",
+    "$minecraft:red_flower[type=pink_tulip]",
+    "$minecraft:red_flower[type=oxeye_daisy]"
+  ]
+}

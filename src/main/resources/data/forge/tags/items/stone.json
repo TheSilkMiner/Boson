@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "@minecraft:stone",
+    "@minecraft:monster_egg:0"
+  ]
+}

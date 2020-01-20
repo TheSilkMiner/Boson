@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:grass",
+    "$minecraft:dirt[variant=podzol]"
+  ]
+}

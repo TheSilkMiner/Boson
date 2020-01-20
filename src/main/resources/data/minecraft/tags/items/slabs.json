@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "@minecraft:stone_slab",
+    "@minecraft:wooden_slab",
+    "@minecraft:stone_slab2",
+    "@minecraft:purpur_slab"
+  ]
+}

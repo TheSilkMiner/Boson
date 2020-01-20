@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "$minecraft:standing_banner[]",
+    "$minecraft:wall_banner[]"
+  ]
+}

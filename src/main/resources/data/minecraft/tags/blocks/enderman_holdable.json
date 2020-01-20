@@ -1,0 +1,19 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:small_flowers",
+    "minecraft:grass",
+    "$minecraft:dirt[]",
+    "$minecraft:sand[]",
+    "minecraft:gravel",
+    "minecraft:brown_mushroom",
+    "minecraft:red_mushroom",
+    "$minecraft:tnt[]",
+    "$minecraft:cactus[]",
+    "minecraft:clay",
+    "$minecraft:pumpkin[]",
+    "minecraft:melon_block",
+    "$minecraft:mycelium[]",
+    "minecraft:netherrack"
+  ]
+}
