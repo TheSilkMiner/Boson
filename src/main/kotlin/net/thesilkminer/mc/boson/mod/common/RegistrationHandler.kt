@@ -10,9 +10,9 @@ import net.thesilkminer.mc.boson.api.event.ConfigurationRegisterEvent
 import net.thesilkminer.mc.boson.api.event.TagTypeRegisterEvent
 import net.thesilkminer.mc.boson.api.log.L
 import net.thesilkminer.mc.boson.mod.common.recipe.loadDataPackRecipes
-import net.thesilkminer.mc.boson.prefab.tag.blockTagType
-import net.thesilkminer.mc.boson.prefab.tag.fluidTagType
-import net.thesilkminer.mc.boson.prefab.tag.itemTagType
+import net.thesilkminer.mc.boson.mod.common.tag.blocks
+import net.thesilkminer.mc.boson.mod.common.tag.fluids
+import net.thesilkminer.mc.boson.mod.common.tag.items
 
 @Mod.EventBusSubscriber(modid = MOD_ID)
 @Suppress("unused")
@@ -35,6 +35,6 @@ object RegistrationHandler {
     @JvmStatic
     @SubscribeEvent
     fun onTagTypeRegistration(event: TagTypeRegisterEvent) {
-        listOf(blockTagType, fluidTagType, itemTagType).forEach(event.tagTypeRegistry::registerTagType)
+        listOf(blocks, fluids, items).forEach(event.tagTypeRegistry::registerTagType)
     }
 }

@@ -21,6 +21,7 @@ import net.thesilkminer.mc.boson.api.locale.toLocale
 import net.thesilkminer.mc.boson.api.tag.TagType
 import net.thesilkminer.mc.boson.mod.client.configuration.client
 import net.thesilkminer.mc.boson.prefab.tag.has
+import net.thesilkminer.mc.boson.prefab.tag.itemTagType
 import org.lwjgl.input.Keyboard
 import java.util.concurrent.TimeUnit
 
@@ -55,7 +56,6 @@ object AdvancedTooltipHandler {
                 }
 
                 private fun addTags(key: ItemStack, list: MutableList<String>) {
-                    val itemTagType = TagType.find<ItemStack>("items")!!
                     val tagKeys = bosonApi.tagRegistry[itemTagType].filter { it has key }.map { it.name }.toList()
                     this.add(list, "boson.client.tooltip.advanced.tags", tagKeys)
                 }

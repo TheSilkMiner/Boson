@@ -3,7 +3,6 @@
 package net.thesilkminer.mc.boson.mod.common.tag
 
 import com.google.common.base.CaseFormat
-import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.common.Loader
 import net.minecraftforge.fml.common.ModContainer
 import net.minecraftforge.oredict.OreDictionary
@@ -20,7 +19,6 @@ import net.thesilkminer.mc.boson.api.loader.Processor
 import net.thesilkminer.mc.boson.api.loader.loader
 import net.thesilkminer.mc.boson.api.log.L
 import net.thesilkminer.mc.boson.api.modid.FORGE
-import net.thesilkminer.mc.boson.api.tag.TagType
 import net.thesilkminer.mc.boson.prefab.loader.context.BaseContext
 import net.thesilkminer.mc.boson.prefab.loader.context.BaseContextBuilder
 import net.thesilkminer.mc.boson.prefab.loader.filter.JsonFileFilter
@@ -201,7 +199,7 @@ fun initializeTagOreDictCompatibilityLayer() {
     l.info("Initializing ore dictionary compatibility layer: attempting to tag all items of the ore dictionary!")
     l.warn("The ore dictionary is deprecated and it WON'T survive a 1.13+ update: consider using tags")
     var compatElements = 0
-    val tagType = TagType.find<ItemStack>("items")!!
+    val tagType = net.thesilkminer.mc.boson.prefab.tag.itemTagType
     OreDictionary.getOreNames()
             .asSequence()
             .map { OreDictionary.getOres(it).toList().map { stack -> it!! to stack!! } }
