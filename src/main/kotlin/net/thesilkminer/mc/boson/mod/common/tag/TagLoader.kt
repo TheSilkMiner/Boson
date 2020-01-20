@@ -50,7 +50,7 @@ private val tagLoader = loader {
     locators {
         locator {
             object : Locator {
-                private val l = L(MOD_NAME, this::class.java.name)
+                private val l = L(MOD_NAME, this::class.java.name.shorten())
                 private val systemsStack = mutableListOf<FileSystem?>()
                 private val lazyLocations: List<Lazy<Location>> by lazy {
                     l.info("Attempting to load Minecraft tags from Boson: looking inside 'tags' for 'DATA'")
@@ -92,7 +92,7 @@ private val tagLoader = loader {
                         }
 
                         lazy {
-                            BaseLocation(root, "Minecraft tags - $id", BaseContext().apply {
+                            BaseLocation(root, "Minecraft tags - ${if (id == "minecraft") "Minecraft" else "Minecraft Forge"}", BaseContext().apply {
                                 this[modIdContextKey] = id
                                 this[markerContextKey] = true
                             })
@@ -113,7 +113,7 @@ private val tagLoader = loader {
         }
         locator {
             object : Locator {
-                private val l = L(MOD_NAME, this::class.java.name)
+                private val l = L(MOD_NAME, this::class.java.name.shorten())
                 private val deferredLocator = DataPackLikeModContainerLocator(targetDirectory = "tags")
                 private val bosonModContainerName = Loader.instance().modList.find { it.modId == MOD_ID }!!.name
 
@@ -188,6 +188,8 @@ private val tagLoader = loader {
         }
     }
 }
+
+private fun String.shorten() = this.substring(startIndex = this.lastIndexOf('.') + 1, endIndex = this.length)
 
 fun loadTags() {
     l.info("Attempting to load data-pack tags from all mod locators")
