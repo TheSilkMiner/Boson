@@ -142,7 +142,8 @@ class TagLoadingProcessor(isFirstPass: Boolean) : Processor<JsonObject> {
     private fun String.processBlockStateEntry(tagType: TagType<IBlockState>, targetTag: Tag<IBlockState>) {
         if (this.isEmpty() || this.last() != ']') throw JsonSyntaxException("Invalid block state definition '$this' for tag '${targetTag.name}': missing ]")
         val beginning = this.indexOf('[').apply { if (this == -1) throw JsonSyntaxException("Invalid block state definition '$this' for tag '${targetTag.name}': missing block state") }
-        val propertiesList = this.substring(startIndex = beginning + 1).removeSuffix("]").split(',')
+        val subProperties = this.substring(startIndex = beginning + 1).removeSuffix("]")
+        val propertiesList = if (subProperties.isBlank()) listOf() else subProperties.split(',')
         val name = this.substring(startIndex = 0, endIndex = beginning)
         val defaultState = tagType.toElement(name.toNameSpacedString()).block.blockState
         val actualStates = try {
