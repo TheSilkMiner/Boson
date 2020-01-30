@@ -67,7 +67,7 @@ val bosonApi by lazy {
 
             override val tagRegistry = object: TagRegistry {
                 private val EMPTY_TAG = object: Tag<Any> {
-                    override val name = NameSpacedString("empty")
+                    override val name = NameSpacedString("empty") // Why a recursive problem?
                     override val type = object: TagType<Any> {
                         override val type = Any::class
                         override val directoryName = "null"

@@ -5,9 +5,12 @@ package net.thesilkminer.mc.boson.mod.common.recipe
 import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
 import net.minecraft.init.Items
+import net.minecraft.item.ItemStack
 import net.minecraft.item.crafting.IRecipe
 import net.minecraft.item.crafting.Ingredient
+import net.minecraft.item.crafting.ShapedRecipes
 import net.minecraft.util.JsonUtils
+import net.minecraft.util.NonNullList
 import net.minecraftforge.common.crafting.IRecipeFactory
 import net.minecraftforge.common.crafting.JsonContext
 import net.minecraftforge.fml.common.registry.GameRegistry
@@ -47,4 +50,9 @@ class SmeltingRecipeFactory : IRecipeFactory {
 
         return null
     }
+}
+
+class RemoveRecipeFactory : IRecipeFactory {
+    override fun parse(context: JsonContext?, json: JsonObject?): IRecipe?
+            = ShapedRecipes("", 1, 1, NonNullList.withSize(1, NoneIngredientFactory.NoneIngredient()), ItemStack(Items.AIR))
 }

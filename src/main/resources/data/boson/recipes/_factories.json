@@ -3,9 +3,11 @@
     "true": "net.thesilkminer.mc.boson.mod.common.recipe.TrueConditionFactory"
   },
   "ingredients": {
+    "none": "net.thesilkminer.mc.boson.mod.common.recipe.NoneIngredientFactory",
     "tag": "net.thesilkminer.mc.boson.mod.common.recipe.TagIngredientFactory"
   },
   "recipes": {
-    "minecraft:smelting": "net.thesilkminer.mc.boson.mod.common.recipe.SmeltingRecipeFactory"
+    "minecraft:smelting": "net.thesilkminer.mc.boson.mod.common.recipe.SmeltingRecipeFactory",
+    "remove": "net.thesilkminer.mc.boson.mod.common.recipe.RemoveRecipeFactory"
   }
 }

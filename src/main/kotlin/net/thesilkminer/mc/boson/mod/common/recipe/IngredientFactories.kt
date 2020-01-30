@@ -95,3 +95,11 @@ class TagIngredientFactory : IIngredientFactory {
         return TagIngredient(target)
     }
 }
+
+class NoneIngredientFactory : IIngredientFactory {
+    class NoneIngredient : Ingredient() {
+        override fun apply(p_apply_1_: ItemStack?) = false
+    }
+
+    override fun parse(context: JsonContext?, json: JsonObject?): Ingredient = NoneIngredient()
+}
