@@ -117,6 +117,10 @@ repositories {
 	mavenCentral()
 	jcenter()
     maven {
+        name 'BlameJared'
+        url 'https://maven.blamejared.com/'
+    }
+    maven {
         name 'ShadowFacts'
         url 'http://maven.shadowfacts.net/'
     }
@@ -133,6 +137,12 @@ configurations {
 // compile, provided, deobfCompile, deobfProvided
 dependencies {
     /* ======================= COMPILE TIME ONLY ======================= */
+
+    // CraftTweaker API
+    deobfProvided(group: 'CraftTweaker2', name: 'CraftTweaker2-API', version: '4.1.20.554') {
+        exclude group: 'org.ow2.asm'
+        exclude group: 'com.google.code.gson'
+    }
 
     // Fermion
     compile name: 'Fermion-1.0.1'
@@ -159,6 +169,12 @@ dependencies {
     shade group: 'org.xerial', name: 'sqlite-jdbc', version: '3.28.0'
 
     /* ======================= RUNTIME LIBRARIES ======================= */
+
+    // CraftTweaker 2
+    runtime(group: 'CraftTweaker2', name: 'CraftTweaker2-MC1120-Main', version: '1.12-4.1.20.554') {
+        exclude group: 'org.ow2.asm'
+        exclude group: 'com.google.code.gson'
+    }
 }
 
 processResources {
