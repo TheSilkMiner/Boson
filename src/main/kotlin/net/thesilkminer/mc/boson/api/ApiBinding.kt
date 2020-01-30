@@ -3,6 +3,9 @@
 package net.thesilkminer.mc.boson.api
 
 import net.thesilkminer.kotlin.commons.lang.uncheckedCast
+import net.thesilkminer.mc.boson.api.compatibility.CompatibilityLoader
+import net.thesilkminer.mc.boson.api.compatibility.CompatibilityProvider
+import net.thesilkminer.mc.boson.api.compatibility.CompatibilityProviderRegistry
 import net.thesilkminer.mc.boson.api.configuration.Category
 import net.thesilkminer.mc.boson.api.configuration.Configuration
 import net.thesilkminer.mc.boson.api.configuration.ConfigurationBuilder
@@ -108,6 +111,15 @@ val bosonApi by lazy {
             }
 
             override fun <T : Any> findTagType(name: String) = null as TagType<T>?
+
+            override val compatibilityProviderRegistry = object : CompatibilityProviderRegistry {
+                override fun <T : CompatibilityProvider> registerProvider(provider: KClass<out T>) = Unit
+                override fun <T : CompatibilityProvider> findLoaderFor(provider: KClass<out T>): CompatibilityLoader<T>? = null
+            }
+
+            override fun <T : CompatibilityProvider> createLoaderFor(provider: KClass<T>) = object : CompatibilityLoader<T> {
+                override fun findProviders() = sequenceOf<T>()
+            }
         }
     }
 }
@@ -129,6 +141,9 @@ interface BosonApi {
     fun <T : Any> createTagType(type: KClass<out T>, directoryName: String, toElement: (NameSpacedString) -> T): TagType<T>
     fun <T : Any> createTag(tagType: TagType<T>, name: NameSpacedString, vararg initialElements: T): Tag<T>
     fun <T : Any> findTagType(name: String): TagType<T>?
+
+    val compatibilityProviderRegistry: CompatibilityProviderRegistry
+    fun <T : CompatibilityProvider> createLoaderFor(provider: KClass<T>): CompatibilityLoader<T>
 }
 
 private fun <T : Any> loadWithService(lookUpInterface: KClass<T>, defaultProvider: () -> T) : T {
