@@ -26,6 +26,7 @@ public final class BosonLaunchPlugin extends AbstractLaunchPlugin {
                 .addAuthor("TheSilkMiner")
                 .addAuthor("RE/SYST")
                 .setVersion("1.0.0")
+                .setLogoPath("boson_logo.png")
                 .setCredits("Fermion for making this possible");
     }
 
