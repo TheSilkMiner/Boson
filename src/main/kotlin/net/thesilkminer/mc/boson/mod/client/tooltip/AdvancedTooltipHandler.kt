@@ -18,7 +18,6 @@ import net.thesilkminer.mc.boson.api.bosonApi
 import net.thesilkminer.mc.boson.api.locale.Color
 import net.thesilkminer.mc.boson.api.locale.Style
 import net.thesilkminer.mc.boson.api.locale.toLocale
-import net.thesilkminer.mc.boson.api.tag.TagType
 import net.thesilkminer.mc.boson.mod.client.configuration.client
 import net.thesilkminer.mc.boson.prefab.tag.has
 import net.thesilkminer.mc.boson.prefab.tag.itemTagType

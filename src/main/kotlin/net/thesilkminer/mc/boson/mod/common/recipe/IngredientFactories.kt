@@ -17,8 +17,8 @@ import net.minecraftforge.common.crafting.IIngredientFactory
 import net.minecraftforge.common.crafting.JsonContext
 import net.minecraftforge.oredict.OreDictionary
 import net.thesilkminer.mc.boson.api.bosonApi
-import net.thesilkminer.mc.boson.api.id.NameSpacedString
 import net.thesilkminer.mc.boson.api.tag.Tag
+import net.thesilkminer.mc.boson.prefab.naming.toNameSpacedString
 import net.thesilkminer.mc.boson.prefab.tag.isInTag
 import net.thesilkminer.mc.boson.prefab.tag.itemTagType
 
@@ -88,9 +88,7 @@ class TagIngredientFactory : IIngredientFactory {
         val tag = JsonUtils.getString(json, "tag")
         if (tag.first() != '#') throw JsonSyntaxException("Tag name is invalid: does not begin with #")
         if (tag.substring(startIndex = 1).isEmpty()) throw JsonSyntaxException("Expected a tag name, but found none")
-        val tagName = tag.substring(startIndex = 1).split(':', limit = 2).let {
-            if (it.count() == 1) NameSpacedString(it[0]) else NameSpacedString(it[0], it[1]) // ?
-        }
+        val tagName = tag.substring(startIndex = 1).toNameSpacedString()
         val target = bosonApi.tagRegistry[itemTagType, tagName]
         return TagIngredient(target)
     }

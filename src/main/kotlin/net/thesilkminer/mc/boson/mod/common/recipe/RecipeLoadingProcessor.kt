@@ -32,6 +32,7 @@ import net.thesilkminer.mc.boson.api.loader.Preprocessor
 import net.thesilkminer.mc.boson.api.loader.Processor
 import net.thesilkminer.mc.boson.api.log.L
 import net.thesilkminer.mc.boson.prefab.loader.processor.CatchingProcessor
+import net.thesilkminer.mc.boson.prefab.naming.toNameSpacedString
 import kotlin.reflect.full.cast
 import kotlin.reflect.full.createInstance
 
@@ -122,10 +123,6 @@ class RecipeLoadingProcessor(private val flags: Int) : Processor<JsonObject> {
         private fun getCondition(name: NameSpacedString) = gc
                 ?.computeIfAbsent(nameToKey[CONDITIONS] ?: error("Somebody messed with our internals! nameToKey[CONDITIONS] == null")) { mutableMapOf() }
                 ?.get(name) as? IConditionFactory ?: error("The identifier '$name' does not identify any known condition type")
-
-        private fun String.toNameSpacedString() = this.indexOf(':').let {
-            return@let if (it == -1) NameSpacedString(this) else NameSpacedString(this.substring(0 until it), this.substring(it + 1))
-        }
     }
 
     private val processFun by lazy {
@@ -147,19 +144,16 @@ class RecipeLoadingProcessor(private val flags: Int) : Processor<JsonObject> {
 
     private fun processDefaults(content: JsonObject, identifier: NameSpacedString, globalContext: Context) =
             this.processJsonFactories(content, identifier, globalContext, false) { _, b ->
-                val (nameSpace, path) = b.split(':', limit = 2)
-                NameSpacedString(nameSpace, path)
+                b.toNameSpacedString()
             }
 
     private fun processFactories(content: JsonObject, identifier: NameSpacedString, globalContext: Context) =
             this.processJsonFactories(content, identifier, globalContext, true) { a, b ->
-                if (b.indexOf(':') != -1) {
-                    val (providedNamespace, path) = b.split(':', limit = 2)
-                    l.warn("Attempting to register factory '$path' with namespace '$providedNamespace' instead of the expected '${a.nameSpace}': this may cause errors later on!")
-                    NameSpacedString(providedNamespace, path)
-                } else {
-                    NameSpacedString(a.nameSpace, b)
+                val string = b.toNameSpacedString(defaultNamespace = a.nameSpace)
+                if (string.nameSpace != a.nameSpace) {
+                    l.warn("Attempting to register factory '${string.path}' with namespace '${string.nameSpace}' instead of the expected '${a.nameSpace}': this may cause errors later on!")
                 }
+                string
             }
 
     private fun processLateBoundFactories(content: JsonObject, identifier: NameSpacedString, globalContext: Context) {
