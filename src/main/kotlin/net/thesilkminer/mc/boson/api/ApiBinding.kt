@@ -3,6 +3,9 @@
 package net.thesilkminer.mc.boson.api
 
 import net.thesilkminer.kotlin.commons.lang.uncheckedCast
+import net.thesilkminer.mc.boson.api.communication.Message
+import net.thesilkminer.mc.boson.api.communication.MessageHandler
+import net.thesilkminer.mc.boson.api.communication.MessageHandlerRegistry
 import net.thesilkminer.mc.boson.api.compatibility.CompatibilityLoader
 import net.thesilkminer.mc.boson.api.compatibility.CompatibilityProvider
 import net.thesilkminer.mc.boson.api.compatibility.CompatibilityProviderRegistry
@@ -120,6 +123,13 @@ val bosonApi by lazy {
             override fun <T : CompatibilityProvider> createLoaderFor(provider: KClass<T>) = object : CompatibilityLoader<T> {
                 override fun findProviders() = sequenceOf<T>()
             }
+
+            override val messageHandlerRegistry = object: MessageHandlerRegistry {
+                override fun register(receiver: String, handler: MessageHandler) = Unit
+                override fun getHandlersFor(receiver: String) = sequenceOf<MessageHandler>()
+            }
+
+            override fun dispatchMessageTo(receiver: String, message: Message<*>) = Unit
         }
     }
 }
@@ -144,6 +154,9 @@ interface BosonApi {
 
     val compatibilityProviderRegistry: CompatibilityProviderRegistry
     fun <T : CompatibilityProvider> createLoaderFor(provider: KClass<T>): CompatibilityLoader<T>
+
+    val messageHandlerRegistry: MessageHandlerRegistry
+    fun dispatchMessageTo(receiver: String, message: Message<*>)
 }
 
 private fun <T : Any> loadWithService(lookUpInterface: KClass<T>, defaultProvider: () -> T) : T {
