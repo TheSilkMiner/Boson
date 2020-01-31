@@ -13,6 +13,7 @@ import java.util.concurrent.Executors
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
+//TODO("Move to Service based dispatchers")
 object Dispatcher {
     private val l = L(MOD_NAME, "Communication Dispatcher")
     private val pool = Executors.newFixedThreadPool(3).apply {

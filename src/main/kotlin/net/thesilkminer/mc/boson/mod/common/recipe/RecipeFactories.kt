@@ -3,7 +3,6 @@
 package net.thesilkminer.mc.boson.mod.common.recipe
 
 import com.google.gson.JsonObject
-import com.google.gson.JsonSyntaxException
 import net.minecraft.init.Items
 import net.minecraft.item.ItemStack
 import net.minecraft.item.crafting.IRecipe
