@@ -8,6 +8,6 @@ interface CompatibilityProvider {
     fun onPostInitialization() {}
     fun onPreAvailable() {}
 
-    fun registerMessageHandler(registry: MessageHandlerRegistry)
+    fun registerMessageHandler(registry: MessageHandlerRegistry) {}
     fun enqueueMessages() {}
 }

@@ -6,7 +6,6 @@ import net.thesilkminer.kotlin.commons.lang.uncheckedCast
 import net.thesilkminer.mc.boson.api.communication.Message
 import net.thesilkminer.mc.boson.api.communication.MessageHandler
 import net.thesilkminer.mc.boson.api.communication.MessageHandlerRegistry
-import net.thesilkminer.mc.boson.api.compatibility.CompatibilityLoader
 import net.thesilkminer.mc.boson.api.compatibility.CompatibilityProvider
 import net.thesilkminer.mc.boson.api.compatibility.CompatibilityProviderRegistry
 import net.thesilkminer.mc.boson.api.configuration.Category
@@ -117,11 +116,8 @@ val bosonApi by lazy {
 
             override val compatibilityProviderRegistry = object : CompatibilityProviderRegistry {
                 override fun <T : CompatibilityProvider> registerProvider(provider: KClass<out T>) = Unit
-                override fun <T : CompatibilityProvider> findLoaderFor(provider: KClass<out T>): CompatibilityLoader<T>? = null
-            }
-
-            override fun <T : CompatibilityProvider> createLoaderFor(provider: KClass<T>) = object : CompatibilityLoader<T> {
-                override fun findProviders() = sequenceOf<T>()
+                override fun findAllProviders() = sequenceOf<CompatibilityProvider>()
+                override fun <T : CompatibilityProvider> findProviders(provider: KClass<out T>) = sequenceOf<T>()
             }
 
             override val messageHandlerRegistry = object: MessageHandlerRegistry {
@@ -153,7 +149,6 @@ interface BosonApi {
     fun <T : Any> findTagType(name: String): TagType<T>?
 
     val compatibilityProviderRegistry: CompatibilityProviderRegistry
-    fun <T : CompatibilityProvider> createLoaderFor(provider: KClass<T>): CompatibilityLoader<T>
 
     val messageHandlerRegistry: MessageHandlerRegistry
     fun dispatchMessageTo(receiver: String, message: Message<*>)
