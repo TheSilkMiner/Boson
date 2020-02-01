@@ -6,7 +6,6 @@ import net.minecraftforge.fml.common.FMLCommonHandler
 import net.minecraftforge.fml.common.Loader
 import net.thesilkminer.mc.boson.api.BosonApi
 import net.thesilkminer.mc.boson.api.communication.Message
-import net.thesilkminer.mc.boson.api.compatibility.CompatibilityProvider
 import net.thesilkminer.mc.boson.api.configuration.ConfigurationBuilder
 import net.thesilkminer.mc.boson.api.configuration.ConfigurationFormat
 import net.thesilkminer.mc.boson.api.distribution.Distribution
@@ -24,7 +23,6 @@ import net.thesilkminer.mc.boson.api.tag.TagType
 import net.thesilkminer.mc.boson.implementation.communication.CommunicationManager
 import net.thesilkminer.mc.boson.implementation.communication.Dispatcher
 import net.thesilkminer.mc.boson.implementation.compatibility.CompatibilityProviderManager
-import net.thesilkminer.mc.boson.implementation.compatibility.ServiceBasedCompatibilityLoader
 import net.thesilkminer.mc.boson.implementation.configuration.ForgeConfiguration
 import net.thesilkminer.mc.boson.implementation.configuration.JsonConfiguration
 import net.thesilkminer.mc.boson.implementation.loader.BosonContextKey
@@ -75,8 +73,6 @@ class BosonApiBinding : BosonApi {
     override fun <T : Any> findTagType(name: String): TagType<T>? = BosonTagManager.findTagType(name)
 
     override val compatibilityProviderRegistry = CompatibilityProviderManager
-
-    override fun <T : CompatibilityProvider> createLoaderFor(provider: KClass<T>) = ServiceBasedCompatibilityLoader(provider)
 
     override val messageHandlerRegistry = CommunicationManager
 
