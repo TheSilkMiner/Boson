@@ -32,6 +32,9 @@ class ServiceBasedCompatibilityLoader<T : CompatibilityProvider> (private val pr
         // This is mainly done so that all classes are loaded and initialized immediately, so that mistakes or weird
         // classloading issues appear immediately during discovery, rather than somewhere else
         l.info("Discovery has found ${targetSeq.count()} loaders: returning them as sequence now")
+        if (targetSeq.count() == 0) {
+            l.warn("No implementations were found for '${this.provider.qualifiedName}'! This may be a problem!")
+        }
         this.providers = targetSeq
     }
 }
