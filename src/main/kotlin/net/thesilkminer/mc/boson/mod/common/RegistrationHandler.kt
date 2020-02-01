@@ -6,9 +6,13 @@ import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.thesilkminer.mc.boson.MOD_ID
 import net.thesilkminer.mc.boson.MOD_NAME
+import net.thesilkminer.mc.boson.api.event.CompatibilityProviderRegistryEvent
 import net.thesilkminer.mc.boson.api.event.ConfigurationRegisterEvent
+import net.thesilkminer.mc.boson.api.event.MessageHandlerRegisterEvent
 import net.thesilkminer.mc.boson.api.event.TagTypeRegisterEvent
 import net.thesilkminer.mc.boson.api.log.L
+import net.thesilkminer.mc.boson.compatibility.BosonCompatibilityProvider
+import net.thesilkminer.mc.boson.mod.common.communication.CommunicationMainHandler
 import net.thesilkminer.mc.boson.mod.common.recipe.loadDataPackRecipes
 import net.thesilkminer.mc.boson.mod.common.tag.blocks
 import net.thesilkminer.mc.boson.mod.common.tag.fluids
@@ -36,5 +40,17 @@ object RegistrationHandler {
     @SubscribeEvent
     fun onTagTypeRegistration(event: TagTypeRegisterEvent) {
         listOf(blocks, fluids, items).forEach(event.tagTypeRegistry::registerTagType)
+    }
+
+    @JvmStatic
+    @SubscribeEvent
+    fun onCompatibilityProviderRegistration(event: CompatibilityProviderRegistryEvent) {
+        event.registry.registerProvider(BosonCompatibilityProvider::class)
+    }
+
+    @JvmStatic
+    @SubscribeEvent
+    fun onMessageHandlerRegistration(event: MessageHandlerRegisterEvent) {
+        event.registry.register(MOD_ID, CommunicationMainHandler())
     }
 }

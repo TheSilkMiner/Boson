@@ -7,9 +7,12 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
+import net.thesilkminer.mc.boson.api.compatibility.CompatibilityProvider
 import net.thesilkminer.mc.boson.api.event.BosonPreAvailableEvent
 import net.thesilkminer.mc.boson.api.fingerprint.logViolationMessage
 import net.thesilkminer.mc.boson.api.log.L
+import net.thesilkminer.mc.boson.implementation.communication.CommunicationManager
+import net.thesilkminer.mc.boson.implementation.compatibility.CompatibilityProviderManager
 import net.thesilkminer.mc.boson.implementation.configuration.ConfigurationManager
 import net.thesilkminer.mc.boson.implementation.tag.BosonTagManager
 import net.thesilkminer.mc.boson.mod.common.tag.initializeTagOreDictCompatibilityLayer
@@ -29,7 +32,9 @@ object Boson {
     @Mod.EventHandler
     fun onPreInitialization(event: FMLPreInitializationEvent) {
         this.l.info("PreInitialization")
+        CompatibilityProviderManager.registerProviders()
         ConfigurationManager.gatherConfigurations()
+        CommunicationManager.register()
     }
 
     @Mod.EventHandler
@@ -37,17 +42,20 @@ object Boson {
         this.l.info("Initialization")
         BosonTagManager.fireTagTypeRegistrationEvent()
         loadTags()
+        CompatibilityProviderManager.fire(CompatibilityProvider::enqueueMessages)
     }
 
     @Mod.EventHandler
     fun onPostInitialization(event: FMLPostInitializationEvent) {
         this.l.info("PostInitialization")
+        CompatibilityProviderManager.fire(CompatibilityProvider::onPostInitialization)
     }
 
     @Mod.EventHandler
     fun onLoadFinished(event: BosonPreAvailableEvent) {
         this.l.info("BosonPreAvailable")
         initializeTagOreDictCompatibilityLayer()
+        CompatibilityProviderManager.fire(CompatibilityProvider::onPreAvailable)
     }
 
     @Mod.EventHandler
