@@ -11,6 +11,7 @@ import net.thesilkminer.mc.boson.api.compatibility.CompatibilityProvider
 import net.thesilkminer.mc.boson.api.event.BosonPreAvailableEvent
 import net.thesilkminer.mc.boson.api.fingerprint.logViolationMessage
 import net.thesilkminer.mc.boson.api.log.L
+import net.thesilkminer.mc.boson.compatibility.BosonCompatibilityProvider
 import net.thesilkminer.mc.boson.implementation.communication.CommunicationManager
 import net.thesilkminer.mc.boson.implementation.compatibility.CompatibilityProviderManager
 import net.thesilkminer.mc.boson.implementation.configuration.ConfigurationManager
@@ -35,6 +36,7 @@ object Boson {
         CompatibilityProviderManager.registerProviders()
         ConfigurationManager.gatherConfigurations()
         CommunicationManager.register()
+        CompatibilityProviderManager[BosonCompatibilityProvider::class].forEach { it.onPreInitialization() }
     }
 
     @Mod.EventHandler
