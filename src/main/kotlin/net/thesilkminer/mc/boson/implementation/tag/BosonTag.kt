@@ -1,5 +1,6 @@
 package net.thesilkminer.mc.boson.implementation.tag
 
+import net.thesilkminer.mc.boson.api.bosonApi
 import net.thesilkminer.mc.boson.api.id.NameSpacedString
 import net.thesilkminer.mc.boson.api.tag.Tag
 import net.thesilkminer.mc.boson.api.tag.TagType
@@ -8,6 +9,8 @@ import java.lang.RuntimeException
 class BosonTag<T : Any>(override val name: NameSpacedString, override val type: TagType<T>) : Tag<T> {
     private val mutableElements = mutableSetOf<T>()
     private val mutableOtherTags = mutableSetOf<Tag<out T>>()
+
+    private val isFrozen get() = bosonApi.tagRegistry.isFrozen
 
     private var statefulGetterLock = false
 
@@ -21,10 +24,12 @@ class BosonTag<T : Any>(override val name: NameSpacedString, override val type: 
         }.toSet()
 
     override fun add(elements: Set<T>) {
+        if (this.isFrozen) return
         this.mutableElements.addAll(elements)
     }
 
     override fun addFrom(other: Tag<out T>) {
+        if (this.isFrozen) return
         this.mutableOtherTags += other
         this.elements // Fail fast in case of circular dependencies
     }
@@ -40,14 +45,17 @@ class BosonTag<T : Any>(override val name: NameSpacedString, override val type: 
     }
 
     override fun remove(elements: Set<T>) {
+        if (this.isFrozen) return
         this.mutableElements.removeAll(elements)
     }
 
     override fun removeFrom(other: Tag<out T>) {
+        if (this.isFrozen) return
         this.mutableOtherTags.remove(other)
     }
 
     override fun clear() {
+        if (this.isFrozen) return
         this.mutableElements.clear()
         this.mutableOtherTags.clear()
     }

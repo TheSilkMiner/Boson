@@ -17,6 +17,8 @@ object BosonTagManager : TagRegistry, TagTypeRegistry {
 
     private val tagMap = mutableMapOf<TagType<*>, MutableList<Tag<*>>>()
 
+    private var tagsFrozen = false
+
     override fun <T : Any> registerTagType(tagType: TagType<T>) {
         val targetDirectory = tagType.directoryName
         val already = this.tagMap.asSequence().find { it.key.directoryName == targetDirectory }
@@ -49,6 +51,8 @@ object BosonTagManager : TagRegistry, TagTypeRegistry {
 
     override fun <T : Any> findFor(target: T, type: TagType<T>) = this.findAllTagsOf(type).filter { target in it }
 
+    override val isFrozen: Boolean get() = this.tagsFrozen
+
     fun <T : Any> findTagType(name: String) = this.tagMap.keys.firstOrNull { it.name == name }?.uncheckedCast<TagType<T>>()
 
     fun fireTagTypeRegistrationEvent() {
@@ -59,6 +63,11 @@ object BosonTagManager : TagRegistry, TagTypeRegistry {
         this.l.info("Tag types gathered")
         this.l.debug("Dumping found tags:")
         this.tagMap.forEach { (k, v) -> this.l.debug("  $k -> $v")}
+    }
+
+    fun freezeTags() {
+        this.tagsFrozen = true
+        this.l.info("Tags frozen")
     }
 
     private fun <T : Any> listForType(type: TagType<T>) = this.tagMap[type] ?: throw IllegalStateException("Tag type '${type.name}' is not known to the Tag registry")

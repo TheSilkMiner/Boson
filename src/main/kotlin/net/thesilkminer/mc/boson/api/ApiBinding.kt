@@ -91,6 +91,8 @@ val bosonApi by lazy {
                 override fun <T : Any> findAllTagsOf(type: TagType<T>) = listOf<Tag<T>>()
                 override fun <T : Any> findTag(type: TagType<T>, name: NameSpacedString) = EMPTY_TAG.uncheckedCast<Tag<T>>()
                 override fun <T : Any> findFor(target: T, type: TagType<T>) = listOf<Tag<T>>()
+
+                override val isFrozen = false
             }
 
             override fun <T : Any> createTagType(type: KClass<out T>, directoryName: String, toElement: (NameSpacedString) -> T) = object : TagType<T> {
