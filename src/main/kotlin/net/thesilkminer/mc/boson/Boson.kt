@@ -63,6 +63,7 @@ object Boson {
     @Mod.EventHandler
     fun onLoadComplete(event: FMLLoadCompleteEvent) {
         this.l.info("LoadComplete (i.e. Available)")
+        BosonTagManager.freezeTags()
     }
 
     @Mod.EventHandler
