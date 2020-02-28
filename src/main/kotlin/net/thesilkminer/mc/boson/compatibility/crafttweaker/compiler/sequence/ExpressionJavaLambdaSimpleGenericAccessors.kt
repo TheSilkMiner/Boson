@@ -14,7 +14,7 @@ val ExpressionJavaLambdaSimpleGeneric.genericClass get() = this.find<Class<*>>("
 val ExpressionJavaLambdaSimpleGeneric.descriptor get() = this.find<String>("descriptor")
 val ExpressionJavaLambdaSimpleGeneric.statements get() = this.find<List<Statement>>("statements")
 
-fun Expression.wrap() = if (this is ExpressionJavaLambdaSimpleGeneric) SimpleGenericLambdaExpression(this) else this
+fun Expression.wrap() = if (this is ExpressionJavaLambdaSimpleGeneric) SimpleGenericLambdaFunctionExpression(this) else this
 
 private inline fun <reified T> ExpressionJavaLambdaSimpleGeneric.find(fieldName: String)
         = this::class.java.getDeclaredField(fieldName).apply { this.isAccessible = true }.get(this).uncheckedCast<T>()

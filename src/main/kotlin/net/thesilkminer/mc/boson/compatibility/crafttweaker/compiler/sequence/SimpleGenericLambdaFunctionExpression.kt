@@ -18,7 +18,7 @@ import stanhebben.zenscript.util.MethodOutput
 import stanhebben.zenscript.util.ZenTypeUtil
 import java.lang.reflect.Method
 
-class SimpleGenericLambdaExpression(private val wrapped: ExpressionJavaLambdaSimpleGeneric) : Expression(wrapped.position) {
+class SimpleGenericLambdaFunctionExpression(private val wrapped: ExpressionJavaLambdaSimpleGeneric) : Expression(wrapped.position) {
     private val interfaceClass get() = wrapped.interfaceClass.kotlin
     private val genericClass get() = wrapped.genericClass.kotlin
     private val arguments get() = wrapped.arguments
@@ -65,31 +65,14 @@ class SimpleGenericLambdaExpression(private val wrapped: ExpressionJavaLambdaSim
 
     private fun generateMethodSignature() = StringBuilder().apply {
         this += "Ljava/lang/Object;"
-        this += ZenTypeUtil.signature(this@SimpleGenericLambdaExpression.interfaceClass.java)
+        this += ZenTypeUtil.signature(this@SimpleGenericLambdaFunctionExpression.interfaceClass.java)
         this.deleteCharAt(this.count() - 1)
         this += '<'
-        this += ZenTypeUtil.signature(this@SimpleGenericLambdaExpression.genericClass.java)
+        this += ZenTypeUtil.signature(this@SimpleGenericLambdaFunctionExpression.genericClass.java)
         this += ">;"
     }.toString()
 
     private fun generateAnnotations(v: ClassVisitor, name: String) {
-        v.visitAnnotation("Lkotlin/Metadata;", true).let { kotlinMetadata ->
-            kotlinMetadata.visit("k", 1.toInteger())
-            kotlinMetadata.visit("mv", intArrayOf(1, 1, 16))
-            kotlinMetadata.visit("bv", intArrayOf(1, 0, 3))
-            kotlinMetadata.visitArray("d1").let { d1 ->
-                d1.visit(null, "")
-                d1.visitEnd()
-            }
-            kotlinMetadata.visitArray("d2").let { d2 ->
-                d2.visit(null, "L$name;")
-                d2.visitEnd()
-            }
-            kotlinMetadata.visit("xs", "")
-            kotlinMetadata.visit("pn", "")
-            kotlinMetadata.visit("xi", 0b0000.toInteger())
-            kotlinMetadata.visitEnd()
-        }
         v.visitAnnotation("Lstanhebben/zenscript/annotation/ZenClass;", true).let { zenClass ->
             zenClass.visit("value", name)
             zenClass.visitEnd()

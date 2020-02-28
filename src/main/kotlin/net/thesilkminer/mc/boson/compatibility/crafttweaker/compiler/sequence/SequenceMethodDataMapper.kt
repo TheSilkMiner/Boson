@@ -47,7 +47,7 @@ data class ExpressionInvocationData(val name: String, val argumentClass: KClass<
 data class ArgumentData(val index: Int, val argumentClass: KClass<*>, val argumentZenType: ZenType, val expression: Expression)
 data class ReturnTypeData(val targetClass: KClass<*>, val correspondingZenType: ZenType)
 
-private val missingLog = L("$MOD_NAME CT Integration", "Sequence Compiler")
+private val missingLog = L("$MOD_NAME - CT Integration", "Sequence Compiler")
 val methodDataMap by lazy { mutableMapOf<String, List<SequenceMethodData>>().apply { this.populateMapWithData() }.toMap().apply { this.logMissing() } }
 
 private fun MutableMap<String, List<SequenceMethodData>>.populateMapWithData() {

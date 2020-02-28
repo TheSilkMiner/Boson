@@ -118,23 +118,6 @@ class TypeConverterFunctionExpression private constructor(position: ZenPosition?
     }.toString()
 
     private fun generateAnnotations(v: ClassVisitor, name: String) {
-        v.visitAnnotation("Lkotlin/Metadata;", true).let { kotlinMetadata ->
-            kotlinMetadata.visit("k", 1.toInteger())
-            kotlinMetadata.visit("mv", intArrayOf(1, 1, 16))
-            kotlinMetadata.visit("bv", intArrayOf(1, 0, 3))
-            kotlinMetadata.visitArray("d1").let { d1 ->
-                d1.visit(null, "")
-                d1.visitEnd()
-            }
-            kotlinMetadata.visitArray("d2").let { d2 ->
-                d2.visit(null, "L$name;")
-                d2.visitEnd()
-            }
-            kotlinMetadata.visit("xs", "")
-            kotlinMetadata.visit("pn", "")
-            kotlinMetadata.visit("xi", 0b0000.toInteger())
-            kotlinMetadata.visitEnd()
-        }
         v.visitAnnotation("Lstanhebben/zenscript/annotation/ZenClass;", true).let { zenClass ->
             zenClass.visit("value", name)
             zenClass.visitEnd()

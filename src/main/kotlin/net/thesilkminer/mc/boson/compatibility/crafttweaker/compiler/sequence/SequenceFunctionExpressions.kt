@@ -12,6 +12,7 @@ import stanhebben.zenscript.expression.ExpressionNull
 import stanhebben.zenscript.expression.partial.IPartialExpression
 import stanhebben.zenscript.type.ZenType
 import stanhebben.zenscript.util.ZenPosition
+import stanhebben.zenscript.util.ZenTypeUtil
 
 abstract class FunctionUpdateSequenceExpression(position: ZenPosition?, protected var function: Expression,
                                                 protected var expressionInvocationData: ExpressionInvocationData) : Expression(position) {
@@ -194,7 +195,7 @@ class SingleNonFunctionArgumentGenericReturnTypeSequenceFunctionExpression(posit
             return
         }
 
-        environment?.output?.checkCast(this.type.toJavaClass())
+        environment?.output?.checkCast(ZenTypeUtil.internal(this.type.toJavaClass()))
     }
 
     override fun getType(): ZenType = this.sequence.genericType
