@@ -37,12 +37,12 @@ object Boson {
         ConfigurationManager.gatherConfigurations()
         CommunicationManager.register()
         CompatibilityProviderManager[BosonCompatibilityProvider::class].forEach { it.onPreInitialization() }
+        BosonTagManager.fireTagTypeRegistrationEvent() // Moved to pre-init due to CraftTweaker
     }
 
     @Mod.EventHandler
     fun onInitialization(event: FMLInitializationEvent) {
         this.l.info("Initialization")
-        BosonTagManager.fireTagTypeRegistrationEvent()
         loadTags()
         CompatibilityProviderManager.fire(CompatibilityProvider::enqueueMessages)
     }
