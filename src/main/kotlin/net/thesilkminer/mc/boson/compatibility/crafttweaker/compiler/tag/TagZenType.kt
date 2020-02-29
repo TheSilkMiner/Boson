@@ -28,7 +28,7 @@ class TagZenType(private var genericTypeSupplier: () -> ZenType) : ZenType() {
     override fun binary(position: ZenPosition?, environment: IEnvironmentGlobal?, left: Expression?, right: Expression?, operator: OperatorType?): Expression = when (operator) {
         OperatorType.ADD, OperatorType.CAT, OperatorType.AND -> this.redirectToMethod(position, environment, left, "plusAssign", right)
         OperatorType.SUB -> this.redirectToMethod(position, environment, left, "minusAssign", right)
-        //OperatorType.CONTAINS -> this.redirectToMethod(position, environment, left, "contains", right) TODO()
+        OperatorType.CONTAINS -> this.redirectToMethod(position, environment, left, "contains", right)
         OperatorType.EQUALS -> this.redirectToMethod(position, environment, left, "equals", right)
         else -> ExpressionInvalid(position).apply { environment?.error(position, "Tags don't support the binary operator $operator") }
     }
