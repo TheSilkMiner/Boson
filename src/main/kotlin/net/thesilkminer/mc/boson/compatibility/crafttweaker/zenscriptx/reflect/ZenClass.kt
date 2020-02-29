@@ -20,6 +20,11 @@ class ZenClass(val targetZenType: ZenType) {
                     .map { it.value }
                     .find { it.name == name }
                     ?.let { ZenClass(it) }
+
+        @JvmStatic
+        @ZenMethod("from")
+        fun getClassFrom(instance: Any): net.thesilkminer.mc.boson.compatibility.crafttweaker.zenscriptx.reflect.ZenClass? =
+                ZenNativeClass.getClassFromZen(instance)?.toZenClass()
     }
 
     val simpleName: String @ZenGetter("simpleName") get() = this.targetZenType.name.substringAfterLast('.')

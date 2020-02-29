@@ -16,6 +16,10 @@ class ZenNativeClass(val nativeClass: KClass<*>) {
         @JvmStatic
         @ZenMethod("byName")
         fun getClassFor(name: String): ZenNativeClass? = try { ZenNativeClass(Class.forName(name).kotlin) } catch (e: ClassNotFoundException) { null }
+
+        @JvmStatic
+        @ZenMethod("fromZen")
+        fun getClassFromZen(instance: Any): ZenNativeClass? = getClassFor(instance::class.qualifiedName ?: instance::class.java.name)
     }
 
     val simpleName: String @ZenGetter("simpleName") get() = this.nativeClass.simpleName ?: this.nativeClass.java.simpleName
