@@ -5,9 +5,8 @@ import crafttweaker.zenscript.GlobalRegistry
 import stanhebben.zenscript.annotations.ZenClass
 import stanhebben.zenscript.annotations.ZenGetter
 import stanhebben.zenscript.annotations.ZenMethod
-import stanhebben.zenscript.compiler.TypeRegistry
-import stanhebben.zenscript.type.ZenType
 import kotlin.reflect.KClass
+import kotlin.reflect.full.isSuperclassOf
 
 @ZenClass("zenscriptx.reflect.NativeClass")
 @ZenRegister
@@ -27,7 +26,7 @@ class ZenNativeClass(val nativeClass: KClass<*>) {
             GlobalRegistry.getTypes().typeMap
                     .asSequence()
                     .map { Pair(it.key.kotlin, it.value) }
-                    .find { it.first == this.nativeClass }
+                    .let { seq -> seq.find { it.first == this.nativeClass } ?: seq.find { it.first.isSuperclassOf(this.nativeClass) } }
                     ?.second
                     ?.let { ZenClass(it) }
 }
