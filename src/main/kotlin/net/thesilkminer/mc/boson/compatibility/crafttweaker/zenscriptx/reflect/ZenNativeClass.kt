@@ -5,6 +5,7 @@ import crafttweaker.zenscript.GlobalRegistry
 import stanhebben.zenscript.annotations.ZenClass
 import stanhebben.zenscript.annotations.ZenGetter
 import stanhebben.zenscript.annotations.ZenMethod
+import stanhebben.zenscript.type.ZenType
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSuperclassOf
 
@@ -30,7 +31,43 @@ class ZenNativeClass(val nativeClass: KClass<*>) {
             GlobalRegistry.getTypes().typeMap
                     .asSequence()
                     .map { Pair(it.key.kotlin, it.value) }
-                    .let { seq -> seq.find { it.first == this.nativeClass } ?: seq.find { it.first.isSuperclassOf(this.nativeClass) } }
+                    .filter { it.first.isSuperclassOf(this.nativeClass) }
+                    .toList()
+                    .findNearestSuperClass(this.nativeClass)
                     ?.second
                     ?.let { ZenClass(it) }
+
+    private fun List<Pair<KClass<*>, ZenType>>.findNearestSuperClass(targetClass: KClass<*>): Pair<KClass<*>, ZenType>? {
+        if (this.isEmpty()) return null
+        var valid = this[0] // not empty, so guaranteed to have at least one element
+        this.forEach { if (it.first.isMoreSpecificThan(valid.first, targetClass)) valid = it }
+        return valid
+    }
+
+    private fun KClass<*>.isMoreSpecificThan(other: KClass<*>, targetClass: KClass<*>): Boolean {
+        // Quick check: if this is the same as targetClass it will surely be more specific than anything else
+        if (this == targetClass) return true
+
+        // Quick check #2: if this is the same as other, then the most specific it can be is like this
+        if (this == other) return true
+
+        // We know that this is the set of all superclasses of targetClass
+        // Let's check whether this is a superclass of other
+        val isThisSuperClassOfOther = this.isSuperclassOf(other)
+        // Now the opposite check
+        val isOtherSuperClassOfThis = other.isSuperclassOf(this)
+
+        // If both of them are true, then this == other and it should have been caught before
+        if (isThisSuperClassOfOther && isOtherSuperClassOfThis) throw IllegalStateException("'$this' super '$other' && '$other' super '$this'")
+
+        // If this super other, then other is more specific
+        if (isThisSuperClassOfOther) return false
+
+        // If other super this, then this is more specific
+        if (isOtherSuperClassOfThis) return true
+
+        // If we are here, the two classes don't share the same hierarchy, so returning either works
+        // We're going to keep other as more specific though in this case
+        return false
+    }
 }
