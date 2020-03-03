@@ -2,6 +2,7 @@ package net.thesilkminer.mc.boson.asm;
 
 import com.google.common.collect.ImmutableSet;
 import net.thesilkminer.mc.boson.asm.transformer.GameDataTransformer;
+import net.thesilkminer.mc.boson.asm.transformer.InternalLoggerFactoryTransformer;
 import net.thesilkminer.mc.boson.asm.transformer.LoadControllerTransformer;
 import net.thesilkminer.mc.boson.asm.transformer.ModelLoaderVariantLoaderTransformer;
 import net.thesilkminer.mc.boson.asm.transformer.ObjectHolderRegistryTransformer;
@@ -39,6 +40,7 @@ public final class BosonLaunchPlugin extends AbstractLaunchPlugin {
 
     private void registerTransformers() {
         this.registerTransformer(new GameDataTransformer(this));
+        this.registerTransformer(new InternalLoggerFactoryTransformer(this));
         this.registerTransformer(new LoadControllerTransformer(this));
         this.registerTransformer(new ModelLoaderVariantLoaderTransformer(this));
         this.registerTransformer(new ObjectHolderRegistryTransformer(this));
