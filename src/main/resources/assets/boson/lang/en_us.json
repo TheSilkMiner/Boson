@@ -1,0 +1,17 @@
+{
+  "boson.client.tooltip.advanced.begin": "Advanced Information:",
+  "boson.client.tooltip.advanced.language_key": "Language Key:",
+  "boson.client.tooltip.advanced.metadata": "Item Data:",
+  "boson.client.tooltip.advanced.metadata.damage": "Damage: %1$s",
+  "boson.client.tooltip.advanced.metadata.id": "Numerical ID: %1$s",
+  "boson.client.tooltip.advanced.metadata.meta": "Metadata: %1$s",
+  "boson.client.tooltip.advanced.metadata.no_damage": "Not damaged",
+  "boson.client.tooltip.advanced.metadata.no_metadata": "No metadata",
+  "boson.client.tooltip.advanced.nbt": "NBT:",
+  "boson.client.tooltip.advanced.nbt.null_error": "NBT resulted 'null': this is a serious error!",
+  "boson.client.tooltip.advanced.none": "None",
+  "boson.client.tooltip.advanced.ore_dictionary": "Ore Dictionary Names:",
+  "boson.client.tooltip.advanced.registry_name": "Registry Name:",
+  "boson.client.tooltip.advanced.shift": "Press Shift to access advanced information",
+  "boson.client.tooltip.advanced.tags": "Item Tags:"
+}
