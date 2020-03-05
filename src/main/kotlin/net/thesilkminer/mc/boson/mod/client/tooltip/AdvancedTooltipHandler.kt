@@ -2,11 +2,13 @@ package net.thesilkminer.mc.boson.mod.client.tooltip
 
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
+import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTBase
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTTagList
+import net.minecraft.util.NonNullList
 import net.minecraft.util.text.TextFormatting
 import net.minecraftforge.event.entity.player.ItemTooltipEvent
 import net.minecraftforge.fml.common.Mod
@@ -65,10 +67,12 @@ object AdvancedTooltipHandler {
 
                 private fun addMetadata(key: ItemStack, list: MutableList<String>) {
                     val id = Item.getIdFromItem(key.item)
-                    val metadata = if (key.item.hasSubtypes) "${key.itemDamage}/${key.maxDamage}" else "boson.client.tooltip.advanced.metadata.none".toLocale()
+                    val metadata = if (key.hasSubtypes) "${key.metadata}/${key.maxMetadata}" else "boson.client.tooltip.advanced.metadata.no_metadata".toLocale()
+                    val damage = if (key.itemDamage != 0 && !key.hasSubtypes) "${key.itemDamage}" else "boson.client.tooltip.advanced.metadata.no_damage".toLocale()
                     val idString = "boson.client.tooltip.advanced.metadata.id".toLocale(id)
                     val metaString = "boson.client.tooltip.advanced.metadata.meta".toLocale(metadata)
-                    this.add(list, "boson.client.tooltip.advanced.metadata", listOf(idString, metaString))
+                    val damageString = "boson.client.tooltip.advanced.metadata.damage".toLocale(damage)
+                    this.add(list, "boson.client.tooltip.advanced.metadata", listOf(idString, metaString, damageString))
                 }
 
                 private fun addLanguageKey(key: ItemStack, list: MutableList<String>) {
@@ -83,6 +87,12 @@ object AdvancedTooltipHandler {
                     list += "  ${title.toLocale(color = Color.DARK_AQUA)}"
                     if (values.isEmpty()) list += "    ${"boson.client.tooltip.advanced.none".toLocale(color = Color.DARK_GRAY)}"
                     else values.forEach { list += "    ${TextFormatting.GRAY}- $it${TextFormatting.RESET}" }
+                }
+
+                private val ItemStack.maxMetadata: Int get() {
+                    val allItems = NonNullList.create<ItemStack>()
+                    this.item.getSubItems(CreativeTabs.SEARCH, allItems)
+                    return allItems.asSequence().sortedByDescending { it.metadata }.firstOrNull()?.metadata ?: 0
                 }
             })
 
