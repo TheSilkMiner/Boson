@@ -54,7 +54,7 @@ class BosonApiBinding : BosonApi {
     override val currentDistribution: Distribution get() = if (FMLCommonHandler.instance().side.isClient) Distribution.CLIENT else Distribution.DEDICATED_SERVER
 
     override fun localizeAndFormat(message: String, color: Color, style: Style, readability: Readability, vararg arguments: Any?): String =
-            runSided(server = { { message } }, client = { { I18n.format(message, arguments).apply(color, style, readability) } })
+            runSided(server = { { message } }, client = { { I18n.format(message, *arguments).apply(color, style, readability) } })
 
     override fun constructNameSpacedString(nameSpace: String?, path: String): NameSpacedString = ResourceLocationBackedNameSpacedString(nameSpace, path)
 
