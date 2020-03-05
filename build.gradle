@@ -145,7 +145,7 @@ dependencies {
     }
 
     // Fermion
-    compile name: 'Fermion-1.0.1'
+    compile name: 'Fermion-1.0.2'
 
     // Forgelin
     compile group: 'net.shadowfacts', name: 'Forgelin', version: '1.8.4'
