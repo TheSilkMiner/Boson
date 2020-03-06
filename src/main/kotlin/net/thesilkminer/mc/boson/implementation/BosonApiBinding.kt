@@ -78,6 +78,8 @@ class BosonApiBinding : BosonApi {
 
     override fun dispatchMessageTo(receiver: String, message: Message<*>) = Dispatcher.dispatch(receiver, message)
 
+    override fun getDatabasePathFor(owner: String): Path = this.configurationDirectory.resolve("./$owner/db.sqlite").normalize().toAbsolutePath()
+
     private fun String.apply(color: Color, style: Style, readability: Readability): String {
         fun Color.toTextFormatting() = when (this) {
             Color.DEFAULT -> null

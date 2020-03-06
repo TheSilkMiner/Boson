@@ -128,6 +128,8 @@ val bosonApi by lazy {
             }
 
             override fun dispatchMessageTo(receiver: String, message: Message<*>) = Unit
+
+            override fun getDatabasePathFor(owner: String): Path = this.configurationDirectory
         }
     }
 }
@@ -154,6 +156,8 @@ interface BosonApi {
 
     val messageHandlerRegistry: MessageHandlerRegistry
     fun dispatchMessageTo(receiver: String, message: Message<*>)
+
+    fun getDatabasePathFor(owner: String): Path
 }
 
 private fun <T : Any> loadWithService(lookUpInterface: KClass<T>, defaultProvider: () -> T) : T {
