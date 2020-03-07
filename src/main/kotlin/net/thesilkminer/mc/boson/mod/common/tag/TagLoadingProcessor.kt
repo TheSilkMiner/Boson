@@ -21,7 +21,7 @@ import net.thesilkminer.mc.boson.api.tag.Tag
 import net.thesilkminer.mc.boson.api.tag.TagType
 import kotlin.reflect.full.isSuperclassOf
 
-class TagLoadingProcessor(isFirstPass: Boolean) : Processor<JsonObject> {
+internal class TagLoadingProcessor(isFirstPass: Boolean) : Processor<JsonObject> {
     /*
      * {
      *   "replace": false,

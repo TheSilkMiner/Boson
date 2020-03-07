@@ -7,7 +7,7 @@ import net.thesilkminer.mc.boson.api.configuration.ConfigurationRegistry
 import net.thesilkminer.mc.boson.api.event.ConfigurationRegisterEvent
 import net.thesilkminer.mc.boson.api.log.L
 
-object ConfigurationManager : ConfigurationRegistry {
+internal object ConfigurationManager : ConfigurationRegistry {
     private val l = L(MOD_NAME, "Configuration Manager")
 
     private val configurations = mutableMapOf<String, MutableList<Configuration>>()
@@ -22,15 +22,15 @@ object ConfigurationManager : ConfigurationRegistry {
         this.l.info("Successfully registered configuration $configurationRegistryName for Mod ID ${configuration.owner}")
     }
 
-    fun gatherConfigurations() {
+    internal fun gatherConfigurations() {
         this.l.info("Gathering configurations from mods")
         this.configurations.clear()
         MinecraftForge.EVENT_BUS.post(ConfigurationRegisterEvent(this))
         this.l.info("Successfully registered a total of ${this.configurations.values.flatten().count()} configurations")
     }
 
-    fun getConfigurations(): Map<String, List<Configuration>> = this.configurations.toMap()
-    fun getConfigurationsForMod(id: String) = this.getConfigurations()[id]
+    internal fun getConfigurations(): Map<String, List<Configuration>> = this.configurations.toMap()
+    internal fun getConfigurationsForMod(id: String) = this.getConfigurations()[id]
 
     private fun Configuration.toRegistryName() = "${this.owner}:${this.name}"
 }

@@ -11,9 +11,9 @@ private val l = L("$MOD_NAME - CT Integration", "Script Loading Listener")
 
 private var currentScriptLoader: ScriptLoader? = null
 
-val currentLoaderName get() = currentScriptLoader?.mainName ?: "crafttweaker".also { l.bigWarn("No loader is currently in place: replacing with 'crafttweaker'! Check your calls!") }
+internal val currentLoaderName get() = currentScriptLoader?.mainName ?: "crafttweaker".also { l.bigWarn("No loader is currently in place: replacing with 'crafttweaker'! Check your calls!") }
 
-object LoaderChangeListener {
+internal object LoaderChangeListener {
     fun onLoaderBeginEvent(event: CrTLoaderLoadingEvent.Started) {
         l.debug("CraftTweaker has started loading with the loader '${event.loader.mainName}' (${event.loader})")
         currentScriptLoader = event.loader

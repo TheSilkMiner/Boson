@@ -9,9 +9,9 @@ import stanhebben.zenscript.symbols.IZenSymbol
 import stanhebben.zenscript.type.ZenType
 import stanhebben.zenscript.util.ZenPosition
 
-class TagMemberPartialExpression(private val position: ZenPosition?, private val methodName: String,
-                                 private val environment: IEnvironmentGlobal?, private val tagType: TagZenType,
-                                 private val callee: IPartialExpression?) : IPartialExpression {
+internal class TagMemberPartialExpression(private val position: ZenPosition?, private val methodName: String,
+                                          private val environment: IEnvironmentGlobal?, private val tagType: TagZenType,
+                                          private val callee: IPartialExpression?) : IPartialExpression {
 
     override fun eval(environment: IEnvironmentGlobal?): Expression {
         environment?.warning(this.position, "Tag members cannot be evaluated, assuming it's a method call")

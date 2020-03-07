@@ -31,8 +31,8 @@ private fun BiMap<KClass<*>, KClass<*>>.populate() {
     // TODO("everything else that may require custom handling")
 }
 
-fun KClass<*>.convertToZenGenericType() = converterBiMap.inverse()[this] ?: this.warn()
-fun KClass<*>.convertToNativeGenericType() = converterBiMap[this] ?: this.warn()
+internal fun KClass<*>.convertToZenGenericType() = converterBiMap.inverse()[this] ?: this.warn()
+internal fun KClass<*>.convertToNativeGenericType() = converterBiMap[this] ?: this.warn()
 
 private fun KClass<*>.warn() = this/*.also { l.info("Unable to map '$this': returning the same data and hoping") }*/
 
@@ -47,7 +47,7 @@ private fun BiMap<String, KClass<*>>.populate() {
     // TODO("everything else that may require custom handling")
 }
 
-fun String.tryGetCustomClass(position: ZenPosition, environment: IEnvironmentGlobal) = typeToZenClass[this]
+internal fun String.tryGetCustomClass(position: ZenPosition, environment: IEnvironmentGlobal) = typeToZenClass[this]
         ?: Object::class.also { environment.warning(position, "Tag type '$this' isn't fully supported yet: generic features won't be available") }
 
 // native -> zen
@@ -61,7 +61,7 @@ private fun MutableMap<TagType<*>, (Any?) -> Any?>.populateNz() {
     // TODO("everything else that may require custom handling")
 }
 
-fun <T : Any, R : Any> T?.boxNative(tagType: TagType<T>): R? = (nativeZenConverters[tagType] ?: { it })(this)?.uncheckedCast()
+internal fun <T : Any, R : Any> T?.boxNative(tagType: TagType<T>): R? = (nativeZenConverters[tagType] ?: { it })(this)?.uncheckedCast()
 
 // zen -> native
 private val zenNativeConverters = mutableMapOf<TagType<*>, (Any?) -> Any?>().apply { this.populateZn() }
@@ -74,9 +74,9 @@ private fun MutableMap<TagType<*>, (Any?) -> Any?>.populateZn() {
     // TODO("everything else that may require custom handling")
 }
 
-fun <T : Any, R : Any> T?.unboxNative(tagType: TagType<T>): R? = (zenNativeConverters[tagType] ?: { it })(this)?.uncheckedCast()
+internal fun <T : Any, R : Any> T?.unboxNative(tagType: TagType<T>): R? = (zenNativeConverters[tagType] ?: { it })(this)?.uncheckedCast()
 
 // Other helpers
-infix fun <T : Any> ZenTag<T>.isCompatibleWith(other: ZenTag<*>) = this.toNative().type.type == other.toNative().type.type
+internal infix fun <T : Any> ZenTag<T>.isCompatibleWith(other: ZenTag<*>) = this.toNative().type.type == other.toNative().type.type
 
-infix fun <T : Any> Array<*>.canFitIn(other: ZenTag<T>) = this.all { it != null && it::class.convertToNativeGenericType() == other.toNative().type.type }
+internal infix fun <T : Any> Array<*>.canFitIn(other: ZenTag<T>) = this.all { it != null && it::class.convertToNativeGenericType() == other.toNative().type.type }

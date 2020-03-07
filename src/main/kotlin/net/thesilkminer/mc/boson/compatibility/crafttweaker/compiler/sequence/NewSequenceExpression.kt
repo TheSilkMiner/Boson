@@ -9,7 +9,7 @@ import stanhebben.zenscript.type.ZenTypeArrayBasic
 import stanhebben.zenscript.util.ZenPosition
 import stanhebben.zenscript.util.ZenTypeUtil
 
-class NewSequenceExpression(position: ZenPosition?, private val genericType: ZenType, expressionList: List<Expression?>) : Expression(position) {
+internal class NewSequenceExpression(position: ZenPosition?, private val genericType: ZenType, expressionList: List<Expression?>) : Expression(position) {
     private val expressionArray = ExpressionArray(position, ZenTypeArrayBasic(this.genericType), *expressionList.filterNotNull().toTypedArray())
 
     override fun getType(): ZenType = SequenceZenType(this.genericType)

@@ -6,6 +6,8 @@ import net.minecraftforge.fml.common.FMLCommonHandler
 import net.minecraftforge.fml.common.Loader
 import net.thesilkminer.mc.boson.api.BosonApi
 import net.thesilkminer.mc.boson.api.communication.Message
+import net.thesilkminer.mc.boson.api.communication.MessageHandlerRegistry
+import net.thesilkminer.mc.boson.api.compatibility.CompatibilityProviderRegistry
 import net.thesilkminer.mc.boson.api.configuration.ConfigurationBuilder
 import net.thesilkminer.mc.boson.api.configuration.ConfigurationFormat
 import net.thesilkminer.mc.boson.api.distribution.Distribution
@@ -72,9 +74,9 @@ class BosonApiBinding : BosonApi {
 
     override fun <T : Any> findTagType(name: String): TagType<T>? = BosonTagManager.findTagType(name)
 
-    override val compatibilityProviderRegistry = CompatibilityProviderManager
+    override val compatibilityProviderRegistry: CompatibilityProviderRegistry = CompatibilityProviderManager
 
-    override val messageHandlerRegistry = CommunicationManager
+    override val messageHandlerRegistry: MessageHandlerRegistry = CommunicationManager
 
     override fun dispatchMessageTo(receiver: String, message: Message<*>) = Dispatcher.dispatch(receiver, message)
 

@@ -11,7 +11,7 @@ import net.thesilkminer.mc.boson.api.event.MessageHandlerRegisterEvent
 import net.thesilkminer.mc.boson.api.log.L
 import java.util.concurrent.ConcurrentHashMap
 
-object CommunicationManager : MessageHandlerRegistry {
+internal object CommunicationManager : MessageHandlerRegistry {
     private val l = L(MOD_NAME, "Communication Manager")
     private val handlers = ConcurrentHashMap<String, MutableList<MessageHandler>>()
     private var allowRegistration = false
@@ -35,7 +35,7 @@ object CommunicationManager : MessageHandlerRegistry {
         }
     }
 
-    fun register() {
+    internal fun register() {
         this.l.info("Registering message handlers for communication")
         this.allowRegistration = true
         MinecraftForge.EVENT_BUS.post(MessageHandlerRegisterEvent(this))

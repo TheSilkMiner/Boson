@@ -15,7 +15,7 @@ import stanhebben.zenscript.type.casting.ICastingRuleDelegate
 import stanhebben.zenscript.util.ZenPosition
 import stanhebben.zenscript.util.ZenTypeUtil
 
-object ObjectZenType : ZenType() {
+internal object ObjectZenType : ZenType() {
     override fun unary(position: ZenPosition?, environment: IEnvironmentGlobal?, value: Expression?, operator: OperatorType?): Expression =
             ExpressionInvalid(position).apply { environment?.error(position, "The unary operator '$operator' is not supported") }
 

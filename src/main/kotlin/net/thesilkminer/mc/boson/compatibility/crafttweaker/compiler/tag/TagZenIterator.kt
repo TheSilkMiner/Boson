@@ -8,7 +8,7 @@ import stanhebben.zenscript.type.IZenIterator
 import stanhebben.zenscript.type.ZenType
 import stanhebben.zenscript.util.MethodOutput
 
-class TagZenIterator(private val methodOutput: MethodOutput?, private val targetType: TagZenType) : IZenIterator {
+internal class TagZenIterator(private val methodOutput: MethodOutput?, private val targetType: TagZenType) : IZenIterator {
     private var iterator: Int? = null
 
     override fun compileStart(locals: IntArray?) {

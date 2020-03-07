@@ -14,8 +14,8 @@ import stanhebben.zenscript.type.ZenType
 import stanhebben.zenscript.util.ZenPosition
 import stanhebben.zenscript.util.ZenTypeUtil
 
-abstract class FunctionUpdateSequenceExpression(position: ZenPosition?, protected var function: Expression,
-                                                protected var expressionInvocationData: ExpressionInvocationData) : Expression(position) {
+internal abstract class FunctionUpdateSequenceExpression(position: ZenPosition?, protected var function: Expression,
+                                                         protected var expressionInvocationData: ExpressionInvocationData) : Expression(position) {
 
     protected open fun updateFunction(sequence: SequenceZenType) {
         val newFunction = (this.function as? ExpressionJavaLambdaSimpleGeneric)?.convert(sequence, this.expressionInvocationData.sequenceTargetPositions) ?: this.function
@@ -23,8 +23,8 @@ abstract class FunctionUpdateSequenceExpression(position: ZenPosition?, protecte
     }
 }
 
-class NoArgumentSameSequenceReturnTypeSequenceFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, private val sequence: SequenceZenType,
-                                                                 private val targetMethodName: String) : Expression(position) {
+internal class NoArgumentSameSequenceReturnTypeSequenceFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, private val sequence: SequenceZenType,
+                                                                          private val targetMethodName: String) : Expression(position) {
 
     override fun compile(result: Boolean, environment: IEnvironmentMethod?) {
         val evaluation = this.callee?.eval(environment) ?: return
@@ -37,8 +37,8 @@ class NoArgumentSameSequenceReturnTypeSequenceFunctionExpression(position: ZenPo
     override fun getType(): ZenType = this.sequence
 }
 
-class NoArgumentKnownReturnTypeSequenceFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, private val returnType: ReturnTypeData,
-                                                          private val targetMethodName: String) : Expression(position) {
+internal class NoArgumentKnownReturnTypeSequenceFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, private val returnType: ReturnTypeData,
+                                                                   private val targetMethodName: String) : Expression(position) {
     override fun compile(result: Boolean, environment: IEnvironmentMethod?) {
         val evaluation = this.callee?.eval(environment) ?: return
         evaluation.compile(true, environment)
@@ -50,8 +50,8 @@ class NoArgumentKnownReturnTypeSequenceFunctionExpression(position: ZenPosition?
     override fun getType(): ZenType = this.returnType.correspondingZenType
 }
 
-class NoArgumentGenericReturnTypeSequenceFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, private val sequenceType: SequenceZenType,
-                                                            private val targetMethodName: String) : Expression(position) {
+internal class NoArgumentGenericReturnTypeSequenceFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, private val sequenceType: SequenceZenType,
+                                                                     private val targetMethodName: String) : Expression(position) {
     override fun compile(result: Boolean, environment: IEnvironmentMethod?) {
         val evaluation = this.callee?.eval(environment) ?: return
         evaluation.compile(true, environment)
@@ -68,8 +68,8 @@ class NoArgumentGenericReturnTypeSequenceFunctionExpression(position: ZenPositio
     override fun getType(): ZenType = this.sequenceType.genericType
 }
 
-class SingleArgumentDifferentSequenceReturnTypeSequenceFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, sequence: SequenceZenType,
-                                                                          function: Expression, expressionInvocationData: ExpressionInvocationData) :
+internal class SingleArgumentDifferentSequenceReturnTypeSequenceFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, sequence: SequenceZenType,
+                                                                                   function: Expression, expressionInvocationData: ExpressionInvocationData) :
         FunctionUpdateSequenceExpression(position,
                 if (function is ExpressionJavaLambdaSimpleGeneric) TypeConverterFunctionExpression(function, sequence, expressionInvocationData.sequenceTargetPositions) else function,
                 expressionInvocationData) {
@@ -99,8 +99,8 @@ class SingleArgumentDifferentSequenceReturnTypeSequenceFunctionExpression(positi
             TypeConverterFunctionExpression(this, sequence, expressionInvocationData.sequenceTargetPositions)
 }
 
-class SingleArgumentSameSequenceReturnTypeSequenceFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, private val sequence: SequenceZenType,
-                                                                     function: Expression, expressionInvocationData: ExpressionInvocationData) :
+internal class SingleArgumentSameSequenceReturnTypeSequenceFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, private val sequence: SequenceZenType,
+                                                                              function: Expression, expressionInvocationData: ExpressionInvocationData) :
         FunctionUpdateSequenceExpression(position, function, expressionInvocationData) {
 
     override fun compile(result: Boolean, environment: IEnvironmentMethod?) {
@@ -119,8 +119,8 @@ class SingleArgumentSameSequenceReturnTypeSequenceFunctionExpression(position: Z
     override fun getType(): ZenType = this.sequence
 }
 
-class SingleArgumentKnownReturnTypeSequenceFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, private val returnType: ReturnTypeData,
-                                                              function: Expression, expressionInvocationData: ExpressionInvocationData) :
+internal class SingleArgumentKnownReturnTypeSequenceFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, private val returnType: ReturnTypeData,
+                                                                       function: Expression, expressionInvocationData: ExpressionInvocationData) :
         FunctionUpdateSequenceExpression(position, function, expressionInvocationData) {
 
     override fun compile(result: Boolean, environment: IEnvironmentMethod?) {
@@ -139,8 +139,8 @@ class SingleArgumentKnownReturnTypeSequenceFunctionExpression(position: ZenPosit
     override fun getType(): ZenType = this.returnType.correspondingZenType
 }
 
-class SingleArgumentGenericReturnTypeSequenceFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, private val sequenceType: SequenceZenType,
-                                                                function: Expression, expressionInvocationData: ExpressionInvocationData) :
+internal class SingleArgumentGenericReturnTypeSequenceFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, private val sequenceType: SequenceZenType,
+                                                                         function: Expression, expressionInvocationData: ExpressionInvocationData) :
         FunctionUpdateSequenceExpression(position, function, expressionInvocationData) {
 
     override fun compile(result: Boolean, environment: IEnvironmentMethod?) {
@@ -164,8 +164,8 @@ class SingleArgumentGenericReturnTypeSequenceFunctionExpression(position: ZenPos
     override fun getType(): ZenType = this.sequenceType.genericType
 }
 
-class SingleNonFunctionArgumentSameSequenceReturnTypeSequenceFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, private val sequence: SequenceZenType,
-                                                                                private val argumentData: ArgumentData, private val methodName: String) : Expression(position) {
+internal class SingleNonFunctionArgumentSameSequenceReturnTypeSequenceFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, private val sequence: SequenceZenType,
+                                                                                         private val argumentData: ArgumentData, private val methodName: String) : Expression(position) {
 
     override fun compile(result: Boolean, environment: IEnvironmentMethod?) {
         val evaluation = this.callee?.eval(environment) ?: return
@@ -180,8 +180,8 @@ class SingleNonFunctionArgumentSameSequenceReturnTypeSequenceFunctionExpression(
     override fun getType(): ZenType = this.sequence
 }
 
-class SingleNonFunctionArgumentGenericReturnTypeSequenceFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, private val sequence: SequenceZenType,
-                                                                           private val argumentData: ArgumentData, private val methodName: String) : Expression(position) {
+internal class SingleNonFunctionArgumentGenericReturnTypeSequenceFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, private val sequence: SequenceZenType,
+                                                                                    private val argumentData: ArgumentData, private val methodName: String) : Expression(position) {
 
     override fun compile(result: Boolean, environment: IEnvironmentMethod?) {
         val evaluation = this.callee?.eval(environment) ?: return
@@ -201,8 +201,8 @@ class SingleNonFunctionArgumentGenericReturnTypeSequenceFunctionExpression(posit
     override fun getType(): ZenType = this.sequence.genericType
 }
 
-class SingleGenericArgumentSameSequenceReturnTypeSequenceFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, private val sequence: SequenceZenType,
-                                                                            private val isArray: Boolean, private val argumentExpression: Expression, private val methodName: String)
+internal class SingleGenericArgumentSameSequenceReturnTypeSequenceFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, private val sequence: SequenceZenType,
+                                                                                     private val isArray: Boolean, private val argumentExpression: Expression, private val methodName: String)
     : Expression(position) {
 
     override fun compile(result: Boolean, environment: IEnvironmentMethod?) {
@@ -221,8 +221,8 @@ class SingleGenericArgumentSameSequenceReturnTypeSequenceFunctionExpression(posi
     override fun getType(): ZenType = this.sequence
 }
 
-class SingleGenericArgumentKnownReturnTypeSequenceFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, private val argumentExpression: Expression,
-                                                                     private val returnType: ReturnTypeData, private val methodName: String) : Expression(position) {
+internal class SingleGenericArgumentKnownReturnTypeSequenceFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, private val argumentExpression: Expression,
+                                                                              private val returnType: ReturnTypeData, private val methodName: String) : Expression(position) {
 
     override fun compile(result: Boolean, environment: IEnvironmentMethod?) {
         val evaluation = this.callee?.eval(environment) ?: return
@@ -237,9 +237,10 @@ class SingleGenericArgumentKnownReturnTypeSequenceFunctionExpression(position: Z
     override fun getType(): ZenType = this.returnType.correspondingZenType
 }
 
-class DoubleNonFunctionFunctionArgumentsGenericReturnTypeSequenceFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, private val sequence: SequenceZenType,
-                                                                                    private val firstArgument: ArgumentData, private val secondArgument: ArgumentData,
-                                                                                    private val methodName: String, private val sequenceTargetPositions: List<Int>) : Expression(position) {
+internal class DoubleNonFunctionFunctionArgumentsGenericReturnTypeSequenceFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?,
+                                                                                             private val sequence: SequenceZenType, private val firstArgument: ArgumentData,
+                                                                                             private val secondArgument: ArgumentData, private val methodName: String,
+                                                                                             private val sequenceTargetPositions: List<Int>) : Expression(position) {
 
     override fun compile(result: Boolean, environment: IEnvironmentMethod?) {
         val evaluation = this.callee?.eval(environment) ?: return
@@ -267,8 +268,8 @@ class DoubleNonFunctionFunctionArgumentsGenericReturnTypeSequenceFunctionExpress
     }
 }
 
-class FoldSequenceFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, @Suppress("unused") private val sequence: SequenceZenType,
-                                     private val firstArgumentExpression: Expression, secondArgumentFunction: Expression, expressionInvocationData: ExpressionInvocationData)
+internal class FoldSequenceFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, @Suppress("unused") private val sequence: SequenceZenType,
+                                              private val firstArgumentExpression: Expression, secondArgumentFunction: Expression, expressionInvocationData: ExpressionInvocationData)
     : FunctionUpdateSequenceExpression(position, secondArgumentFunction, expressionInvocationData) {
 
     override fun compile(result: Boolean, environment: IEnvironmentMethod?) {
@@ -289,10 +290,10 @@ class FoldSequenceFunctionExpression(position: ZenPosition?, private val callee:
     override fun getType(): ZenType = ZenType.ANY
 }
 
-class JoinToStringSequenceFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, private val separatorExpression: Expression?,
-                                             private val prefixExpression: Expression?, private val postfixExpression: Expression?, private val limitExpression: Expression?,
-                                             private val truncatedExpression: Expression?, private val transformFunction: Expression?,
-                                             private val sequenceTargetPositions: List<Int>) : Expression(position) {
+internal class JoinToStringSequenceFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, private val separatorExpression: Expression?,
+                                                      private val prefixExpression: Expression?, private val postfixExpression: Expression?, private val limitExpression: Expression?,
+                                                      private val truncatedExpression: Expression?, private val transformFunction: Expression?,
+                                                      private val sequenceTargetPositions: List<Int>) : Expression(position) {
 
     override fun compile(result: Boolean, environment: IEnvironmentMethod?) {
         val evaluation = this.callee?.eval(environment) ?: return

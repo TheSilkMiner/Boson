@@ -39,12 +39,12 @@ private class TagMethodDataBuilder {
     fun build() = TagMethodData(this.arguments.count(), this.arguments.toList(), this.expressionCreator, this.hasEndingVararg)
 }
 
-data class TagMethodData(val argumentsCount: Int, val arguments: List<ZenTypeCreator>, val expressionCreator: ExpressionCreator, val hasEndingVararg: Boolean)
-data class ReturnTypeData(val returnTypeClass: KClass<*>, val returnType: ZenType)
-data class ArgumentData(val index: Int, val argumentTypeClass: KClass<*>, val argumentType: ZenType, val expression: Expression?)
-data class OverloadPathExpressionData(val priority: Int, val predicate: ArgumentPredicate, val validExpression: Expression)
+internal data class TagMethodData(val argumentsCount: Int, val arguments: List<ZenTypeCreator>, val expressionCreator: ExpressionCreator, val hasEndingVararg: Boolean)
+internal data class ReturnTypeData(val returnTypeClass: KClass<*>, val returnType: ZenType)
+internal data class ArgumentData(val index: Int, val argumentTypeClass: KClass<*>, val argumentType: ZenType, val expression: Expression?)
+internal data class OverloadPathExpressionData(val priority: Int, val predicate: ArgumentPredicate, val validExpression: Expression)
 
-val methodDataMap by lazy { mutableMapOf<String, List<TagMethodData>>().apply { this.populateMapWithData() }.toMap() }
+internal val methodDataMap by lazy { mutableMapOf<String, List<TagMethodData>>().apply { this.populateMapWithData() }.toMap() }
 
 private fun MutableMap<String, List<TagMethodData>>.populateMapWithData() {
 

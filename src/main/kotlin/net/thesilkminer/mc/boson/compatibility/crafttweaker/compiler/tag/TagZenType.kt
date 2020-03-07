@@ -15,10 +15,10 @@ import stanhebben.zenscript.type.casting.ICastingRuleDelegate
 import stanhebben.zenscript.util.ZenPosition
 import stanhebben.zenscript.util.ZenTypeUtil
 
-class TagZenType(private var genericTypeSupplier: () -> ZenType) : ZenType() {
-    constructor(genericType: ZenType) : this ({ genericType })
+internal class TagZenType(private var genericTypeSupplier: () -> ZenType) : ZenType() {
+    internal constructor(genericType: ZenType) : this ({ genericType })
 
-    val genericType: ZenType get() = this.genericTypeSupplier()
+    internal val genericType: ZenType get() = this.genericTypeSupplier()
 
     override fun unary(position: ZenPosition?, environment: IEnvironmentGlobal?, value: Expression?, operator: OperatorType?): Expression = when (operator) {
         OperatorType.NEG -> this.redirectToMethod(position, environment, value, "unaryMinus")

@@ -36,7 +36,7 @@ import net.thesilkminer.mc.boson.prefab.naming.toNameSpacedString
 import kotlin.reflect.full.cast
 import kotlin.reflect.full.createInstance
 
-class RecipeLoadingProcessor(private val flags: Int) : Processor<JsonObject> {
+internal class RecipeLoadingProcessor(private val flags: Int) : Processor<JsonObject> {
     companion object {
         private const val INGREDIENTS = "ingredients"
         private const val RECIPES = "recipes"
@@ -258,7 +258,7 @@ class RecipeLoadingProcessor(private val flags: Int) : Processor<JsonObject> {
     }
 }
 
-class ConstantsPreprocessor : Preprocessor<String, Array<JsonObject>> {
+internal class ConstantsPreprocessor : Preprocessor<String, Array<JsonObject>> {
     companion object {
         private val jsonReader: Gson = GsonBuilder().setPrettyPrinting().serializeNulls().disableHtmlEscaping().create()
     }
@@ -273,7 +273,7 @@ class ConstantsPreprocessor : Preprocessor<String, Array<JsonObject>> {
             }
 }
 
-class ConstantsLoadingProcessor : Processor<Array<JsonObject>> {
+internal class ConstantsLoadingProcessor : Processor<Array<JsonObject>> {
     override fun process(content: Array<JsonObject>, identifier: NameSpacedString, globalContext: Context?, phaseContext: Context?) {
         RecipeLoadingProcessor.l.warn(
                 "Identified a file named '_constants.json' for namespace '${identifier.nameSpace}': this is deprecated and will not be present in 1.13. Please consider moving to tags instead"

@@ -9,7 +9,7 @@ import net.thesilkminer.mc.boson.api.event.CompatibilityProviderRegistryEvent
 import net.thesilkminer.mc.boson.api.log.L
 import kotlin.reflect.KClass
 
-object CompatibilityProviderManager : CompatibilityProviderRegistry {
+internal object CompatibilityProviderManager : CompatibilityProviderRegistry {
     private val l = L(MOD_NAME, "Compatibility Provider Registry")
 
     private val providers = mutableSetOf<KClass<out CompatibilityProvider>>()
@@ -28,7 +28,7 @@ object CompatibilityProviderManager : CompatibilityProviderRegistry {
     override fun <T : CompatibilityProvider> findProviders(provider: KClass<out T>): Sequence<T> =
         this.loaders[provider]?.providers?.uncheckedCast() ?: this.l.warn("Provider '${provider.qualifiedName}' wasn't registered!").let { sequenceOf<T>() }
 
-    fun registerProviders() {
+    internal fun registerProviders() {
         this.l.info("Beginning provider registration")
         MinecraftForge.EVENT_BUS.post(CompatibilityProviderRegistryEvent(this))
         this.l.info("Registration completed: a total of ${this.providers.count()} were registered")
@@ -37,7 +37,7 @@ object CompatibilityProviderManager : CompatibilityProviderRegistry {
         this.l.info("Providers registered")
     }
 
-    fun fire(event: CompatibilityProvider.() -> Unit) {
+    internal fun fire(event: CompatibilityProvider.() -> Unit) {
         this.providers.asSequence()
                 .map(this::findProviders)
                 .flatten()

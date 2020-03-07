@@ -5,7 +5,7 @@ import org.objectweb.asm.Type
 import stanhebben.zenscript.util.MethodOutput
 import kotlin.reflect.KClass
 
-class AutoBoxingMethodOutput(cls: ClassVisitor, access: Int, name: String, descriptor: String?, signature: String?, exceptions: Array<String>?)
+internal class AutoBoxingMethodOutput(cls: ClassVisitor, access: Int, name: String, descriptor: String?, signature: String?, exceptions: Array<String>?)
     : MethodOutput(cls, access, name, descriptor, signature, exceptions) {
 
     private val autoBoxingCalls = mutableMapOf<Int, () -> Unit>().apply { this.populateMap() }.toMap()

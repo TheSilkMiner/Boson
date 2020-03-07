@@ -9,9 +9,9 @@ import stanhebben.zenscript.symbols.IZenSymbol
 import stanhebben.zenscript.type.ZenType
 import stanhebben.zenscript.util.ZenPosition
 
-class SequenceMemberPartialExpression(private val position: ZenPosition?, private val methodName: String,
-                                      private val environment: IEnvironmentGlobal?, private val sequenceZenType: SequenceZenType,
-                                      private val callee: IPartialExpression?) : IPartialExpression {
+internal class SequenceMemberPartialExpression(private val position: ZenPosition?, private val methodName: String,
+                                               private val environment: IEnvironmentGlobal?, private val sequenceZenType: SequenceZenType,
+                                               private val callee: IPartialExpression?) : IPartialExpression {
 
     override fun eval(environment: IEnvironmentGlobal?): Expression =
             ExpressionInvalid(this.position).apply { environment?.error(this.position, "Members cannot be evaluated") }

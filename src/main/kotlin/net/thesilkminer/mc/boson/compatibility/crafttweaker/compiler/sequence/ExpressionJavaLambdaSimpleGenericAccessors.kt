@@ -8,13 +8,13 @@ import stanhebben.zenscript.expression.Expression
 import stanhebben.zenscript.expression.ExpressionJavaLambdaSimpleGeneric
 import stanhebben.zenscript.statements.Statement
 
-val ExpressionJavaLambdaSimpleGeneric.arguments get() = this.find<List<ParsedFunctionArgument>>("arguments")
-val ExpressionJavaLambdaSimpleGeneric.interfaceClass get() = this.find<Class<*>>("interfaceClass")
-val ExpressionJavaLambdaSimpleGeneric.genericClass get() = this.find<Class<*>>("genericClass")
-val ExpressionJavaLambdaSimpleGeneric.descriptor get() = this.find<String>("descriptor")
-val ExpressionJavaLambdaSimpleGeneric.statements get() = this.find<List<Statement>>("statements")
+internal val ExpressionJavaLambdaSimpleGeneric.arguments get() = this.find<List<ParsedFunctionArgument>>("arguments")
+internal val ExpressionJavaLambdaSimpleGeneric.interfaceClass get() = this.find<Class<*>>("interfaceClass")
+internal val ExpressionJavaLambdaSimpleGeneric.genericClass get() = this.find<Class<*>>("genericClass")
+internal val ExpressionJavaLambdaSimpleGeneric.descriptor get() = this.find<String>("descriptor")
+internal val ExpressionJavaLambdaSimpleGeneric.statements get() = this.find<List<Statement>>("statements")
 
-fun Expression.wrap() = if (this is ExpressionJavaLambdaSimpleGeneric) SimpleGenericLambdaFunctionExpression(this) else this
+internal fun Expression.wrap() = if (this is ExpressionJavaLambdaSimpleGeneric) SimpleGenericLambdaFunctionExpression(this) else this
 
 private inline fun <reified T> ExpressionJavaLambdaSimpleGeneric.find(fieldName: String)
         = this::class.java.getDeclaredField(fieldName).apply { this.isAccessible = true }.get(this).uncheckedCast<T>()

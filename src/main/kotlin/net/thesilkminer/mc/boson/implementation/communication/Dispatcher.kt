@@ -14,7 +14,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
 //TODO("Move to Service based dispatchers")
-object Dispatcher {
+internal object Dispatcher {
     private val l = L(MOD_NAME, "Communication Dispatcher")
     private val pool = Executors.newFixedThreadPool(3).apply {
         this@Dispatcher.l.info("Started communication dispatcher with 3 threads")
@@ -24,7 +24,7 @@ object Dispatcher {
         Runtime.getRuntime().addShutdownHook(Thread(Runnable { this.terminate() }))
     }
 
-    fun dispatch(receiver: String, message: Message<*>) = this.toRunnable(receiver, message)?.let { this.dispatchToPool(it) } ?: Unit
+    internal fun dispatch(receiver: String, message: Message<*>) = this.toRunnable(receiver, message)?.let { this.dispatchToPool(it) } ?: Unit
 
     private fun toRunnable(receiver: String, message: Message<*>): Runnable? {
         val handlerSequence = bosonApi.messageHandlerRegistry[receiver]

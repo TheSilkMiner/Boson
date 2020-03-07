@@ -6,7 +6,7 @@ import net.thesilkminer.mc.boson.api.tag.Tag
 import net.thesilkminer.mc.boson.api.tag.TagType
 import java.lang.RuntimeException
 
-class BosonTag<T : Any>(override val name: NameSpacedString, override val type: TagType<T>) : Tag<T> {
+internal class BosonTag<T : Any>(override val name: NameSpacedString, override val type: TagType<T>) : Tag<T> {
     private val mutableElements = mutableSetOf<T>()
     private val mutableOtherTags = mutableSetOf<Tag<out T>>()
 

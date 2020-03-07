@@ -24,19 +24,19 @@ import stanhebben.zenscript.util.ZenTypeUtil
 import java.lang.reflect.Method
 import kotlin.reflect.KClass
 
-class TypeConverterFunctionExpression private constructor(position: ZenPosition?, sequence: SequenceZenType, private val interfaceClass: KClass<*>,
-                                                          arguments: MutableList<ParsedFunctionArgument>, private val genericArgumentPositions: List<Int>,
-                                                          private val statements: List<Statement>, private val type: ZenType) : Expression(position) {
-    constructor(function: TypeConverterFunctionExpression, sequence: SequenceZenType, genericArgumentPositions: List<Int>) :
+internal class TypeConverterFunctionExpression private constructor(position: ZenPosition?, sequence: SequenceZenType, private val interfaceClass: KClass<*>,
+                                                                   arguments: MutableList<ParsedFunctionArgument>, private val genericArgumentPositions: List<Int>,
+                                                                   private val statements: List<Statement>, private val type: ZenType) : Expression(position) {
+    internal constructor(function: TypeConverterFunctionExpression, sequence: SequenceZenType, genericArgumentPositions: List<Int>) :
             this(function.position, sequence, function.interfaceClass, function.arguments.toMutableList(), genericArgumentPositions, function.statements, function.type)
 
-    constructor(function: ExpressionJavaLambdaSimpleGeneric, sequence: SequenceZenType, genericArgumentPositions: List<Int>) :
+    internal constructor(function: ExpressionJavaLambdaSimpleGeneric, sequence: SequenceZenType, genericArgumentPositions: List<Int>) :
             this(function.position, sequence, function.interfaceClass.kotlin, function.arguments.toMutableList(), genericArgumentPositions, function.statements, function.type)
 
     companion object {
         private val counters = mutableMapOf<KClass<*>, Int>()
 
-        fun getAndIncrement(interfaceClass: KClass<*>): Int {
+        internal fun getAndIncrement(interfaceClass: KClass<*>): Int {
             val number = this.counters[interfaceClass] ?: 0
             this.counters[interfaceClass] = number + 1
             return number
@@ -55,7 +55,7 @@ class TypeConverterFunctionExpression private constructor(position: ZenPosition?
         this += ZenTypeUtil.signature(this@TypeConverterFunctionExpression.interfaceClass.java.methods[0].returnType)
     }.toString()
 
-    var genericReturnType: ZenType = ZenType.ANY
+    internal var genericReturnType: ZenType = ZenType.ANY
         private set
 
     override fun getType(): ZenType = this.type

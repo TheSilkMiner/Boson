@@ -4,7 +4,7 @@ import net.thesilkminer.kotlin.commons.lang.uncheckedCast
 import net.thesilkminer.mc.boson.api.loader.ContextKey
 import kotlin.reflect.KClass
 
-class BosonContextKey<T : Any> private constructor(override val name: String, override val type: KClass<T>) : ContextKey<T> {
+internal class BosonContextKey<T : Any> private constructor(override val name: String, override val type: KClass<T>) : ContextKey<T> {
     companion object {
         private val keys = mutableMapOf<String, ContextKey<*>>()
 

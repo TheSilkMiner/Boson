@@ -3,7 +3,7 @@ package net.thesilkminer.mc.boson.implementation.naming
 import net.minecraft.util.ResourceLocation
 import net.thesilkminer.mc.boson.api.id.NameSpacedString
 
-class ResourceLocationBackedNameSpacedString(domain: String?, path: String) : NameSpacedString {
+internal class ResourceLocationBackedNameSpacedString(domain: String?, path: String) : NameSpacedString {
     private val backend = ResourceLocation(domain ?: "", path)
 
     override val nameSpace: String = this.backend.namespace

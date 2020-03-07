@@ -11,9 +11,9 @@ import net.thesilkminer.mc.boson.prefab.naming.toResourceLocation
 
 private typealias NPE = KotlinNullPointerException
 
-val blocks by lazy { TagType(IBlockState::class, "blocks") { it.findBlockState() } }
-val fluids by lazy { TagType(Fluid::class, "fluids") { FluidRegistry.getFluid(it.path).n(it, "fluids") } } //TODO("Actually implement fluids correctly")
-val items by lazy { TagType(ItemStack::class, "items") { it.findItemStack() } }
+internal val blocks by lazy { TagType(IBlockState::class, "blocks") { it.findBlockState() } }
+internal val fluids by lazy { TagType(Fluid::class, "fluids") { FluidRegistry.getFluid(it.path).n(it, "fluids") } } //TODO("Actually implement fluids correctly")
+internal val items by lazy { TagType(ItemStack::class, "items") { it.findItemStack() } }
 
 private fun NameSpacedString.findBlockState() = ForgeRegistries.BLOCKS.getValue(this.toResourceLocation()).n(this, "blocks").defaultState
 private fun NameSpacedString.findItemStack() = ItemStack(ForgeRegistries.ITEMS.getValue(this.toResourceLocation()).n(this, "items"), 1, 0)

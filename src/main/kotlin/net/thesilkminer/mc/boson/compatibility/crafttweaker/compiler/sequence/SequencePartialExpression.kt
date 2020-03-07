@@ -9,7 +9,7 @@ import stanhebben.zenscript.symbols.IZenSymbol
 import stanhebben.zenscript.type.ZenType
 import stanhebben.zenscript.util.ZenPosition
 
-class SequencePartialExpression(position: ZenPosition, private val className: String, private val backupEnvironment: IEnvironmentGlobal) : Expression(position) {
+internal class SequencePartialExpression(position: ZenPosition, private val className: String, private val backupEnvironment: IEnvironmentGlobal) : Expression(position) {
     override fun compile(result: Boolean, environment: IEnvironmentMethod?) = Unit
     override fun eval(environment: IEnvironmentGlobal?): Expression = this
     override fun predictCallTypes(numArguments: Int): Array<ZenType> = Array(numArguments) { this.getGenericType(this.backupEnvironment) }

@@ -15,8 +15,8 @@ import stanhebben.zenscript.util.ZenPosition
 import stanhebben.zenscript.util.ZenTypeUtil
 import kotlin.reflect.KClass
 
-class NoArgumentKnownReturnTypeTagFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, private val targetMethodName: String,
-                                                     private val returnTypeData: ReturnTypeData) : Expression(position) {
+internal class NoArgumentKnownReturnTypeTagFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, private val targetMethodName: String,
+                                                              private val returnTypeData: ReturnTypeData) : Expression(position) {
     override fun compile(result: Boolean, environment: IEnvironmentMethod?) {
         this.callee?.eval(environment)?.compile(true, environment) ?: return
         environment?.output?.invokeVirtual(ZenTag::class.java, this.targetMethodName, this.returnTypeData.returnTypeClass.java)
@@ -27,8 +27,8 @@ class NoArgumentKnownReturnTypeTagFunctionExpression(position: ZenPosition?, pri
     override fun getType(): ZenType = this.returnTypeData.returnType
 }
 
-class SingleArgumentKnownReturnTypeTagFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, private val targetMethodName: String,
-                                                         private val returnTypeData: ReturnTypeData, private val argumentData: ArgumentData) : Expression(position) {
+internal class SingleArgumentKnownReturnTypeTagFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, private val targetMethodName: String,
+                                                                  private val returnTypeData: ReturnTypeData, private val argumentData: ArgumentData) : Expression(position) {
     override fun compile(result: Boolean, environment: IEnvironmentMethod?) {
         this.callee?.eval(environment)?.compile(true, environment) ?: return
         this.argumentData.expression?.compile(true, environment)
@@ -40,9 +40,9 @@ class SingleArgumentKnownReturnTypeTagFunctionExpression(position: ZenPosition?,
     override fun getType(): ZenType = this.returnTypeData.returnType
 }
 
-class SingleVarargArgumentKnownReturnTypeTagFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, private val targetMethodName: String,
-                                                               private val returnTypeData: ReturnTypeData, private val varargArgumentData: ArgumentData,
-                                                               private val actualArguments: List<Expression>, private val actualArgumentClass: KClass<*>) : Expression(position) {
+internal class SingleVarargArgumentKnownReturnTypeTagFunctionExpression(position: ZenPosition?, private val callee: IPartialExpression?, private val targetMethodName: String,
+                                                                        private val returnTypeData: ReturnTypeData, private val varargArgumentData: ArgumentData,
+                                                                        private val actualArguments: List<Expression>, private val actualArgumentClass: KClass<*>) : Expression(position) {
     override fun compile(result: Boolean, environment: IEnvironmentMethod?) {
         this.callee?.eval(environment)?.compile(true, environment) ?: return
         environment?.output?.visitor?.let {
@@ -87,8 +87,8 @@ class SingleVarargArgumentKnownReturnTypeTagFunctionExpression(position: ZenPosi
     private fun Int.visitLdc(mv: MethodVisitor) = mv.visitLdcInsn(Integer.valueOf(this))
 }
 
-class OverloadedSingleArgumentTagFunctionExpression(position: ZenPosition?, private val arguments: List<Expression>, private val overloads: List<OverloadPathExpressionData>,
-                                                    private val backupEnvironment: IEnvironmentGlobal?) : Expression(position) {
+internal class OverloadedSingleArgumentTagFunctionExpression(position: ZenPosition?, private val arguments: List<Expression>, private val overloads: List<OverloadPathExpressionData>,
+                                                             private val backupEnvironment: IEnvironmentGlobal?) : Expression(position) {
     private val selectedTarget = this.overloads.choose(this.arguments, this.backupEnvironment)
 
     override fun compile(result: Boolean, environment: IEnvironmentMethod?) = this.selectedTarget.compile(result, environment)

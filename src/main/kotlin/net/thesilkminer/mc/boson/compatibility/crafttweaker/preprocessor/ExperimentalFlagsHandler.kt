@@ -14,15 +14,15 @@ private val scriptToMap = mutableMapOf<String, () -> List<ExperimentalFlag>>().a
 
 private var currentScript: ScriptFile? = null
 
-val flagsForCurrentScript: List<ExperimentalFlag> get() = (scriptToMap[currentScript?.effectiveName ?: ""] ?: { listOf() })()
+internal val flagsForCurrentScript: List<ExperimentalFlag> get() = (scriptToMap[currentScript?.effectiveName ?: ""] ?: { listOf() })()
 
-fun attachFlags(file: ScriptFile?, flags: List<ExperimentalFlag>) {
+internal fun attachFlags(file: ScriptFile?, flags: List<ExperimentalFlag>) {
     if (file == null) throw IllegalArgumentException("Attempted to set flags for a non-existent script file: this is interesting")
     scriptToMap[file.effectiveName]?.let { l.debug("Experimental flags for mapping '${file.effectiveName}' are being replaced from '${it()}' to '$flags': is this intended?") }
     scriptToMap[file.effectiveName] = { flags }
 }
 
-object ExperimentalFlagsHandler {
+internal object ExperimentalFlagsHandler {
     fun onScriptLoadBeginEvent(event: CrTScriptLoadingEvent.Pre) {
         l.debug("CraftTweaker is about to start loading a script from file '${event.fileName}'")
         if (currentScript != null) throw IllegalStateException("Attempting to load a script while another one was loading! Invariants have been broken!")

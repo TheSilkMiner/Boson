@@ -5,11 +5,10 @@ import net.thesilkminer.mc.boson.api.communication.Message
 import net.thesilkminer.mc.boson.api.communication.MessageHandler
 import net.thesilkminer.mc.boson.api.log.L
 
-class CommunicationMainHandler : MessageHandler {
+internal class CommunicationMainHandler : MessageHandler {
     private val l = L(MOD_ID, "Message Handler")
 
     override fun handleMessage(message: Message<*>) {
-        this.l.info(message)
-        TODO()
+        this.l.info("Received message $message")
     }
 }

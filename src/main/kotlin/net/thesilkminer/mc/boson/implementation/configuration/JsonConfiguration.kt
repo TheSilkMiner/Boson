@@ -20,7 +20,7 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
 
-class JsonConfiguration(builder: ConfigurationBuilder): Configuration {
+internal class JsonConfiguration(builder: ConfigurationBuilder): Configuration {
     companion object {
         const val JSON_CONFIGURATION_FILE_EXTENSION = "json"
     }

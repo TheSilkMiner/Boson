@@ -15,7 +15,7 @@ import net.thesilkminer.mc.boson.api.configuration.ConfigurationFormat
 import net.thesilkminer.mc.boson.api.configuration.Entry
 import net.thesilkminer.mc.boson.api.configuration.EntryType
 
-class ForgeConfiguration(builder: ConfigurationBuilder) : Configuration {
+internal class ForgeConfiguration(builder: ConfigurationBuilder) : Configuration {
     companion object {
         const val FORGE_CONFIGURATION_FILE_EXTENSION = "cfg"
     }
@@ -97,16 +97,16 @@ class ForgeConfiguration(builder: ConfigurationBuilder) : Configuration {
         property.setHasSlidingControl(properties[2])
         val bounds = this.bounds()
         if (bounds.first != null) {
-            when {
-                bounds.first is Int -> property.setMinValue(bounds.first as Int)
-                bounds.first is Double -> property.setMinValue(bounds.first as Double)
+            when (bounds.first) {
+                is Int -> property.setMinValue(bounds.first as Int)
+                is Double -> property.setMinValue(bounds.first as Double)
                 else -> throw ForgeUnsupportedBoundsOnEntryException("Unable to set minimum bound ${bounds.first} because it is not an Int or a Double: ${bounds.first!!::class}")
             }
         }
         if (bounds.second != null) {
-            when {
-                bounds.second is Int -> property.setMaxValue(bounds.second as Int)
-                bounds.second is Double -> property.setMaxValue(bounds.second as Double)
+            when (bounds.second) {
+                is Int -> property.setMaxValue(bounds.second as Int)
+                is Double -> property.setMaxValue(bounds.second as Double)
                 else -> throw ForgeUnsupportedBoundsOnEntryException("Unable to set maximum bound ${bounds.second} because it is not an Int or a Double: ${bounds.second!!::class}")
             }
         }

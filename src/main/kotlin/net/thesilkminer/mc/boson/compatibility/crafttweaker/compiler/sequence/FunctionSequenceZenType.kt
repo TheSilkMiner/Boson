@@ -18,7 +18,7 @@ import stanhebben.zenscript.util.ZenPosition
 import stanhebben.zenscript.util.ZenTypeUtil
 import kotlin.reflect.KClass
 
-class FunctionSequenceZenType(var baseSequence: SequenceZenType, nativeClass: KClass<*>) : ZenTypeNative(nativeClass.java) {
+internal class FunctionSequenceZenType(var baseSequence: SequenceZenType, nativeClass: KClass<*>) : ZenTypeNative(nativeClass.java) {
     var resultSequence: SequenceZenType = SequenceZenType(ZenType.ANY)
 
     override fun unary(position: ZenPosition?, environment: IEnvironmentGlobal?, value: Expression?, operator: OperatorType?): Expression =

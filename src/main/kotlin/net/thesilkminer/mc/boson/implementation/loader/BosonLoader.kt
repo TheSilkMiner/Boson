@@ -18,7 +18,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.streams.asSequence
 
-class BosonLoader(builder: LoaderBuilder) : Loader {
+internal class BosonLoader(builder: LoaderBuilder) : Loader {
     private val l by lazy { L("Boson Loader", this.name) }
 
     private val name = builder.name ?: this.hashCode().toString()

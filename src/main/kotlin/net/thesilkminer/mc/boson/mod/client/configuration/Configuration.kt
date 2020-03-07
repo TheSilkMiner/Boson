@@ -7,7 +7,7 @@ import net.thesilkminer.mc.boson.api.configuration.ConfigurationFormat
 import net.thesilkminer.mc.boson.api.configuration.EntryType
 import net.thesilkminer.mc.boson.api.configuration.configuration
 
-val client = configuration {
+internal val client = configuration {
     owner = MOD_ID
     name = "client"
     type = ConfigurationFormat.FORGE_CONFIG

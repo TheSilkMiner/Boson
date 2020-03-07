@@ -5,7 +5,7 @@ import crafttweaker.preprocessor.PreprocessorActionBase
 import crafttweaker.runtime.ScriptFile
 import net.thesilkminer.mc.boson.compatibility.crafttweaker.CraftTweakerCompatibilityProvider
 
-class ExperimentalFlagsPreprocessor(fileName: String, preprocessorLine: String, lineIndex: Int) : PreprocessorActionBase(fileName, preprocessorLine, lineIndex) {
+internal class ExperimentalFlagsPreprocessor(fileName: String, preprocessorLine: String, lineIndex: Int) : PreprocessorActionBase(fileName, preprocessorLine, lineIndex) {
     companion object {
         fun create(fileName: String, preprocessorLine: String, lineIndex: Int) = ExperimentalFlagsPreprocessor(fileName, preprocessorLine, lineIndex)
     }

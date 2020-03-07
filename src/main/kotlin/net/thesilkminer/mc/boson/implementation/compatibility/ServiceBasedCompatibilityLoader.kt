@@ -6,12 +6,12 @@ import net.thesilkminer.mc.boson.api.log.L
 import java.util.ServiceLoader
 import kotlin.reflect.KClass
 
-class ServiceBasedCompatibilityLoader<T : CompatibilityProvider> (private val provider: KClass<T>)  {
+internal class ServiceBasedCompatibilityLoader<T : CompatibilityProvider> (private val provider: KClass<T>)  {
     companion object {
         private val l = L(MOD_NAME, "Compatibility Loader")
     }
 
-    val providers: Sequence<T>
+    internal val providers: Sequence<T>
 
     init {
         l.info("Beginning discovery of implementations of compatibility provider class '${this.provider.qualifiedName}'")

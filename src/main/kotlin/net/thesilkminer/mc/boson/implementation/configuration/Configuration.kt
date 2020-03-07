@@ -8,12 +8,12 @@ import net.thesilkminer.mc.boson.api.configuration.ConfigurationFormat
 import java.lang.IllegalStateException
 import java.nio.file.Path
 
-fun ConfigurationBuilder.constructPath(format: ConfigurationFormat): Path = bosonApi.configurationDirectory
+internal fun ConfigurationBuilder.constructPath(format: ConfigurationFormat): Path = bosonApi.configurationDirectory
         .resolve("./${this.owner}/${this.name}.${format.toExtension()}")
         .normalize()
         .toAbsolutePath()
 
-fun ConfigurationFormat.toExtension() = when (this) {
+internal fun ConfigurationFormat.toExtension() = when (this) {
     ConfigurationFormat.DEFAULT -> throw IllegalStateException("The configuration cannot be in Default format at this stage")
     ConfigurationFormat.FORGE_CONFIG -> ForgeConfiguration.FORGE_CONFIGURATION_FILE_EXTENSION
     ConfigurationFormat.HOCON -> TODO("conf")

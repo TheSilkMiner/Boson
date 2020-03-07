@@ -12,7 +12,7 @@ import net.thesilkminer.mc.boson.api.tag.TagRegistry
 import net.thesilkminer.mc.boson.api.tag.TagType
 import net.thesilkminer.mc.boson.api.tag.TagTypeRegistry
 
-object BosonTagManager : TagRegistry, TagTypeRegistry {
+internal object BosonTagManager : TagRegistry, TagTypeRegistry {
     private val l = L(MOD_NAME, "Tag Manager")
 
     private val tagMap = mutableMapOf<TagType<*>, MutableList<Tag<*>>>()
@@ -53,9 +53,9 @@ object BosonTagManager : TagRegistry, TagTypeRegistry {
 
     override val isFrozen: Boolean get() = this.tagsFrozen
 
-    fun <T : Any> findTagType(name: String) = this.tagMap.keys.firstOrNull { it.name == name }?.uncheckedCast<TagType<T>>()
+    internal fun <T : Any> findTagType(name: String) = this.tagMap.keys.firstOrNull { it.name == name }?.uncheckedCast<TagType<T>>()
 
-    fun fireTagTypeRegistrationEvent() {
+    internal fun fireTagTypeRegistrationEvent() {
         this.l.info("Attempting to gather all tag types into registry")
         this.l.debug("Clearing tag map: we don't want anybody doing interesting things like injecting directly into the registry")
         this.tagMap.clear()
@@ -65,7 +65,7 @@ object BosonTagManager : TagRegistry, TagTypeRegistry {
         this.tagMap.forEach { (k, v) -> this.l.debug("  $k -> $v")}
     }
 
-    fun freezeTags() {
+    internal fun freezeTags() {
         this.tagsFrozen = true
         this.l.info("Tags frozen")
     }

@@ -139,7 +139,7 @@ private val assetsWarnerLoader = loader {
     }
 }
 
-fun loadDataPackRecipes() {
+internal fun loadDataPackRecipes() {
     l.info("Preparing to load recipes from data-packs")
     recipesLoader.load()
     l.info("Data-pack-based recipes loading has completed: now starting assets scanning")

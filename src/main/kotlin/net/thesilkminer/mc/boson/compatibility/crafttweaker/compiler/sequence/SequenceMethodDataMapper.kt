@@ -42,13 +42,13 @@ private class SequenceMethodDataBuilder {
     fun build() = SequenceMethodData(this.arguments.count(), this.arguments.toList(), this.expressionCreator)
 }
 
-data class SequenceMethodData(val argumentsCount: Int, val arguments: List<ZenTypeCreator>, val expressionCreator: ExpressionCreator)
-data class ExpressionInvocationData(val name: String, val argumentClass: KClass<*>, val sequenceTargetPositions: List<Int>)
-data class ArgumentData(val index: Int, val argumentClass: KClass<*>, val argumentZenType: ZenType, val expression: Expression)
-data class ReturnTypeData(val targetClass: KClass<*>, val correspondingZenType: ZenType)
+internal data class SequenceMethodData(val argumentsCount: Int, val arguments: List<ZenTypeCreator>, val expressionCreator: ExpressionCreator)
+internal data class ExpressionInvocationData(val name: String, val argumentClass: KClass<*>, val sequenceTargetPositions: List<Int>)
+internal data class ArgumentData(val index: Int, val argumentClass: KClass<*>, val argumentZenType: ZenType, val expression: Expression)
+internal data class ReturnTypeData(val targetClass: KClass<*>, val correspondingZenType: ZenType)
 
 private val missingLog = L("$MOD_NAME - CT Integration", "Sequence Compiler")
-val methodDataMap by lazy { mutableMapOf<String, List<SequenceMethodData>>().apply { this.populateMapWithData() }.toMap().apply { this.logMissing() } }
+internal val methodDataMap by lazy { mutableMapOf<String, List<SequenceMethodData>>().apply { this.populateMapWithData() }.toMap().apply { this.logMissing() } }
 
 private fun MutableMap<String, List<SequenceMethodData>>.populateMapWithData() {
     this.create(methodName = "contains") {
@@ -1016,12 +1016,12 @@ private fun List<Expression>.convertToGeneric(sequenceType: SequenceZenType, jav
 private fun List<Expression>.extractFunction(position: Int) = this.extractArgument(position)
 private fun List<Expression>.extractArgument(position: Int) = this[position]
 
-fun ExpressionJavaLambdaSimpleGeneric.convert(sequenceType: SequenceZenType, sequenceTargetPositions: List<Int>): ExpressionJavaLambdaSimpleGeneric {
+internal fun ExpressionJavaLambdaSimpleGeneric.convert(sequenceType: SequenceZenType, sequenceTargetPositions: List<Int>): ExpressionJavaLambdaSimpleGeneric {
     return ExpressionJavaLambdaSimpleGeneric(
             this.position, this.interfaceClass, this.arguments.toList().toMutableList().convert(sequenceType, sequenceTargetPositions), this.statements, this.type)
 }
 
-tailrec fun MutableList<ParsedFunctionArgument>.convert(sequenceType: SequenceZenType, sequenceTargetPositions: List<Int>): List<ParsedFunctionArgument> {
+internal tailrec fun MutableList<ParsedFunctionArgument>.convert(sequenceType: SequenceZenType, sequenceTargetPositions: List<Int>): List<ParsedFunctionArgument> {
     if (sequenceTargetPositions.count() <= 0) return this.toList()
     val position = sequenceTargetPositions[0]
     val subList = sequenceTargetPositions.drop(1)

@@ -192,13 +192,13 @@ private val tagLoader = loader {
 
 private fun String.shorten() = this.substring(startIndex = this.lastIndexOf('.') + 1, endIndex = this.length)
 
-fun loadTags() {
+internal fun loadTags() {
     l.info("Attempting to load data-pack tags from all mod locators")
     tagLoader.load()
     l.info("Loading has completed")
 }
 
-fun initializeTagOreDictCompatibilityLayer() {
+internal fun initializeTagOreDictCompatibilityLayer() {
     l.info("Initializing ore dictionary compatibility layer: attempting to tag all items of the ore dictionary!")
     setUpBasicOreDictToTagCompatibility()
     attemptNormalizationOfOreDictNamesToTags()

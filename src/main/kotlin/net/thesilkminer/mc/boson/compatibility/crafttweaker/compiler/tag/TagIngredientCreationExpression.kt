@@ -9,8 +9,8 @@ import stanhebben.zenscript.expression.Expression
 import stanhebben.zenscript.type.ZenType
 import stanhebben.zenscript.util.ZenPosition
 
-class TagIngredientCreationExpression(position: ZenPosition?, private val tagTypeRepresentation: String, private val tagNameRepresentation: String,
-                                      private val backupEnvironment: IEnvironmentGlobal?) : Expression(position) {
+internal class TagIngredientCreationExpression(position: ZenPosition?, private val tagTypeRepresentation: String, private val tagNameRepresentation: String,
+                                               private val backupEnvironment: IEnvironmentGlobal?) : Expression(position) {
     override fun compile(result: Boolean, environment: IEnvironmentMethod?) {
         // Constructor invocation, so we need to prepare all of that
         environment?.output?.let {

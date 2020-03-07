@@ -9,7 +9,7 @@ import stanhebben.zenscript.type.ZenType
 
 @ZenClass("zenscriptx.reflect.Class")
 @ZenRegister
-class ZenClass(val targetZenType: ZenType) {
+class ZenClass(private val targetZenType: ZenType) {
 
     companion object {
         @JvmStatic

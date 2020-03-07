@@ -21,10 +21,10 @@ import stanhebben.zenscript.util.ZenPosition
 import stanhebben.zenscript.util.ZenTypeUtil
 import java.lang.reflect.ParameterizedType
 
-class SequenceZenType(private var zenTypeSupplier: () -> ZenType) : ZenType() {
-    constructor(zenType: ZenType) : this({ zenType })
+internal class SequenceZenType(private var zenTypeSupplier: () -> ZenType) : ZenType() {
+    internal constructor(zenType: ZenType) : this({ zenType })
 
-    var genericType: ZenType
+    internal var genericType: ZenType
         get() = this.zenTypeSupplier()
         private set(value) { this.zenTypeSupplier = { value } }
 

@@ -18,7 +18,7 @@ import stanhebben.zenscript.util.MethodOutput
 import stanhebben.zenscript.util.ZenTypeUtil
 import java.lang.reflect.Method
 
-class SimpleGenericLambdaFunctionExpression(private val wrapped: ExpressionJavaLambdaSimpleGeneric) : Expression(wrapped.position) {
+internal class SimpleGenericLambdaFunctionExpression(private val wrapped: ExpressionJavaLambdaSimpleGeneric) : Expression(wrapped.position) {
     private val interfaceClass get() = wrapped.interfaceClass.kotlin
     private val genericClass get() = wrapped.genericClass.kotlin
     private val arguments get() = wrapped.arguments
