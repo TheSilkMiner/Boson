@@ -160,7 +160,7 @@ dependencies {
     }
 
     // JetBrains Annotations
-    shade group: 'org.jetbrains', name: 'annotations', version: '17.0.0'
+    shade group: 'org.jetbrains', name: 'annotations', version: '19.0.0'
 
     // Kotlin Commons Lang
     shade name: 'Kotlin-Commons-Lang-1.0.0-SNAPSHOT'
