@@ -4,11 +4,14 @@ package net.thesilkminer.mc.boson.api.fingerprint
 
 import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent
 import net.thesilkminer.mc.boson.api.log.L
+import org.jetbrains.annotations.ApiStatus
 
+@ApiStatus.Experimental
 fun logViolationMessage(n: String, event: FMLFingerprintViolationEvent) {
     logViolationMessage(L(n, "Fingerprint Violation"), event)
 }
 
+@ApiStatus.Experimental
 fun logViolationMessage(l: L, event: FMLFingerprintViolationEvent) {
     // TODO("Create wrapper in the API for FMLFingerprintViolationEvent")
     val logFun = if (event.isDirectory) l::bigWarn else l::bigError
