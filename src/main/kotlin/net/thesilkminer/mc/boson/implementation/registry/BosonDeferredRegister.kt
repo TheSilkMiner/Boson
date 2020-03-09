@@ -36,9 +36,9 @@ internal class BosonDeferredRegister<T : IForgeRegistryEntry<T>>(override val re
 
     @SubscribeEvent
     fun register(event: RegistryEvent.Register<*>) {
-        if (!this.shouldLoad(event.registry, this.registry)) return
+        if (!this.shouldLoad(event.forgeRegistry, this.registry)) return
 
-        val registry = event.registry.uncheckedCast<IForgeRegistry<T>>()
+        val registry = event.forgeRegistry.uncheckedCast<IForgeRegistry<T>>()
         l.info("Performing deferred registration for registry '${registry.name ?: registry.registrySuperType.kotlin.qualifiedName ?: "ERROR TYPE"}' for owner '${this.owner}'")
 
         this.entries.forEach { registry.register(it.second()).also { _ -> it.first.attemptHotReload() } }
@@ -51,10 +51,16 @@ internal class BosonDeferredRegister<T : IForgeRegistryEntry<T>>(override val re
     }
 
     private fun fallbackShouldLoad(eventRegistry: IForgeRegistry<*>, otherRegistry: IForgeRegistry<*>) =
-            eventRegistry.registrySuperType.kotlin == otherRegistry.registrySuperType.kotlin
+            eventRegistry.registrySuperTypeDirect.kotlin == otherRegistry.registrySuperTypeDirect.kotlin
 
     private fun String.ensureValid() =
             if (this.contains(':')) throw IllegalStateException("Illegal colon character in name '$this': use a different DeferredRegistry for different owners") else this
 
     private fun RegistryObject<*>.attemptHotReload() = if (this is BosonRegistryObject) this.hotReload() else Unit
+
+    @Suppress("UsePropertyAccessSyntax") // For some reason this creates a problem with the Kotlin compiler I don't know why
+    private val RegistryEvent.Register<*>.forgeRegistry get() = this.getRegistry()
+
+    // Working around Kotlin's type projections
+    private val IForgeRegistry<*>.registrySuperTypeDirect get() = this::class.java.getDeclaredMethod("getRegistrySuperType").invoke(this).uncheckedCast<Class<*>>()
 }

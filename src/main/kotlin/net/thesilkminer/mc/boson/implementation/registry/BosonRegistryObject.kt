@@ -23,7 +23,8 @@ internal class BosonRegistryObject<T : IForgeRegistryEntry<in T>> private constr
         init { MinecraftForge.EVENT_BUS.register(this) }
 
         internal fun <T : IForgeRegistryEntry<T>, U : T> build(name: NameSpacedString, registry: IForgeRegistry<T>): RegistryObject<U> {
-            return BosonRegistryObject(name, registry.name?.let { NameSpacedString(it.namespace, it.path) }) { registry.findTarget(it) }
+            @Suppress("RemoveExplicitTypeArguments") // Somehow type inference breaks again here
+            return BosonRegistryObject<U>(name, registry.name?.let { NameSpacedString(it.namespace, it.path) }) { registry.findTarget(it) }
         }
 
         internal operator fun <T : IForgeRegistryEntry<T>, U : T> invoke(name: NameSpacedString, registry: IForgeRegistry<T>): RegistryObject<U> = build(name, registry)
