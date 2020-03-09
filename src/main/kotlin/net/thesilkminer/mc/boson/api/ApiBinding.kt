@@ -2,6 +2,9 @@
 
 package net.thesilkminer.mc.boson.api
 
+import net.minecraftforge.fml.common.eventhandler.EventBus
+import net.minecraftforge.registries.IForgeRegistry
+import net.minecraftforge.registries.IForgeRegistryEntry
 import net.thesilkminer.kotlin.commons.lang.uncheckedCast
 import net.thesilkminer.mc.boson.api.communication.Message
 import net.thesilkminer.mc.boson.api.communication.MessageHandler
@@ -21,9 +24,12 @@ import net.thesilkminer.mc.boson.api.locale.Color
 import net.thesilkminer.mc.boson.api.locale.Readability
 import net.thesilkminer.mc.boson.api.locale.Style
 import net.thesilkminer.mc.boson.api.log.L
+import net.thesilkminer.mc.boson.api.registry.DeferredRegister
+import net.thesilkminer.mc.boson.api.registry.RegistryObject
 import net.thesilkminer.mc.boson.api.tag.Tag
 import net.thesilkminer.mc.boson.api.tag.TagRegistry
 import net.thesilkminer.mc.boson.api.tag.TagType
+import org.jetbrains.annotations.ApiStatus
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.ServiceLoader
@@ -134,6 +140,34 @@ val bosonApi by lazy {
     }
 }
 
+val experimentalBosonApi by lazy {
+    loadWithService(ExperimentalBosonApi::class) {
+        object : ExperimentalBosonApi {
+            init {
+                l.bigError("No API binding found! Replacing with dummy implementation")
+            }
+
+            override fun <T : IForgeRegistryEntry<T>> createDeferredRegister(registry: IForgeRegistry<T>, owner: String): DeferredRegister<T> = object : DeferredRegister<T> {
+                override val registry: IForgeRegistry<T> = registry
+                override val owner: String = owner
+
+                override fun <U : T> register(name: String, objectSupplier: () -> U): RegistryObject<U> = object : RegistryObject<U> {
+                    override val name: NameSpacedString = NameSpacedString(name)
+                    override val value: U? = null
+                }
+
+                override fun subscribeOnto(bus: EventBus) = Unit
+            }
+
+            override fun <T : IForgeRegistryEntry<T>, U : T> createRegistryObject(name: NameSpacedString, registry: IForgeRegistry<T>): RegistryObject<U> =
+                    object: RegistryObject<U> {
+                        override val name: NameSpacedString = name
+                        override val value: U? = null
+                    }
+        }
+    }
+}
+
 interface BosonApi {
     val configurationDirectory: Path
     fun buildConfiguration(builder: ConfigurationBuilder): Configuration
@@ -158,6 +192,12 @@ interface BosonApi {
     fun dispatchMessageTo(receiver: String, message: Message<*>)
 
     fun getDatabasePathFor(owner: String): Path
+}
+
+@ApiStatus.Experimental
+interface ExperimentalBosonApi {
+    fun <T : IForgeRegistryEntry<T>> createDeferredRegister(registry: IForgeRegistry<T>, owner: String): DeferredRegister<T>
+    fun <T : IForgeRegistryEntry<T>, U : T> createRegistryObject(name: NameSpacedString, registry: IForgeRegistry<T>): RegistryObject<U>
 }
 
 private fun <T : Any> loadWithService(lookUpInterface: KClass<T>, defaultProvider: () -> T) : T {
