@@ -3,6 +3,7 @@
 
 package net.thesilkminer.mc.boson.api.modid
 
+const val BASE = "base"
 const val BOSON = "boson"
 const val BOSON_ASM = "$BOSON.asm"
 const val BOSON_ASM_MOD_FIXER = "$BOSON_ASM.modfix"

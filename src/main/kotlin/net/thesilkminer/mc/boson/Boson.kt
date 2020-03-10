@@ -1,5 +1,6 @@
 package net.thesilkminer.mc.boson
 
+import net.minecraftforge.fml.common.FMLCommonHandler
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.event.FMLConstructionEvent
 import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent
@@ -15,6 +16,7 @@ import net.thesilkminer.mc.boson.compatibility.BosonCompatibilityProvider
 import net.thesilkminer.mc.boson.implementation.communication.CommunicationManager
 import net.thesilkminer.mc.boson.implementation.compatibility.CompatibilityProviderManager
 import net.thesilkminer.mc.boson.implementation.configuration.ConfigurationManager
+import net.thesilkminer.mc.boson.implementation.resource.BosonResourcePackManager
 import net.thesilkminer.mc.boson.implementation.tag.BosonTagManager
 import net.thesilkminer.mc.boson.mod.common.tag.initializeTagOreDictCompatibilityLayer
 import net.thesilkminer.mc.boson.mod.common.tag.loadTags
@@ -24,6 +26,12 @@ import net.thesilkminer.mc.boson.mod.common.tag.loadTags
         guiFactory = MOD_GUI_FACTORY, modLanguageAdapter = KOTLIN_LANGUAGE_ADAPTER, modLanguage = "kotlin")
 object Boson {
     private val l = L(MOD_NAME, "Main")
+
+    init {
+        this.l.info("Loading")
+        // We can't use API because API cannot be initialized this early
+        if (FMLCommonHandler.instance().side.isClient) BosonResourcePackManager.gatherAndInjectResourcePacks()
+    }
 
     @Mod.EventHandler
     fun onConstruction(event: FMLConstructionEvent) {
