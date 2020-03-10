@@ -121,6 +121,14 @@ repositories {
         url 'https://maven.blamejared.com/'
     }
     maven {
+        name 'ModMaven'
+        url 'https://modmaven.k-4u.nl/'
+    }
+    maven {
+        name 'Progwml6 maven'
+        url 'https://dvs1.progwml6.com/files/maven/'
+    }
+    maven {
         name 'ShadowFacts'
         url 'http://maven.shadowfacts.net/'
     }
@@ -150,6 +158,9 @@ dependencies {
     // Forgelin
     compile group: 'net.shadowfacts', name: 'Forgelin', version: '1.8.4'
 
+    // JustEnoughItems API
+    deobfProvided group: 'mezz.jei', name: 'jei_1.12.2', version: '4.15.0.293', classifier: 'api'
+
     /* ======================= SHADED LIBRARIES ======================= */
 
     // Exposed
@@ -171,10 +182,13 @@ dependencies {
     /* ======================= RUNTIME LIBRARIES ======================= */
 
     // CraftTweaker 2
-    runtime(group: 'CraftTweaker2', name: 'CraftTweaker2-MC1120-Main', version: '1.12-4.1.20.554') {
+    runtimeOnly(group: 'CraftTweaker2', name: 'CraftTweaker2-MC1120-Main', version: '1.12-4.1.20.554') {
         exclude group: 'org.ow2.asm'
         exclude group: 'com.google.code.gson'
     }
+
+    // JustEnoughItems
+    runtimeOnly group: 'mezz.jei', name: 'jei_1.12.2', version: '4.15.0.293'
 }
 
 processResources {
