@@ -147,7 +147,7 @@ dependencies {
     /* ======================= COMPILE TIME ONLY ======================= */
 
     // CraftTweaker API
-    deobfProvided(group: 'CraftTweaker2', name: 'CraftTweaker2-API', version: '4.1.20.554') {
+    deobfProvided(group: 'CraftTweaker2', name: 'CraftTweaker2-API', version: '4.1.20.555') {
         exclude group: 'org.ow2.asm'
         exclude group: 'com.google.code.gson'
     }
@@ -182,9 +182,14 @@ dependencies {
     /* ======================= RUNTIME LIBRARIES ======================= */
 
     // CraftTweaker 2
-    runtimeOnly(group: 'CraftTweaker2', name: 'CraftTweaker2-MC1120-Main', version: '1.12-4.1.20.554') {
+    runtimeOnly(group: 'CraftTweaker2', name: 'CraftTweaker2-MC1120-Main', version: '1.12-4.1.20.555') {
         exclude group: 'org.ow2.asm'
         exclude group: 'com.google.code.gson'
+    }
+
+    // CraftTweaker 2 JEI Plugin
+    runtimeOnly(group: 'CraftTweaker2', name: 'CraftTweaker2-MC1120-Mod-JEI', version: '1.12-4.1.20.555') {
+        exclude group: 'deobf.mezz.jei'
     }
 
     // JustEnoughItems
