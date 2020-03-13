@@ -13,9 +13,11 @@ private typealias NPE = KotlinNullPointerException
 
 internal val blocks by lazy { TagType(IBlockState::class, "blocks") { it.findBlockState() } }
 internal val fluids by lazy { TagType(Fluid::class, "fluids") { FluidRegistry.getFluid(it.path).n(it, "fluids") } } //TODO("Actually implement fluids correctly")
-internal val items by lazy { TagType(ItemStack::class, "items") { it.findItemStack() } }
+internal val items by lazy { TagType(ItemStack::class, "items", { it.findItemStack() }) { a: ItemStack, b: ItemStack -> a isEqualTo b } }
 
 private fun NameSpacedString.findBlockState() = ForgeRegistries.BLOCKS.getValue(this.toResourceLocation()).n(this, "blocks").defaultState
 private fun NameSpacedString.findItemStack() = ItemStack(ForgeRegistries.ITEMS.getValue(this.toResourceLocation()).n(this, "items"), 1, 0)
+
+private infix fun ItemStack.isEqualTo(that: ItemStack) = this.item == that.item && this.metadata == that.metadata // TODO("Something else")
 
 private fun <T> T?.n(a: NameSpacedString, t: String) = this ?: throw IllegalArgumentException("Tags of type '$t' don't support null entries, but '$a' was", NPE("null"))

@@ -18,8 +18,8 @@ internal class BosonTag<T : Any>(override val name: NameSpacedString, override v
         get() = mutableSetOf<T>().apply {
             if (this@BosonTag.statefulGetterLock) throw CircularTagDependencyException(this@BosonTag.name)
             this@BosonTag.statefulGetterLock = true
-            this.addAll(this@BosonTag.mutableElements)
-            this@BosonTag.mutableOtherTags.forEach { this.addAll(it.elements) }
+            this.addAllWithCheck(this@BosonTag.mutableElements)
+            this@BosonTag.mutableOtherTags.forEach { this.addAllWithCheck(it.elements) }
             this@BosonTag.statefulGetterLock = false
         }.toSet()
 
@@ -58,6 +58,10 @@ internal class BosonTag<T : Any>(override val name: NameSpacedString, override v
         if (this.isFrozen) return
         this.mutableElements.clear()
         this.mutableOtherTags.clear()
+    }
+
+    private fun MutableSet<T>.addAllWithCheck(elements: Collection<T>) = elements.forEach { target ->
+        if (this.none { this@BosonTag.type.equalityEvaluator(target, it) }) this += target
     }
 }
 

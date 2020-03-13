@@ -83,6 +83,7 @@ val bosonApi by lazy {
                         override val type = Any::class
                         override val directoryName = "null"
                         override val toElement = { _: NameSpacedString -> Any() }
+                        override val equalityEvaluator: (Any, Any) -> Boolean = { a: Any, b: Any -> a == b }
                     }
                     override val elements = setOf<Any>()
                     override fun add(elements: Set<Any>) = Unit
@@ -101,11 +102,13 @@ val bosonApi by lazy {
                 override val isFrozen = false
             }
 
-            override fun <T : Any> createTagType(type: KClass<out T>, directoryName: String, toElement: (NameSpacedString) -> T) = object : TagType<T> {
-                override val type = type
-                override val directoryName = directoryName
-                override val toElement = toElement
-            }
+            override fun <T : Any> createTagType(type: KClass<out T>, directoryName: String, toElement: (NameSpacedString) -> T, equalityEvaluator: (T, T) -> Boolean) =
+                    object : TagType<T> {
+                        override val type = type
+                        override val directoryName = directoryName
+                        override val toElement = toElement
+                        override val equalityEvaluator: (T, T) -> Boolean = equalityEvaluator
+                    }
 
             override fun <T : Any> createTag(tagType: TagType<T>, name: NameSpacedString, vararg initialElements: T) = object : Tag<T> {
                 override val name = name
@@ -182,7 +185,7 @@ interface BosonApi {
     fun buildLoader(builder: LoaderBuilder): Loader
 
     val tagRegistry: TagRegistry
-    fun <T : Any> createTagType(type: KClass<out T>, directoryName: String, toElement: (NameSpacedString) -> T): TagType<T>
+    fun <T : Any> createTagType(type: KClass<out T>, directoryName: String, toElement: (NameSpacedString) -> T, equalityEvaluator: (T, T) -> Boolean): TagType<T>
     fun <T : Any> createTag(tagType: TagType<T>, name: NameSpacedString, vararg initialElements: T): Tag<T>
     fun <T : Any> findTagType(name: String): TagType<T>?
 

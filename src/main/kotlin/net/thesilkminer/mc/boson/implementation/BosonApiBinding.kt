@@ -66,7 +66,8 @@ class BosonApiBinding : BosonApi {
 
     override val tagRegistry: TagRegistry = BosonTagManager
 
-    override fun <T : Any> createTagType(type: KClass<out T>, directoryName: String, toElement: (NameSpacedString) -> T): TagType<T> = BosonTagType(type, directoryName, toElement)
+    override fun <T : Any> createTagType(type: KClass<out T>, directoryName: String, toElement: (NameSpacedString) -> T, equalityEvaluator: (T, T) -> Boolean): TagType<T> =
+            BosonTagType(type, directoryName, toElement, equalityEvaluator)
 
     override fun <T : Any> createTag(tagType: TagType<T>, name: NameSpacedString, vararg initialElements: T): Tag<T> = BosonTag(name, tagType).apply {
         this += initialElements.toSet()

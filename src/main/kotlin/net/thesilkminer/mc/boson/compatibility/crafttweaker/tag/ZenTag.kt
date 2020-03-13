@@ -56,5 +56,5 @@ class ZenTag<T : Any>(val tag: Tag<T>) {
     operator fun <R : Any> invoke() = this.getElements<R>()
 
     private fun Set<T>.copy() = this.toSet()
-    private fun Array<*>.convertToSet() = this.map { this.unboxNative<Any, T>(this@ZenTag.type.toNative()) }.requireNoNulls().toSet()
+    private fun Array<*>.convertToSet() = this.map { this.unboxNative<Any, T>(this@ZenTag.type.toNative().uncheckedCast()) }.requireNoNulls().toSet()
 }
