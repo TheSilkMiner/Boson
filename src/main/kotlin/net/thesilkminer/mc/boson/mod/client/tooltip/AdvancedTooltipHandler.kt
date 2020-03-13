@@ -11,10 +11,12 @@ import net.minecraft.nbt.NBTTagList
 import net.minecraft.util.NonNullList
 import net.minecraft.util.text.TextFormatting
 import net.minecraftforge.event.entity.player.ItemTooltipEvent
+import net.minecraftforge.fml.client.event.ConfigChangedEvent
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.oredict.OreDictionary
+import net.thesilkminer.kotlin.commons.lang.reloadableLazy
 import net.thesilkminer.mc.boson.MOD_ID
 import net.thesilkminer.mc.boson.api.bosonApi
 import net.thesilkminer.mc.boson.api.locale.Color
@@ -30,12 +32,11 @@ import java.util.concurrent.TimeUnit
 object AdvancedTooltipHandler {
     private const val REPLACE_WITH_NBT = "\$\$\$BOSON\$Replace\$NBT"
 
-    private val isEnabled get() = client["advanced_tooltips"]["enabled"]().boolean
-    private val mustBeAdvanced get() = client["advanced_tooltips"]["requires_vanilla_advanced_tooltips"]().boolean
-    private val mustShift get() = client["advanced_tooltips"]["requires_shift"]().boolean
+    private val isEnabled = reloadableLazy { client["advanced_tooltips"]["enabled"]().boolean }
+    private val mustBeAdvanced = reloadableLazy { client["advanced_tooltips"]["requires_vanilla_advanced_tooltips"]().boolean }
+    private val mustShift = reloadableLazy { client["advanced_tooltips"]["requires_shift"]().boolean }
 
     private val tooltipLinesCache = CacheBuilder.newBuilder()
-            .maximumSize(50L)
             .expireAfterAccess(3, TimeUnit.SECONDS)
             .expireAfterWrite(3, TimeUnit.SECONDS)
             .build(object: CacheLoader<ItemStack, MutableList<String>>() {
@@ -98,15 +99,23 @@ object AdvancedTooltipHandler {
 
     @JvmStatic
     @SubscribeEvent
+    fun onConfigReload(e: ConfigChangedEvent) {
+        this.isEnabled.reload()
+        this.mustBeAdvanced.reload()
+        this.mustShift.reload()
+    }
+
+    @JvmStatic
+    @SubscribeEvent
     fun onItemTooltip(e: ItemTooltipEvent) {
-        if (!this.isEnabled) return
-        if (this.mustBeAdvanced && !e.flags.isAdvanced) return
+        if (!this.isEnabled.value) return
+        if (this.mustBeAdvanced.value && !e.flags.isAdvanced) return
 
         // Let's remove all instances of the registry name from the tooltip, so that we can place our own in the debug info section
         this.removeRegistryNameFromTooltipLines(e.toolTip, e.itemStack.item)
 
         // TODO("Modifier API")
-        if (this.mustShift && !(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))) {
+        if (this.mustShift.value && !(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))) {
             e.toolTip += "boson.client.tooltip.advanced.shift".toLocale(color = Color.DARK_GRAY)
             return
         }
