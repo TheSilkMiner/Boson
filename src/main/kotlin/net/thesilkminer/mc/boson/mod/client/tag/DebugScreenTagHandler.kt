@@ -9,6 +9,7 @@ import net.minecraftforge.fml.relauncher.Side
 import net.thesilkminer.mc.boson.MOD_ID
 import net.thesilkminer.mc.boson.api.bosonApi
 import net.thesilkminer.mc.boson.prefab.tag.blockTagType
+import net.thesilkminer.mc.boson.prefab.tag.has
 
 @Mod.EventBusSubscriber(modid = MOD_ID, value = [Side.CLIENT])
 @Suppress("unused")
@@ -20,9 +21,10 @@ object DebugScreenTagHandler {
         val rayTrace = mc.objectMouseOver
         if (mc.gameSettings.showDebugInfo && !mc.isReducedDebug && rayTrace.typeOfHit == RayTraceResult.Type.BLOCK) {
             val state = mc.world.getBlockState(rayTrace.blockPos)
-            val tagsForState = bosonApi.tagRegistry[state, blockTagType]
+            val allTags = bosonApi.tagRegistry[blockTagType]
+            val tagsForState = allTags.filter { it has state }
             if (tagsForState.count() > 0) event.right += ""
-            tagsForState.forEach { event.right += it.name.toString() }
+            tagsForState.forEach { event.right += "#${it.name}" }
         }
     }
 }
