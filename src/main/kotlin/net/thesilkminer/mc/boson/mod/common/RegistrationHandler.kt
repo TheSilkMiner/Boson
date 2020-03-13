@@ -39,7 +39,7 @@ object RegistrationHandler {
     @JvmStatic
     @SubscribeEvent
     fun onTagTypeRegistration(event: TagTypeRegisterEvent) {
-        listOf(blocks, fluids, items).forEach(event.tagTypeRegistry::registerTagType)
+        listOf(blocks, fluids, items).forEach { event.tagTypeRegistry.registerTagType(it) }
     }
 
     @JvmStatic
