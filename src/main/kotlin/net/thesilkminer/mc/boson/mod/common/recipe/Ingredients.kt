@@ -13,7 +13,7 @@ import net.thesilkminer.mc.boson.api.tag.Tag
 import net.thesilkminer.mc.boson.prefab.tag.isInTag
 
 class TagIngredient(val tag: Tag<ItemStack>) : Ingredient() {
-    private val items = this.tag.elements
+    private val items get() = this.tag.elements
 
     private var ids = null as IntList?
     private var matchingStacks = null as Array<ItemStack>?
