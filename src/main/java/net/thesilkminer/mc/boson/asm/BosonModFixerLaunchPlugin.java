@@ -2,6 +2,7 @@ package net.thesilkminer.mc.boson.asm;
 
 import com.google.common.collect.ImmutableSet;
 import net.thesilkminer.mc.boson.asm.transformer.modfix.CrtStoringErrorLoggerTransformer;
+import net.thesilkminer.mc.boson.asm.transformer.modfix.GuiIngredientTransformer;
 import net.thesilkminer.mc.fermion.asm.api.PluginMetadata;
 import net.thesilkminer.mc.fermion.asm.prefab.AbstractLaunchPlugin;
 
@@ -34,5 +35,6 @@ public final class BosonModFixerLaunchPlugin extends AbstractLaunchPlugin {
 
     private void registerTransformers() {
         this.registerTransformer(new CrtStoringErrorLoggerTransformer(this));
+        this.registerTransformer(new GuiIngredientTransformer(this));
     }
 }
