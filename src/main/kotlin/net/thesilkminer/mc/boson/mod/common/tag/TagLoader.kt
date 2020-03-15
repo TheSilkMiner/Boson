@@ -318,6 +318,9 @@ private fun MutableMap<String, (String) -> List<NameSpacedString>>.addAllValidPr
     this["fenceGateWood"] = { lnss("fence_gates/wooden") }
     this["door"] = { if (it.startsWith("Wood")) listOf() else lnss("doors/${it.toLowerUnderscore()}") }
     this["doorWood"] = { lnss("doors/wooden") }
+    this["rod"] = { if (it.startsWith("Wood")) listOf() else lnss("rods/${it.toLowerUnderscore()}") }
+    this["rodWood"] = { lnss("rods/wooden") }
+    this["stick"] = { if (it.startsWith("Wood")) listOf() else lnss("rods/${it.toLowerUnderscore()}") }
     this["stickWood"] = { lnss("rods/wooden") }
     this["treeSapling"] = { lnss("saplings") }
     this["treeLeaves"] = { lnss("leaves") }
