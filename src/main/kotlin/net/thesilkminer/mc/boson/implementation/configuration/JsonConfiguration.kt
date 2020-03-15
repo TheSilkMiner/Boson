@@ -28,6 +28,7 @@ internal class JsonConfiguration(builder: ConfigurationBuilder): Configuration {
     private val backend by lazy { JsonObject().apply { this.populateFrom(builder) } }
 
     override val format = ConfigurationFormat.JSON
+    override val targetDistribution = builder.targetDistribution
     override val owner = builder.owner
     override val name = builder.name
     override val location = builder.constructPath(this.format)

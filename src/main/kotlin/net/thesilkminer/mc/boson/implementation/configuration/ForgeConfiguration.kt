@@ -23,6 +23,7 @@ internal class ForgeConfiguration(builder: ConfigurationBuilder) : Configuration
     private val backend by lazy { ForgeConfig(this.location.toFile()).apply { this.populate(builder) } }
 
     override val format = ConfigurationFormat.FORGE_CONFIG
+    override val targetDistribution = builder.targetDistribution
     override val owner = builder.owner
     override val name = builder.name
     override val location = builder.constructPath(this.format)

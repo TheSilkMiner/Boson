@@ -48,6 +48,7 @@ val bosonApi by lazy {
 
             override fun buildConfiguration(builder: ConfigurationBuilder) = object : Configuration {
                 override val format = ConfigurationFormat.DEFAULT
+                override val targetDistribution: Distribution? = null
                 override val owner = "dummy"
                 override val name = "dummy"
                 override val location = Paths.get(".")

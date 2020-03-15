@@ -3,6 +3,7 @@
 package net.thesilkminer.mc.boson.api.configuration
 
 import net.thesilkminer.mc.boson.api.bosonApi
+import net.thesilkminer.mc.boson.api.distribution.Distribution
 
 @DslMarker
 private annotation class ConfigurationDsl
@@ -12,6 +13,7 @@ class ConfigurationBuilder {
     lateinit var owner: String
     lateinit var name: String
     var type = ConfigurationFormat.DEFAULT
+    var targetDistribution = null as Distribution?
 
     private val categories = mutableListOf<ConfigurationCategoryBuilder>()
 
