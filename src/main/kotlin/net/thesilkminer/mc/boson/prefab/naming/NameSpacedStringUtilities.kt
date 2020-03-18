@@ -6,7 +6,7 @@ import net.minecraft.util.ResourceLocation
 import net.thesilkminer.mc.boson.api.id.NameSpacedString
 
 fun NameSpacedString.toResourceLocation() = ResourceLocation(this.nameSpace, this.path)
-fun ResourceLocation.toNameSpacedString() = NameSpacedString(this.path, this.namespace)
+fun ResourceLocation.toNameSpacedString() = NameSpacedString(this.namespace, this.path)
 
 fun String.toNameSpacedString(defaultNamespace: String? = null) =
         if (this.indexOf(':') != -1) {
