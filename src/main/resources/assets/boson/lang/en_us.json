@@ -14,6 +14,10 @@
   "boson.client.tooltip.advanced.registry_name": "Registry Name:",
   "boson.client.tooltip.advanced.shift": "Press Shift to access advanced information",
   "boson.client.tooltip.advanced.tags": "Item Tags:",
+  "boson.client.tooltip.spawn.none": "No Entity",
+  "boson.client.tooltip.spawn.data_error": "Error: Spawn Data isn't present",
+  "boson.client.tooltip.spawn.entry_error": "Error: Target Entry wasn't registered (%1$s)",
+  "boson.client.tooltip.spawn.target": "%1$s (%2$s)",
   "jei.tooltip.recipe.ore.dict.dictionary": "Ore Dictionary: %1$s",
   "jei.tooltip.recipe.ore.dict.tag": "Tag: %1$s"
 }

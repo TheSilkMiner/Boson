@@ -1,6 +1,7 @@
 package net.thesilkminer.mc.boson.asm;
 
 import com.google.common.collect.ImmutableSet;
+import net.thesilkminer.mc.boson.asm.transformer.BlockMobSpawnerTransformer;
 import net.thesilkminer.mc.boson.asm.transformer.GameDataTransformer;
 import net.thesilkminer.mc.boson.asm.transformer.InternalLoggerFactoryTransformer;
 import net.thesilkminer.mc.boson.asm.transformer.LoadControllerTransformer;
@@ -40,6 +41,7 @@ public final class BosonLaunchPlugin extends AbstractLaunchPlugin {
     }
 
     private void registerTransformers() {
+        this.registerTransformer(new BlockMobSpawnerTransformer(this));
         this.registerTransformer(new GameDataTransformer(this));
         this.registerTransformer(new InternalLoggerFactoryTransformer(this));
         this.registerTransformer(new LoadControllerTransformer(this));
