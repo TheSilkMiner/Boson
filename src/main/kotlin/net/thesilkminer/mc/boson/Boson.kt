@@ -18,6 +18,7 @@ import net.thesilkminer.mc.boson.implementation.compatibility.CompatibilityProvi
 import net.thesilkminer.mc.boson.implementation.configuration.ConfigurationManager
 import net.thesilkminer.mc.boson.implementation.resource.BosonResourcePackManager
 import net.thesilkminer.mc.boson.implementation.tag.BosonTagManager
+import net.thesilkminer.mc.boson.mod.common.injectCapabilities
 import net.thesilkminer.mc.boson.mod.common.tag.initializeTagOreDictCompatibilityLayer
 import net.thesilkminer.mc.boson.mod.common.tag.loadTags
 
@@ -43,6 +44,7 @@ object Boson {
         this.l.info("PreInitialization")
         CompatibilityProviderManager.registerProviders()
         ConfigurationManager.gatherConfigurations()
+        injectCapabilities()
         CommunicationManager.register()
         CompatibilityProviderManager[BosonCompatibilityProvider::class].forEach { it.onPreInitialization() }
         BosonTagManager.fireTagTypeRegistrationEvent() // Moved to pre-init due to CraftTweaker
