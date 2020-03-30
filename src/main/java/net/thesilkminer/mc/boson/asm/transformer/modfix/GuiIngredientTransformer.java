@@ -962,6 +962,7 @@ public final class GuiIngredientTransformer extends AbstractTransformer {
 
     private static final Log LOG = Log.of("GUI Ingredient");
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public GuiIngredientTransformer(@Nonnull final LaunchPlugin owner) {
         super(
                 TransformerData.Builder.create()
@@ -971,6 +972,9 @@ public final class GuiIngredientTransformer extends AbstractTransformer {
                         .build(),
                 ClassDescriptor.of(THIS)
         );
+        DrawTooltipMethodVisitor.class.toString();
+        AppendTooltipInformationMethodVisitor.class.toString();
+        GetTagEquivalentMethodVisitor.class.toString();
     }
 
     @Nonnull

@@ -414,6 +414,7 @@ public final class ModelLoaderVariantLoaderTransformer extends AbstractTransform
     private static final String GET_VARIANT_BY_NAME_METHOD_NAME = "fermion$$injected$$getVariantByName$$generated$$00_01_1122";
     private static final String GET_VARIANT_BY_NAME_METHOD_DESC = "(Lnet/minecraft/client/renderer/block/model/ModelBlockDefinition;Ljava/lang/String;)Lnet/minecraft/client/renderer/block/model/VariantList;";
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public ModelLoaderVariantLoaderTransformer(@Nonnull final LaunchPlugin owner) {
         super(
                 TransformerData.Builder.create()
@@ -423,6 +424,8 @@ public final class ModelLoaderVariantLoaderTransformer extends AbstractTransform
                         .build(),
                 ClassDescriptor.of(THIS_CLASS_NAME)
         );
+        LoadModelMethodVisitor.class.toString();
+        GetVariantByNameMethodVisitor.class.toString();
     }
 
     @Nonnull

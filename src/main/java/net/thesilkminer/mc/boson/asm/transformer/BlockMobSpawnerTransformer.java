@@ -262,7 +262,7 @@ public final class BlockMobSpawnerTransformer extends AbstractTransformer {
             super.visitVarInsn(Opcodes.ALOAD, 6);
             super.visitLdcInsn("id");
             super.visitLdcInsn("minecraft:mob_spawner");
-            super.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "net/minecraft/nbt/NBTTagCompound", "setString", "(Ljava/lang/String;Ljava/lang/String;)V", false);
+            super.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "net/minecraft/nbt/NBTTagCompound", MappingUtilities.INSTANCE.mapMethod("func_74778_a"), "(Ljava/lang/String;Ljava/lang/String;)V", false);
 
             final Label l9 = new Label();
             super.visitLabel(l9);
@@ -270,7 +270,7 @@ public final class BlockMobSpawnerTransformer extends AbstractTransformer {
             super.visitVarInsn(Opcodes.ALOAD, 6);
             super.visitLdcInsn("Count");
             super.visitInsn(Opcodes.ICONST_1);
-            super.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "net/minecraft/nbt/NBTTagCompound", "setByte", "(Ljava/lang/String;B)V", false);
+            super.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "net/minecraft/nbt/NBTTagCompound", MappingUtilities.INSTANCE.mapMethod("func_74774_a"), "(Ljava/lang/String;B)V", false);
 
             final Label l10 = new Label();
             super.visitLabel(l10);
@@ -306,7 +306,7 @@ public final class BlockMobSpawnerTransformer extends AbstractTransformer {
             super.visitTypeInsn(Opcodes.CHECKCAST, "net/minecraft/util/ResourceLocation");
             super.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Object");
             super.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Object", "toString", "()Ljava/lang/String;", false);
-            super.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "net/minecraft/nbt/NBTTagCompound", "setString", "(Ljava/lang/String;Ljava/lang/String;)V", false);
+            super.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "net/minecraft/nbt/NBTTagCompound", MappingUtilities.INSTANCE.mapMethod("func_74778_a"), "(Ljava/lang/String;Ljava/lang/String;)V", false);
 
             final Label l14 = new Label();
             super.visitLabel(l14);
@@ -315,7 +315,7 @@ public final class BlockMobSpawnerTransformer extends AbstractTransformer {
             super.visitLdcInsn("SpawnData");
             super.visitVarInsn(Opcodes.ALOAD, 9);
             super.visitTypeInsn(Opcodes.CHECKCAST, "net/minecraft/nbt/NBTBase");
-            super.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "net/minecraft/nbt/NBTTagCompound", "setTag", "(Ljava/lang/String;Lnet/minecraft/nbt/NBTBase;)V", false);
+            super.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "net/minecraft/nbt/NBTTagCompound", MappingUtilities.INSTANCE.mapMethod("func_74782_a"), "(Ljava/lang/String;Lnet/minecraft/nbt/NBTBase;)V", false);
 
             final Label l15 = new Label();
             super.visitLabel(l15);
@@ -324,7 +324,7 @@ public final class BlockMobSpawnerTransformer extends AbstractTransformer {
             super.visitLdcInsn("BlockEntityTag");
             super.visitVarInsn(Opcodes.ALOAD, 8);
             super.visitTypeInsn(Opcodes.CHECKCAST, "net/minecraft/nbt/NBTBase");
-            super.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "net/minecraft/nbt/NBTTagCompound", "setTag", "(Ljava/lang/String;Lnet/minecraft/nbt/NBTBase;)V", false);
+            super.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "net/minecraft/nbt/NBTTagCompound", MappingUtilities.INSTANCE.mapMethod("func_74782_a"), "(Ljava/lang/String;Lnet/minecraft/nbt/NBTBase;)V", false);
 
             final Label l16 = new Label();
             super.visitLabel(l16);
@@ -333,7 +333,7 @@ public final class BlockMobSpawnerTransformer extends AbstractTransformer {
             super.visitLdcInsn("tag");
             super.visitVarInsn(Opcodes.ALOAD, 7);
             super.visitTypeInsn(Opcodes.CHECKCAST, "net/minecraft/nbt/NBTBase");
-            super.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "net/minecraft/nbt/NBTTagCompound", "setTag", "(Ljava/lang/String;Lnet/minecraft/nbt/NBTBase;)V", false);
+            super.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "net/minecraft/nbt/NBTTagCompound", MappingUtilities.INSTANCE.mapMethod("func_74782_a"), "(Ljava/lang/String;Lnet/minecraft/nbt/NBTBase;)V", false);
 
             final Label l17 = new Label();
             super.visitLabel(l17);
@@ -381,9 +381,6 @@ public final class BlockMobSpawnerTransformer extends AbstractTransformer {
         }
     }
 
-    // func_149666_a -> getSubBlocks
-    // tag:{BlockEntityTag:{SpawnData:{id:"minecraft:pig"}}}
-    //     7               8          9                  987
     private static final Log LOGGER = Log.of("BlockMobSpawner");
 
     public BlockMobSpawnerTransformer(@Nonnull final LaunchPlugin owner) {
@@ -403,7 +400,7 @@ public final class BlockMobSpawnerTransformer extends AbstractTransformer {
         return (v, cw) -> new ClassVisitor(v, cw) {
             @Override
             public void visitEnd() {
-                LOGGER.i("Reached end of class: injecting overload for 'getSubBlocks");
+                LOGGER.i("Reached end of class: injecting overload for 'getSubBlocks' (current mapping: '" + MappingUtilities.INSTANCE.mapMethod("func_149666_a") + "')");
 
                 final MethodVisitor parent = super.visitMethod(Opcodes.ACC_PUBLIC,
                         MappingUtilities.INSTANCE.mapMethod("func_149666_a"),

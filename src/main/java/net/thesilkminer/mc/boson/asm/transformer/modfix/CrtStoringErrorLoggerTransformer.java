@@ -94,7 +94,7 @@ public final class CrtStoringErrorLoggerTransformer extends AbstractTransformer 
         private boolean newSocket;
         private boolean stop;
 
-        NullCheckerAdderMethodVisitor(final int api, @Nonnull final MethodVisitor mv) {
+        private NullCheckerAdderMethodVisitor(final int api, @Nonnull final MethodVisitor mv) {
             super(api, mv);
             this.newSocket = false;
         }
@@ -199,7 +199,7 @@ public final class CrtStoringErrorLoggerTransformer extends AbstractTransformer 
         private final String targetMethod;
         private final String returnType;
 
-        GetOrDefaultMethodVisitor(final int api, @Nonnull final MethodVisitor mv, @Nonnull final String targetMethod, @Nonnull final String returnType) {
+        private GetOrDefaultMethodVisitor(final int api, @Nonnull final MethodVisitor mv, @Nonnull final String targetMethod, @Nonnull final String returnType) {
             super(api, mv);
             this.targetMethod = targetMethod;
             this.returnType = returnType;
@@ -260,6 +260,7 @@ public final class CrtStoringErrorLoggerTransformer extends AbstractTransformer 
     private static final String GET_LINE_OR_DEFAULT_METHOD_NAME = "fermion$$injected$$getLineOrDefault$$generated$$00_53_1122";
     private static final String GET_LINE_OFFSET_OR_DEFAULT_METHOD_NAME = "fermion$$injected$$getLineOffsetOrDefault$$generated$$00_53_1122";
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public CrtStoringErrorLoggerTransformer(@Nonnull final LaunchPlugin owner) {
         super(
                 TransformerData.Builder.create()
@@ -269,6 +270,8 @@ public final class CrtStoringErrorLoggerTransformer extends AbstractTransformer 
                         .build(),
                 ClassDescriptor.of(THIS_CLASS_NAME)
         );
+        NullCheckerAdderMethodVisitor.class.toString();
+        GetOrDefaultMethodVisitor.class.toString();
     }
 
     @Nonnull
