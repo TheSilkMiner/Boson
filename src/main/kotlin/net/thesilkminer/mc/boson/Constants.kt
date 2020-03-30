@@ -35,7 +35,7 @@ internal const val MOD_MC_VERSION = "1.12.2"
 internal const val MOD_CERTIFICATE_FINGERPRINT = "@FINGERPRINT@"
 
 internal const val MOD_DEPENDENCIES = "required-after:forge@[14.23.5.2768,);" +
-        "required-after:$FERMION@[1.0.1,);" +
+        "required-after:$FERMION@[1.0.2,);" +
         "required-after:$FORGELIN@[1.8.4,)"
 
 @Suppress("SpellCheckingInspection")
