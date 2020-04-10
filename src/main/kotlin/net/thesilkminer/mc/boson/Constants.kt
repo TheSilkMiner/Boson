@@ -30,7 +30,7 @@ import net.thesilkminer.mc.boson.api.modid.FORGELIN
 
 internal const val MOD_ID = BOSON
 internal const val MOD_NAME = "Boson"
-internal const val MOD_VERSION = "@VERSION@"
+internal const val MOD_VERSION = "@BOSON_VERSION@"
 internal const val MOD_MC_VERSION = "1.12.2"
 internal const val MOD_CERTIFICATE_FINGERPRINT = "@FINGERPRINT@"
 

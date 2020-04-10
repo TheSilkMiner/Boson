@@ -109,7 +109,7 @@ minecraft {
     runDir = "run"
     mappings = "snapshot_20180814"
 
-    replace '@VERSION@', project.version
+    replace '@BOSON_VERSION@', project.version
     replace '@FINGERPRINT@', project.findProperty('signSHA1')
 }
 
@@ -151,6 +151,9 @@ dependencies {
         exclude group: 'org.ow2.asm'
         exclude group: 'com.google.code.gson'
     }
+
+    // Document Your Mod Mod
+    deobfProvided name: 'DocumentYourModMod-2.0.2'
 
     // Fermion
     compile name: 'Fermion-1.0.2'
