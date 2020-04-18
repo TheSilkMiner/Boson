@@ -24,12 +24,14 @@
 
 package net.thesilkminer.mc.boson.prefab.energy
 
+import kotlin.math.roundToInt
+
 const val MEASUREMENT_UNIT = "A"
 
 @ExperimentalUnsignedTypes
-fun ULong.toUserFriendlyAmount(): String {
+fun ULong.toUserFriendlyAmount(decimalDigits: Int = -1): String {
     val roundingData = this.roundToSmallestDouble()
-    return "${roundingData.first} ${roundingData.second.toUnitMultiplier()}$MEASUREMENT_UNIT"
+    return "${roundingData.first.truncateTo(decimalDigits)} ${roundingData.second.toUnitMultiplier()}$MEASUREMENT_UNIT"
 }
 
 @ExperimentalUnsignedTypes
@@ -56,6 +58,12 @@ private fun ULong.roundToSmallestDouble(): Pair<Double, Int> {
     }
 
     return doubleEquivalent to rounds
+}
+
+private fun Double.truncateTo(decimalDigits: Int) = when {
+    decimalDigits < 0 -> this.toString()
+    decimalDigits == 0 -> this.roundToInt().toString()
+    else -> "%.${decimalDigits}f".format(this)
 }
 
 private fun Int.toUnitMultiplier() = when (this) {
