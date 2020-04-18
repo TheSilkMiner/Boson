@@ -19,5 +19,9 @@
   "boson.client.tooltip.spawn.entry_error": "Error: Target Entry wasn't registered (%1$s)",
   "boson.client.tooltip.spawn.target": "%1$s (%2$s)",
   "jei.tooltip.recipe.ore.dict.dictionary": "Ore Dictionary: %1$s",
-  "jei.tooltip.recipe.ore.dict.tag": "Tag: %1$s"
+  "jei.tooltip.recipe.ore.dict.tag": "Tag: %1$s",
+  "options.boson.energy": "Ampere Energy",
+  "waila.tooltip.boson.energy.producer.power": "Production: %1$s",
+  "waila.tooltip.boson.energy.holder.power": "Stored: %1$s",
+  "waila.tooltip.boson.energy.holder.cap": "Maximum Capacity: %1$s"
 }

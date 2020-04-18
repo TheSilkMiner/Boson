@@ -133,6 +133,10 @@ repositories {
         name 'ShadowFacts'
         url 'http://maven.shadowfacts.net/'
     }
+    maven {
+        name 'TehNut'
+        url 'http://tehnut.info/maven'
+    }
     flatDir {
         dirs 'libs'
     }
@@ -161,6 +165,9 @@ dependencies {
 
     // Forgelin
     compile group: 'net.shadowfacts', name: 'Forgelin', version: '1.8.4'
+
+    // Hwyla API
+    deobfProvided group: 'mcp.mobius.waila', name: 'Hwyla', version: '1.8.26-B41_1.12.2', classifier: 'api'
 
     // JustEnoughItems API
     deobfProvided group: 'mezz.jei', name: 'jei_1.12.2', version: '4.15.0.293', classifier: 'api'
@@ -195,6 +202,9 @@ dependencies {
     runtime(group: 'CraftTweaker2', name: 'CraftTweaker2-MC1120-Mod-JEI', version: '1.12-4.1.20.555') {
         exclude group: 'deobf.mezz.jei'
     }
+
+    // Hwyla
+    runtime group: 'mcp.mobius.waila', name: 'Hwyla', version: '1.8.26-B41_1.12.2'
 
     // JustEnoughItems
     runtime group: 'mezz.jei', name: 'jei_1.12.2', version: '4.15.0.293'
