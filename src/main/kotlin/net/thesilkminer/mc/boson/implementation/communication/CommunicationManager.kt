@@ -48,13 +48,10 @@ internal object CommunicationManager : MessageHandlerRegistry {
     }
 
     override fun getHandlersFor(receiver: String): Sequence<MessageHandler> {
-        return this.handlers[receiver].let {
-            if (it == null) {
-                l.warn("No handlers were registered for receiver '$receiver': any message sent won't be dispatched!")
-                return@let sequenceOf()
-            }
-            it.asSequence()
-        }
+        return this.handlers.computeIfAbsent(receiver) {
+            l.warn("No handlers registered for receiver '$it': messages will not be dispatched!")
+            mutableListOf()
+        }.asSequence()
     }
 
     internal fun register() {

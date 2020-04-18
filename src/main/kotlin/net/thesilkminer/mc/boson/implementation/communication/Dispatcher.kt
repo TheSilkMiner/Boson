@@ -51,7 +51,7 @@ internal object Dispatcher {
     private fun toRunnable(receiver: String, message: Message<*>): Runnable? {
         val handlerSequence = bosonApi.messageHandlerRegistry[receiver]
         if (handlerSequence.count() == 0) {
-            l.warn("Unable to dispatch message to reciever '$receiver': attempting to fallback to deprecated IMC communication system")
+            l.warn("Unable to dispatch message '$message' to receiver '$receiver': attempting to fallback to deprecated IMC communication system")
             this.tryDispatchImc(receiver, message, message.messageType)
             return null
         }
