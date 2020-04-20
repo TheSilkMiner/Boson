@@ -122,10 +122,6 @@ repositories {
         url 'https://maven.blamejared.com/'
     }
     maven {
-        name 'ModMaven'
-        url 'https://modmaven.k-4u.nl/'
-    }
-    maven {
         name 'Progwml6 maven'
         url 'https://dvs1.progwml6.com/files/maven/'
     }
@@ -137,8 +133,17 @@ repositories {
         name 'TehNut'
         url 'http://tehnut.info/maven'
     }
+    maven {
+        name 'Tterrag'
+        url 'http://maven.tterrag.com/'
+    }
     flatDir {
         dirs 'libs'
+    }
+    // Moved to the bottom to ensure that this is the last place we look into
+    maven {
+        name 'ModMaven'
+        url 'https://modmaven.k-4u.nl/'
     }
 }
 
@@ -171,6 +176,9 @@ dependencies {
 
     // JustEnoughItems API
     deobfProvided group: 'mezz.jei', name: 'jei_1.12.2', version: '4.15.0.293', classifier: 'api'
+
+    // TheOneProbe API
+    deobfProvided group: 'mcjty.theoneprobe', name: 'TheOneProbe-1.12', version: '1.12-1.4.28-17', classifier: 'api'
 
     /* ======================= SHADED LIBRARIES ======================= */
 
@@ -208,6 +216,9 @@ dependencies {
 
     // JustEnoughItems
     runtime group: 'mezz.jei', name: 'jei_1.12.2', version: '4.15.0.293'
+
+    // TheOneProbe
+    runtime group: 'mcjty.theoneprobe', name: 'TheOneProbe-1.12', version: '1.12-1.4.28-17'
 }
 
 processResources {

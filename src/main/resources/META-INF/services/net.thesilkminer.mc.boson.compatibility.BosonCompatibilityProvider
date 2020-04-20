@@ -1,2 +1,5 @@
 net.thesilkminer.mc.boson.compatibility.crafttweaker.CraftTweakerCompatibilityProvider
 net.thesilkminer.mc.boson.compatibility.dymm.DocumentYourModModCompatibilityProvider
+net.thesilkminer.mc.boson.compatibility.jei.JustEnoughItemsCompatibilityProvider
+net.thesilkminer.mc.boson.compatibility.top.TheOneProbeCompatibilityProvider
+net.thesilkminer.mc.boson.compatibility.waila.WhatAmILookingAtCompatibilityProvider
