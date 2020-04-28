@@ -20,7 +20,7 @@
   "boson.client.tooltip.spawn.target": "%1$s (%2$s)",
   "jei.tooltip.recipe.ore.dict.dictionary": "Ore Dictionary: %1$s",
   "jei.tooltip.recipe.ore.dict.tag": "Tag: %1$s",
-  "options.boson.energy": "Ampere Energy",
+  "option.boson.energy": "Ampere Energy",
   "top.tooltip.boson.energy.producer.power": "Energy Production",
   "top.tooltip.boson.energy.holder.status": "Stored Energy",
   "waila.tooltip.boson.energy.producer.power": "Production: %1$s",
