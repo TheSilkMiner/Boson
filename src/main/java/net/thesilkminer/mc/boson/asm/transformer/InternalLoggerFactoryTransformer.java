@@ -28,6 +28,7 @@ import net.thesilkminer.mc.fermion.asm.api.descriptor.ClassDescriptor;
 import net.thesilkminer.mc.fermion.asm.api.descriptor.MethodDescriptor;
 import net.thesilkminer.mc.fermion.asm.api.transformer.TransformerData;
 import net.thesilkminer.mc.fermion.asm.prefab.transformer.SingleTargetMethodTransformer;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
@@ -63,25 +64,23 @@ public final class InternalLoggerFactoryTransformer extends SingleTargetMethodTr
             //    TRYCATCHBLOCK L3 L4 L5 java/lang/Throwable
             //   L0
             //    LINENUMBER 42 L0
-            //    NEW io/netty/util/internal/logging/Slf4JLoggerFactory
-            //    DUP
-            //    ICONST_1
-            //    INVOKESPECIAL io/netty/util/internal/logging/Slf4JLoggerFactory.<init> (Z)V
-            //    ASTORE 1
             // <<< INJECTION BEGIN
-            //    LDC "No you won't ASTORE that"
-            //    POP
             //    NOP
             //    NEW java/lang/Throwable
             //    DUP
             //    INVOKESPECIAL java/lang/Throwable.<init> ()V
             //    ATHROW
+            //   L800
+            //    LINENUMBER 43 L800
+            //   FRAME SAME
             // >>> INJECTION END
+            //    NEW io/netty/util/internal/logging/Slf4JLoggerFactory
+            //    DUP
+            //    ICONST_1
+            //    INVOKESPECIAL io/netty/util/internal/logging/Slf4JLoggerFactory.<init> (Z)V
+            //    ASTORE 1
             //   L6
             //    LINENUMBER 43 L6
-            // <<< INJECTION BEGIN
-            //   FRAME APPEND [io/netty/util/internal/logging/InternalLoggerFactory]
-            // >>> INJECTION END
             //    ALOAD 1
             //    ALOAD 0
             //    INVOKEVIRTUAL io/netty/util/internal/logging/InternalLoggerFactory.newInstance (Ljava/lang/String;)Lio/netty/util/internal/logging/InternalLogger;
@@ -138,26 +137,22 @@ public final class InternalLoggerFactoryTransformer extends SingleTargetMethodTr
             //    MAXSTACK = 3
             //    MAXLOCALS = 4
 
-            private boolean hasVisitedFirstAStoreOne;
-            private boolean hasVisitedFirstALoadOne;
-
             @Override
-            public void visitVarInsn(final int opcode, final int var) {
-                if (!this.hasVisitedFirstALoadOne && opcode == Opcodes.ALOAD && var == 1) {
-                    this.hasVisitedFirstALoadOne = true;
-                    super.visitFrame(Opcodes.F_APPEND, 1, new Object[] { "io/netty/util/internal/logging/InternalLoggerFactory" }, 0, null);
-                }
-                super.visitVarInsn(opcode, var);
-                if (!this.hasVisitedFirstAStoreOne && opcode == Opcodes.ASTORE && var == 1) {
-                    this.hasVisitedFirstAStoreOne = true;
-                    super.visitLdcInsn("No you won't ASTORE that");
-                    super.visitInsn(Opcodes.POP);
+            public void visitTypeInsn(final int opcode, @Nonnull final String type) {
+                if (Opcodes.NEW == opcode && "io/netty/util/internal/logging/Slf4JLoggerFactory".equals(type)) {
                     super.visitInsn(Opcodes.NOP);
                     super.visitTypeInsn(Opcodes.NEW, "java/lang/Throwable");
                     super.visitInsn(Opcodes.DUP);
                     super.visitMethodInsn(Opcodes.INVOKESPECIAL, "java/lang/Throwable", "<init>", "()V", false);
                     super.visitInsn(Opcodes.ATHROW);
+
+                    final Label l800 = new Label();
+                    super.visitLabel(l800);
+                    super.visitLineNumber(4 * 10 + 3, l800);
+                    super.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
                 }
+
+                super.visitTypeInsn(opcode, type);
             }
         };
     }
