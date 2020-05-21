@@ -144,13 +144,13 @@ class ZenSequence<T>(val sequence: Sequence<T>) {
     // requireNoNulls
     // chunked
     // chunked
-    fun minus(element: T) = this.sequence.minus(element).toZen()
+    // minus (I want to distinguish minus and minusElement so that the compiler is easier to implement)
     fun minus(elements: Array<T>) = this.sequence.minus(elements).toZen()
     // minus
     // minus
     fun minusElement(element: T) = this.sequence.minusElement(element).toZen()
     // partition
-    fun plus(element: T) = this.sequence.plus(element).toZen()
+    // plus (I want to distinguish plus and plusElement so that the compiler is easier to implement)
     fun plus(elements: Array<T>) = this.sequence.plus(elements).toZen()
     // plus
     // plus

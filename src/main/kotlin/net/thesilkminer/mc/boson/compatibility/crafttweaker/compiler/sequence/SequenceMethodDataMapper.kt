@@ -756,19 +756,6 @@ private fun MutableMap<String, List<SequenceMethodData>>.populateMapWithData() {
     }
     this.create(methodName = "minus") {
         data {
-            argument { getNativeFun(ObjectZenType) }
-            expressionCreator = { position, callee, arguments, sequenceType ->
-                SingleGenericArgumentSameSequenceReturnTypeSequenceFunctionExpression(
-                        position = position,
-                        callee = callee,
-                        sequence = sequenceType,
-                        isArray = false,
-                        argumentExpression = arguments.extractArgument(position = 0),
-                        methodName = "minus"
-                )
-            }
-        }
-        data {
             argument { { _, sequenceType -> ZenTypeArrayBasic(sequenceType.genericType) } }
             expressionCreator = { position, callee, arguments, sequenceType ->
                 SingleGenericArgumentSameSequenceReturnTypeSequenceFunctionExpression(
@@ -798,19 +785,6 @@ private fun MutableMap<String, List<SequenceMethodData>>.populateMapWithData() {
         }
     }
     this.create(methodName = "plus") {
-        data {
-            argument { getNativeFun(ObjectZenType) }
-            expressionCreator = { position, callee, arguments, sequenceType ->
-                SingleGenericArgumentSameSequenceReturnTypeSequenceFunctionExpression(
-                        position = position,
-                        callee = callee,
-                        sequence = sequenceType,
-                        isArray = false,
-                        argumentExpression = arguments.extractArgument(position = 0),
-                        methodName = "plus"
-                )
-            }
-        }
         data {
             argument { { _, sequenceType -> ZenTypeArrayBasic(sequenceType.genericType) } }
             expressionCreator = { position, callee, arguments, sequenceType ->
