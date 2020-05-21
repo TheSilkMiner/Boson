@@ -24,10 +24,11 @@ package net.thesilkminer.mc.boson.compatibility.crafttweaker.zenscriptx.function
 
 import crafttweaker.annotations.ZenRegister
 import stanhebben.zenscript.annotations.ZenClass
+import stanhebben.zenscript.annotations.ZenMethod
 
 @FunctionalInterface
 @ZenClass("zenscriptx.function.BiPredicate")
 @ZenRegister
 interface BiPredicate<in T, in U> {
-    fun test(t: T, u: U): Boolean
+    @ZenMethod fun test(t: T, u: U): Boolean
 }
