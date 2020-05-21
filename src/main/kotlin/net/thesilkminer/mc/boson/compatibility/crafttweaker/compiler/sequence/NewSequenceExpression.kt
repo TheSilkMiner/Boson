@@ -22,6 +22,8 @@
 
 package net.thesilkminer.mc.boson.compatibility.crafttweaker.compiler.sequence
 
+import net.thesilkminer.mc.boson.compatibility.crafttweaker.preprocessor.ExperimentalFlag
+import net.thesilkminer.mc.boson.compatibility.crafttweaker.preprocessor.flagsForCurrentScript
 import net.thesilkminer.mc.boson.compatibility.crafttweaker.zenscriptx.sequence.ZenSequence
 import stanhebben.zenscript.compiler.IEnvironmentMethod
 import stanhebben.zenscript.expression.Expression
@@ -32,7 +34,7 @@ import stanhebben.zenscript.util.ZenPosition
 import stanhebben.zenscript.util.ZenTypeUtil
 
 internal class NewSequenceExpression(position: ZenPosition?, private val genericType: ZenType, expressionList: List<Expression?>) : Expression(position) {
-    private val expressionArray = ExpressionArray(position, ZenTypeArrayBasic(this.genericType), *expressionList.filterNotNull().toTypedArray())
+    private val constructorExpression = this.obtainNeededExpression(position, this.genericType, expressionList)
 
     override fun getType(): ZenType = SequenceZenType(this.genericType)
 
@@ -42,8 +44,15 @@ internal class NewSequenceExpression(position: ZenPosition?, private val generic
         environment?.output?.let {
             it.newObject(ZenSequence::class.java)
             it.dup()
-            this.expressionArray.compile(true, environment)
+            this.constructorExpression.compile(true, environment)
             it.invokeSpecial(ZenTypeUtil.internal(ZenSequence::class.java), "<init>", "([Ljava/lang/Object;)V")
         }
     }
+
+    private fun obtainNeededExpression(position: ZenPosition?, genericType: ZenType, expressionList: List<Expression?>) : Expression =
+            if (ExperimentalFlag.SEQUENCE_ARRAY_ARGUMENT_OBTAINING in flagsForCurrentScript) {
+                TODO("Waiting for proper implementation")
+            } else {
+                ExpressionArray(position, ZenTypeArrayBasic(genericType), *expressionList.filterNotNull().toTypedArray())
+            }
 }
