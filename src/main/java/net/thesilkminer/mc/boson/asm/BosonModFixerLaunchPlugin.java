@@ -23,6 +23,7 @@
 package net.thesilkminer.mc.boson.asm;
 
 import com.google.common.collect.ImmutableSet;
+import net.thesilkminer.mc.boson.asm.transformer.modfix.BosonDeferredRegisterTransformer;
 import net.thesilkminer.mc.boson.asm.transformer.modfix.CrtStoringErrorLoggerTransformer;
 import net.thesilkminer.mc.boson.asm.transformer.modfix.GuiIngredientTransformer;
 import net.thesilkminer.mc.fermion.asm.api.PluginMetadata;
@@ -56,6 +57,7 @@ public final class BosonModFixerLaunchPlugin extends AbstractLaunchPlugin {
     }
 
     private void registerTransformers() {
+        this.registerTransformer(new BosonDeferredRegisterTransformer(this));
         this.registerTransformer(new CrtStoringErrorLoggerTransformer(this));
         this.registerTransformer(new GuiIngredientTransformer(this));
     }
