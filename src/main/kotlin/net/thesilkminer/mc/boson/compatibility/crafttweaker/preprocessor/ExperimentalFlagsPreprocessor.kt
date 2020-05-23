@@ -33,6 +33,7 @@ internal class ExperimentalFlagsPreprocessor(fileName: String, preprocessorLine:
     }
 
     override fun executeActionOnFinish(scriptFile: ScriptFile?) {
+        if (scriptFile?.name != fileName) return
         val experimentalFlags = this.parseExperimentalFlags()
         CraftTweakerAPI.logInfo("Script $scriptFile specifies experimental flags $experimentalFlags should be enabled: enabling")
         attachFlags(scriptFile, experimentalFlags)
