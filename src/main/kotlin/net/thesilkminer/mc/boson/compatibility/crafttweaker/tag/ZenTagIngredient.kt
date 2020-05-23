@@ -50,7 +50,7 @@ class ZenTagIngredient(val tagIngredient: TagIngredient, private val mark: Strin
     override fun contains(ingredient: IIngredient?) = ingredient?.items?.all(this::matches) ?: false
     override fun getLiquids(): MutableList<ILiquidStack> = mutableListOf()
     override fun toCommandString(): String = this.tagIngredient.tag.name.let { "<tag-item:${it.nameSpace}:${it.path}>" }
-    override fun applyNewTransform(item: IItemStack?): IItemStack? = item
+    override fun applyNewTransform(item: IItemStack?): IItemStack? = item.applyNewTransforms(this.newTransformers)
     override fun amount(amount: Int): IIngredient = IngredientStack(this, amount)
     override fun transformNew(transformer: IItemTransformerNew?): IIngredient = if (transformer != null) this.copy(newTransformers = this.newTransformers.append(transformer)) else this
     override fun applyTransform(item: IItemStack?, byPlayer: IPlayer?): IItemStack? = item.applyTransforms(byPlayer, this.transformers)
@@ -75,6 +75,12 @@ class ZenTagIngredient(val tagIngredient: TagIngredient, private val mark: Strin
         if (this == null) return null
         if (transformers.count() <= 0) return this
         return transformers[0].transform(this, byPlayer).applyTransforms(byPlayer, transformers.drop(1))
+    }
+
+    private tailrec fun IItemStack?.applyNewTransforms(transformers: List<IItemTransformerNew>): IItemStack? {
+        if (this == null) return null
+        if (transformers.count() <= 0) return this
+        return transformers[0].transform(this).applyNewTransforms(transformers)
     }
 
     private fun <T> List<T>.append(element: T) = this.toMutableList().apply { this.add(element) }.toList()
