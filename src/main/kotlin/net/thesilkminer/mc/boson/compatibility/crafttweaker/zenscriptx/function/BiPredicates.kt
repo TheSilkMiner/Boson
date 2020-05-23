@@ -27,7 +27,7 @@ import stanhebben.zenscript.annotations.ZenClass
 import stanhebben.zenscript.annotations.ZenMethod
 
 @FunctionalInterface
-@ZenClass("zenscriptx.function.BiPredicate")
+@ZenClass("zenscriptx.fun.BiPredicate")
 @ZenRegister
 interface BiPredicate<in T, in U> {
     @ZenMethod fun test(t: T, u: U): Boolean

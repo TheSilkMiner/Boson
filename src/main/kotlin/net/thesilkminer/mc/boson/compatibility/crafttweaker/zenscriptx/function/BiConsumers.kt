@@ -27,28 +27,28 @@ import stanhebben.zenscript.annotations.ZenClass
 import stanhebben.zenscript.annotations.ZenMethod
 
 @FunctionalInterface
-@ZenClass("zenscriptx.function.BiConsumer")
+@ZenClass("zenscriptx.fun.BiConsumer")
 @ZenRegister
 interface BiConsumer<in T, in U> {
     @ZenMethod fun accept(t: T, u: U)
 }
 
 @FunctionalInterface
-@ZenClass("zenscriptx.function.ObjDoubleConsumer")
+@ZenClass("zenscriptx.fun.ObjDoubleConsumer")
 @ZenRegister
 interface ObjDoubleConsumer<in T> {
     @ZenMethod fun accept(t: T, value: Double)
 }
 
 @FunctionalInterface
-@ZenClass("zenscriptx.function.ObjIntConsumer")
+@ZenClass("zenscriptx.fun.ObjIntConsumer")
 @ZenRegister
 interface ObjIntConsumer<in T> {
     @ZenMethod fun accept(t: T, value: Int)
 }
 
 @FunctionalInterface
-@ZenClass("zenscriptx.function.ObjLongConsumer")
+@ZenClass("zenscriptx.fun.ObjLongConsumer")
 @ZenRegister
 interface ObjLongConsumer<in T> {
     @ZenMethod fun accept(t: T, value: Long)

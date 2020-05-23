@@ -27,28 +27,28 @@ import stanhebben.zenscript.annotations.ZenClass
 import stanhebben.zenscript.annotations.ZenMethod
 
 @FunctionalInterface
-@ZenClass("zenscriptx.function.BiFunction")
+@ZenClass("zenscriptx.fun.BiFunction")
 @ZenRegister
 interface BiFunction<in T, in U, out R> {
     @ZenMethod fun apply(t: T, u: U): R
 }
 
 @FunctionalInterface
-@ZenClass("zenscriptx.function.ToDoubleBiFunction")
+@ZenClass("zenscriptx.fun.ToDoubleBiFunction")
 @ZenRegister
 interface ToDoubleBiFunction<in T, in U> {
     @ZenMethod fun apply(t: T, u: U): Double
 }
 
 @FunctionalInterface
-@ZenClass("zenscriptx.function.ToIntBiFunction")
+@ZenClass("zenscriptx.fun.ToIntBiFunction")
 @ZenRegister
 interface ToIntBiFunction<in T, in U> {
     @ZenMethod fun apply(t: T, u: U): Int
 }
 
 @FunctionalInterface
-@ZenClass("zenscriptx.function.ToLongBiFunction")
+@ZenClass("zenscriptx.fun.ToLongBiFunction")
 @ZenRegister
 interface ToLongBiFunction<in T, in U> {
     @ZenMethod fun apply(t: T, u: U): Long

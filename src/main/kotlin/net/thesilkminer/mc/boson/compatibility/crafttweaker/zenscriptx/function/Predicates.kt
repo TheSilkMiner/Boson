@@ -27,28 +27,28 @@ import stanhebben.zenscript.annotations.ZenClass
 import stanhebben.zenscript.annotations.ZenMethod
 
 @FunctionalInterface
-@ZenClass("zenscriptx.function.Predicate")
+@ZenClass("zenscriptx.fun.Predicate")
 @ZenRegister
 interface Predicate<in T> {
     @ZenMethod fun test(t: T): Boolean
 }
 
 @FunctionalInterface
-@ZenClass("zenscriptx.function.DoublePredicate")
+@ZenClass("zenscriptx.fun.DoublePredicate")
 @ZenRegister
 interface DoublePredicate {
     @ZenMethod fun test(value: Double): Boolean
 }
 
 @FunctionalInterface
-@ZenClass("zenscriptx.function.IntPredicate")
+@ZenClass("zenscriptx.fun.IntPredicate")
 @ZenRegister
 interface IntPredicate {
     @ZenMethod fun test(value: Int): Boolean
 }
 
 @FunctionalInterface
-@ZenClass("zenscriptx.function.LongPredicate")
+@ZenClass("zenscriptx.fun.LongPredicate")
 @ZenRegister
 interface LongPredicate {
     @ZenMethod fun test(value: Long): Boolean

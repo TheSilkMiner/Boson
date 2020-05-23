@@ -27,26 +27,26 @@ import stanhebben.zenscript.annotations.ZenClass
 import stanhebben.zenscript.annotations.ZenMethod
 
 @FunctionalInterface
-@ZenClass("zenscriptx.function.BinaryOperator")
+@ZenClass("zenscriptx.fun.BinaryOperator")
 @ZenRegister
 interface BinaryOperator<T> : BiFunction<T, T, T>
 
 @FunctionalInterface
-@ZenClass("zenscriptx.function.DoubleBinaryOperator")
+@ZenClass("zenscriptx.fun.DoubleBinaryOperator")
 @ZenRegister
 interface DoubleBinaryOperator {
     @ZenMethod fun applyAsDouble(left: Double, right: Double): Double
 }
 
 @FunctionalInterface
-@ZenClass("zenscriptx.function.IntBinaryOperator")
+@ZenClass("zenscriptx.fun.IntBinaryOperator")
 @ZenRegister
 interface IntBinaryOperator {
     @ZenMethod fun applyAsInt(left: Int, right: Int): Int
 }
 
 @FunctionalInterface
-@ZenClass("zenscriptx.function.LongBinaryOperator")
+@ZenClass("zenscriptx.fun.LongBinaryOperator")
 @ZenRegister
 interface LongBinaryOperator {
     @ZenMethod fun applyAsLong(left: Long, right: Long): Long

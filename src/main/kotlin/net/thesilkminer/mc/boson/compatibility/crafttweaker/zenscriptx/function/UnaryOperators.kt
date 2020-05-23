@@ -27,26 +27,26 @@ import stanhebben.zenscript.annotations.ZenClass
 import stanhebben.zenscript.annotations.ZenMethod
 
 @FunctionalInterface
-@ZenClass("zenscriptx.function.UnaryOperator")
+@ZenClass("zenscriptx.fun.UnaryOperator")
 @ZenRegister
 interface UnaryOperator<T> : Function<T, T>
 
 @FunctionalInterface
-@ZenClass("zenscriptx.function.DoubleUnaryOperator")
+@ZenClass("zenscriptx.fun.DoubleUnaryOperator")
 @ZenRegister
 interface DoubleUnaryOperator {
     @ZenMethod fun applyAsDouble(operand: Double): Double
 }
 
 @FunctionalInterface
-@ZenClass("zenscriptx.function.IntUnaryOperator")
+@ZenClass("zenscriptx.fun.IntUnaryOperator")
 @ZenRegister
 interface IntUnaryOperator {
     @ZenMethod fun applyAsInt(operand: Int): Int
 }
 
 @FunctionalInterface
-@ZenClass("zenscriptx.function.LongUnaryOperator")
+@ZenClass("zenscriptx.fun.LongUnaryOperator")
 @ZenRegister
 interface LongUnaryOperator {
     @ZenMethod fun applyAsLong(operand: Long): Long
