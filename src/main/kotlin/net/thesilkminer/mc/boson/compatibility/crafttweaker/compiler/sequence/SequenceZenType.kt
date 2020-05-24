@@ -70,7 +70,7 @@ internal class SequenceZenType(private var zenTypeSupplier: () -> ZenType) : Zen
 
     override fun call(position: ZenPosition?, environment: IEnvironmentGlobal?, receiver: Expression?, vararg arguments: Expression?): Expression =
             if (receiver != null) ExpressionInvalid(position).apply { environment?.error(position, "Cannot call a Sequence") }
-            else NewSequenceExpression(position, this.genericType, arguments.map { it?.cast(position, environment, genericType) })
+            else NewSequenceExpression(position, this.genericType, environment, arguments.toList())
 
     override fun constructCastingRules(environment: IEnvironmentGlobal?, rules: ICastingRuleDelegate?, followCasters: Boolean) = Unit
     override fun makeIterator(numValues: Int, methodOutput: IEnvironmentMethod?): IZenIterator? = null

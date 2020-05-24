@@ -43,11 +43,8 @@ internal class SequencePartialExpression(position: ZenPosition, private val clas
         environment?.error(position, "Bracket handlers cannot have members")
     }
 
-    override fun call(position: ZenPosition?, environment: IEnvironmentMethod?, vararg values: Expression?): Expression {
-        val genericType = this.getGenericType(environment)
-        val expressionList = values.map { it?.cast(position, environment, genericType) }
-        return NewSequenceExpression(position, genericType, expressionList)
-    }
+    override fun call(position: ZenPosition?, environment: IEnvironmentMethod?, vararg values: Expression?): Expression =
+        NewSequenceExpression(position, this.getGenericType(environment), environment, values.toList())
 
     private fun getGenericType(environment: IEnvironmentGlobal?): ZenType {
         val classNameBits = this.className.split('.')
