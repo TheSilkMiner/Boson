@@ -24,7 +24,6 @@ package net.thesilkminer.mc.boson.compatibility.crafttweaker.zenscriptx.function
 
 import crafttweaker.annotations.ZenRegister
 import stanhebben.zenscript.annotations.ZenClass
-import stanhebben.zenscript.annotations.ZenMethod
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.UnaryOperator")
@@ -35,19 +34,19 @@ interface UnaryOperator<T> : Function<T, T>
 @ZenClass("zenscriptx.fun.DoubleUnaryOperator")
 @ZenRegister
 interface DoubleUnaryOperator {
-    @ZenMethod fun applyAsDouble(operand: Double): Double
+    fun applyAsDouble(operand: Double): Double
 }
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.IntUnaryOperator")
 @ZenRegister
 interface IntUnaryOperator {
-    @ZenMethod fun applyAsInt(operand: Int): Int
+    fun applyAsInt(operand: Int): Int
 }
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.LongUnaryOperator")
 @ZenRegister
 interface LongUnaryOperator {
-    @ZenMethod fun applyAsLong(operand: Long): Long
+    fun applyAsLong(operand: Long): Long
 }

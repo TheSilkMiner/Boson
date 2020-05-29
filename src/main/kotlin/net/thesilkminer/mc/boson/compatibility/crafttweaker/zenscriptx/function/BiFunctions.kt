@@ -24,32 +24,31 @@ package net.thesilkminer.mc.boson.compatibility.crafttweaker.zenscriptx.function
 
 import crafttweaker.annotations.ZenRegister
 import stanhebben.zenscript.annotations.ZenClass
-import stanhebben.zenscript.annotations.ZenMethod
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.BiFunction")
 @ZenRegister
 interface BiFunction<in T, in U, out R> {
-    @ZenMethod fun apply(t: T, u: U): R
+    fun apply(t: T, u: U): R
 }
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.ToDoubleBiFunction")
 @ZenRegister
 interface ToDoubleBiFunction<in T, in U> {
-    @ZenMethod fun apply(t: T, u: U): Double
+    fun apply(t: T, u: U): Double
 }
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.ToIntBiFunction")
 @ZenRegister
 interface ToIntBiFunction<in T, in U> {
-    @ZenMethod fun apply(t: T, u: U): Int
+    fun apply(t: T, u: U): Int
 }
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.ToLongBiFunction")
 @ZenRegister
 interface ToLongBiFunction<in T, in U> {
-    @ZenMethod fun apply(t: T, u: U): Long
+    fun apply(t: T, u: U): Long
 }

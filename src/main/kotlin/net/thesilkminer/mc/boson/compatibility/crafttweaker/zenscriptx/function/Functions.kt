@@ -30,89 +30,89 @@ import stanhebben.zenscript.annotations.ZenMethod
 @ZenClass("zenscriptx.fun.Function")
 @ZenRegister
 interface Function<in T, out R> {
-    @ZenMethod fun apply(t: T): R
+    fun apply(t: T): R
 }
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.DoubleFunction")
 @ZenRegister
 interface DoubleFunction<out R> {
-    @ZenMethod fun apply(value: Double): R
+    fun apply(value: Double): R
 }
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.DoubleToIntFunction")
 @ZenRegister
 interface DoubleToIntFunction {
-    @ZenMethod fun applyAsInt(value: Double): Int
+    fun applyAsInt(value: Double): Int
 }
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.DoubleToLongFunction")
 @ZenRegister
 interface DoubleToLongFunction {
-    @ZenMethod fun applyAsLong(value: Double): Long
+    fun applyAsLong(value: Double): Long
 }
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.IntFunction")
 @ZenRegister
 interface IntFunction<out R> {
-    @ZenMethod fun apply(value: Int): R
+    fun apply(value: Int): R
 }
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.IntToDoubleFunction")
 @ZenRegister
 interface IntToDoubleFunction {
-    @ZenMethod fun applyAsDouble(value: Int): Double
+    fun applyAsDouble(value: Int): Double
 }
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.IntToLongFunction")
 @ZenRegister
 interface IntToLongFunction {
-    @ZenMethod fun applyAsLong(value: Int): Long
+    fun applyAsLong(value: Int): Long
 }
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.LongFunction")
 @ZenRegister
 interface LongFunction<out R> {
-    @ZenMethod fun apply(value: Long): R
+    fun apply(value: Long): R
 }
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.LongToDoubleFunction")
 @ZenRegister
 interface LongToDoubleFunction {
-    @ZenMethod fun applyAsDouble(value: Long): Double
+    fun applyAsDouble(value: Long): Double
 }
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.LongToIntFunction")
 @ZenRegister
 interface LongToIntFunction {
-    @ZenMethod fun applyAsInt(value: Long): Int
+    fun applyAsInt(value: Long): Int
 }
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.ToDoubleFunction")
 @ZenRegister
 interface ToDoubleFunction<in T> {
-    @ZenMethod fun apply(value: T): Double
+    fun apply(value: T): Double
 }
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.ToIntFunction")
 @ZenRegister
 interface ToIntFunction<in T> {
-    @ZenMethod fun apply(value: T): Int
+    fun apply(value: T): Int
 }
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.ToLongFunction")
 @ZenRegister
 interface ToLongFunction<in T> {
-    @ZenMethod fun apply(value: T): Long
+    fun apply(value: T): Long
 }

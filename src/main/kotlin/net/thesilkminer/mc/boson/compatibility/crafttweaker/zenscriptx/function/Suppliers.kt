@@ -24,39 +24,38 @@ package net.thesilkminer.mc.boson.compatibility.crafttweaker.zenscriptx.function
 
 import crafttweaker.annotations.ZenRegister
 import stanhebben.zenscript.annotations.ZenClass
-import stanhebben.zenscript.annotations.ZenMethod
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.Supplier")
 @ZenRegister
 interface Supplier<out T> {
-    @ZenMethod fun get(): T
+    fun get(): T
 }
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.BooleanSupplier")
 @ZenRegister
 interface BooleanSupplier {
-    @ZenMethod fun getAsBoolean(): Boolean
+    fun getAsBoolean(): Boolean
 }
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.DoubleSupplier")
 @ZenRegister
 interface DoubleSupplier {
-    @ZenMethod fun getAsDouble(): Double
+    fun getAsDouble(): Double
 }
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.IntSupplier")
 @ZenRegister
 interface IntSupplier {
-    @ZenMethod fun getAsInt(): Int
+    fun getAsInt(): Int
 }
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.LongSupplier")
 @ZenRegister
 interface LongSupplier {
-    @ZenMethod fun getAsLong(): Long
+    fun getAsLong(): Long
 }

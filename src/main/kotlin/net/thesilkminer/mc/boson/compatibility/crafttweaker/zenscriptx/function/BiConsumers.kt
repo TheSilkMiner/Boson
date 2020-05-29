@@ -24,32 +24,31 @@ package net.thesilkminer.mc.boson.compatibility.crafttweaker.zenscriptx.function
 
 import crafttweaker.annotations.ZenRegister
 import stanhebben.zenscript.annotations.ZenClass
-import stanhebben.zenscript.annotations.ZenMethod
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.BiConsumer")
 @ZenRegister
 interface BiConsumer<in T, in U> {
-    @ZenMethod fun accept(t: T, u: U)
+    fun accept(t: T, u: U)
 }
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.ObjDoubleConsumer")
 @ZenRegister
 interface ObjDoubleConsumer<in T> {
-    @ZenMethod fun accept(t: T, value: Double)
+    fun accept(t: T, value: Double)
 }
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.ObjIntConsumer")
 @ZenRegister
 interface ObjIntConsumer<in T> {
-    @ZenMethod fun accept(t: T, value: Int)
+    fun accept(t: T, value: Int)
 }
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.ObjLongConsumer")
 @ZenRegister
 interface ObjLongConsumer<in T> {
-    @ZenMethod fun accept(t: T, value: Long)
+    fun accept(t: T, value: Long)
 }

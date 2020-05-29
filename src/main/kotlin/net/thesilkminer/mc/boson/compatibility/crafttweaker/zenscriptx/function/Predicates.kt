@@ -24,32 +24,31 @@ package net.thesilkminer.mc.boson.compatibility.crafttweaker.zenscriptx.function
 
 import crafttweaker.annotations.ZenRegister
 import stanhebben.zenscript.annotations.ZenClass
-import stanhebben.zenscript.annotations.ZenMethod
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.Predicate")
 @ZenRegister
 interface Predicate<in T> {
-    @ZenMethod fun test(t: T): Boolean
+    fun test(t: T): Boolean
 }
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.DoublePredicate")
 @ZenRegister
 interface DoublePredicate {
-    @ZenMethod fun test(value: Double): Boolean
+    fun test(value: Double): Boolean
 }
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.IntPredicate")
 @ZenRegister
 interface IntPredicate {
-    @ZenMethod fun test(value: Int): Boolean
+    fun test(value: Int): Boolean
 }
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.LongPredicate")
 @ZenRegister
 interface LongPredicate {
-    @ZenMethod fun test(value: Long): Boolean
+    fun test(value: Long): Boolean
 }

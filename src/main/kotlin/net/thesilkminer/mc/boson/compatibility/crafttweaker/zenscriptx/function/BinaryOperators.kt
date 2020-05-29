@@ -24,7 +24,6 @@ package net.thesilkminer.mc.boson.compatibility.crafttweaker.zenscriptx.function
 
 import crafttweaker.annotations.ZenRegister
 import stanhebben.zenscript.annotations.ZenClass
-import stanhebben.zenscript.annotations.ZenMethod
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.BinaryOperator")
@@ -35,19 +34,19 @@ interface BinaryOperator<T> : BiFunction<T, T, T>
 @ZenClass("zenscriptx.fun.DoubleBinaryOperator")
 @ZenRegister
 interface DoubleBinaryOperator {
-    @ZenMethod fun applyAsDouble(left: Double, right: Double): Double
+    fun applyAsDouble(left: Double, right: Double): Double
 }
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.IntBinaryOperator")
 @ZenRegister
 interface IntBinaryOperator {
-    @ZenMethod fun applyAsInt(left: Int, right: Int): Int
+    fun applyAsInt(left: Int, right: Int): Int
 }
 
 @FunctionalInterface
 @ZenClass("zenscriptx.fun.LongBinaryOperator")
 @ZenRegister
 interface LongBinaryOperator {
-    @ZenMethod fun applyAsLong(left: Long, right: Long): Long
+    fun applyAsLong(left: Long, right: Long): Long
 }
