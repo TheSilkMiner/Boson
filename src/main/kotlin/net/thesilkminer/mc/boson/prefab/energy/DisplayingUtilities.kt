@@ -52,7 +52,7 @@ private fun ULong.roundToSmallestDouble(): Pair<Double, Int> {
 
     var doubleEquivalent = this.toDouble()
     var rounds = 0
-    while ((doubleEquivalent / 1000.0) > 0) {
+    while ((doubleEquivalent / 1000.0).toInt() > 0) {
         doubleEquivalent /= 1000.0
         ++rounds
     }
