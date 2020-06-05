@@ -47,7 +47,14 @@ internal fun attachFlags(file: ScriptFile?, flags: List<ExperimentalFlag>) {
 internal object ExperimentalFlagsHandler {
     fun onScriptLoadBeginEvent(event: CrTScriptLoadingEvent.Pre) {
         l.debug("CraftTweaker is about to start loading a script from file '${event.fileName}'")
-        if (currentScript != null) throw IllegalStateException("Attempting to load a script while another one was loading! Invariants have been broken!")
+        if (currentScript != null) {
+            l.bigError("""
+                Attempting to load a script while another one was loading! Invariants have been broken! Attempting to correct: note that this may break further down the line
+                Current Script: $currentScript
+                New file: ${event.fileName}
+            """.trimIndent())
+            currentScript = null
+        }
     }
 
     fun onScriptLoadEvent(event: CrTScriptLoadEvent) {
