@@ -58,7 +58,8 @@ import net.thesilkminer.mc.boson.prefab.naming.toNameSpacedString
 import kotlin.reflect.full.cast
 import kotlin.reflect.full.createInstance
 
-internal class RecipeLoadingProcessor(private val flags: Int) : Processor<JsonObject> {
+// This is not internal so that getCondition, getIngredient, getItemStack can be used by others
+class RecipeLoadingProcessor(private val flags: Int) : Processor<JsonObject> {
     companion object {
         private const val INGREDIENTS = "ingredients"
         private const val RECIPES = "recipes"
