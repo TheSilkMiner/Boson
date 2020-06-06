@@ -86,7 +86,7 @@ private class EnergyInfoProvider : IProbeInfoProvider {
     }
 
     private fun IProbeInfo.appendVerboseEnergyInfo(te: TileEntity) {
-        if (te.isEnergyConsumer()) return // Not much else to say
+        //if (te.isEnergyConsumer()) Not much else to say
         if (te.isEnergyProducer()) {
             val power = te.energyProducer?.producedPower?.toUserFriendlyAmount(decimalDigits = 3) ?: throw IllegalStateException()
             this.horizontal()
@@ -95,7 +95,7 @@ private class EnergyInfoProvider : IProbeInfoProvider {
         if (te.isEnergyHolder()) {
             val holder = te.energyHolder ?: throw IllegalStateException()
             val max = holder.maximumCapacity.toUserFriendlyAmount(decimalDigits = 3)
-            val power = holder.maximumCapacity.toUserFriendlyAmount(decimalDigits = 3)
+            val power = holder.storedPower.toUserFriendlyAmount(decimalDigits = 3)
 
             this.horizontal()
                     .text("${TextStyleClass.PROGRESS}${IProbeInfo.STARTLOC}$ENERGY_TOOLTIP.holder.status${IProbeInfo.ENDLOC}: $power / $max")
