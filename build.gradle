@@ -131,7 +131,7 @@ repositories {
     }
     maven {
         name 'TehNut'
-        url 'http://tehnut.info/maven'
+        url 'https://maven.tehnut.info/'
     }
     maven {
         name 'Tterrag'
