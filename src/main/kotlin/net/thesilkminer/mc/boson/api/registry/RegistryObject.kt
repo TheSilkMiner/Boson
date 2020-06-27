@@ -24,17 +24,27 @@ package net.thesilkminer.mc.boson.api.registry
 
 import net.minecraftforge.registries.IForgeRegistry
 import net.minecraftforge.registries.IForgeRegistryEntry
+import net.thesilkminer.kotlin.commons.lang.uncheckedCast
 import net.thesilkminer.mc.boson.api.experimentalBosonApi
 import net.thesilkminer.mc.boson.api.id.NameSpacedString
 import org.jetbrains.annotations.ApiStatus
+import kotlin.reflect.KClass
 
 @ApiStatus.Experimental
 interface RegistryObject<T : IForgeRegistryEntry<in T>> {
     companion object {
         // TODO("IForgeRegistry -> Registry")
+        fun <T : IForgeRegistryEntry<T>, U : T> create(name: NameSpacedString, registryType: () -> KClass<out T>): RegistryObject<U>
+                = experimentalBosonApi.createRegistryObject(name, registryType)
         fun <T : IForgeRegistryEntry<T>, U : T> create(name: NameSpacedString, registry: IForgeRegistry<T>): RegistryObject<U> = experimentalBosonApi.createRegistryObject(name, registry)
+        fun <T : IForgeRegistryEntry<T>, U : T> create(name: NameSpacedString, baseType: KClass<T>, modId: String): RegistryObject<U> =
+                experimentalBosonApi.createRegistryObject(name, baseType, modId)
 
+        fun <T : IForgeRegistryEntry<in T>> empty(): RegistryObject<T> = experimentalBosonApi.obtainEmptyRegistryObject()
+
+        operator fun <T : IForgeRegistryEntry<T>, U : T> invoke(name: NameSpacedString, registryType: () -> KClass<out T>): RegistryObject<U> = this.create(name, registryType)
         operator fun <T : IForgeRegistryEntry<T>, U : T> invoke(name: NameSpacedString, registry: IForgeRegistry<T>): RegistryObject<U> = create(name, registry)
+        operator fun <T : IForgeRegistryEntry<T>, U : T> invoke(name: NameSpacedString, baseType: KClass<T>, modId: String): RegistryObject<U> = this.create(name, baseType, modId)
     }
 
     val name: NameSpacedString

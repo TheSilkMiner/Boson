@@ -27,6 +27,7 @@ package net.thesilkminer.mc.boson.api
 import net.minecraftforge.fml.common.eventhandler.EventBus
 import net.minecraftforge.registries.IForgeRegistry
 import net.minecraftforge.registries.IForgeRegistryEntry
+import net.minecraftforge.registries.RegistryBuilder
 import net.thesilkminer.kotlin.commons.lang.uncheckedCast
 import net.thesilkminer.mc.boson.api.communication.Message
 import net.thesilkminer.mc.boson.api.communication.MessageHandler
@@ -168,12 +169,14 @@ val bosonApi by lazy {
 
 val experimentalBosonApi by lazy {
     loadWithService(ExperimentalBosonApi::class) {
+        class EmptyRegistryObject<T : IForgeRegistryEntry<in T>>(override val name: NameSpacedString, override val value: T? = null) : RegistryObject<T>
         object : ExperimentalBosonApi {
             init {
                 l.bigError("No API binding found! Replacing with dummy implementation")
             }
 
-            override fun <T : IForgeRegistryEntry<T>> createDeferredRegister(registry: IForgeRegistry<T>, owner: String): DeferredRegister<T> = object : DeferredRegister<T> {
+            override fun <T : IForgeRegistryEntry<T>> createDeferredRegister(owner: String, registry: IForgeRegistry<T>): DeferredRegister<T> = object : DeferredRegister<T> {
+                override val registryType: KClass<T> = registry.registrySuperType.kotlin
                 override val registry: IForgeRegistry<T> = registry
                 override val owner: String = owner
 
@@ -185,11 +188,26 @@ val experimentalBosonApi by lazy {
                 override fun subscribeOnto(bus: EventBus) = Unit
             }
 
-            override fun <T : IForgeRegistryEntry<T>, U : T> createRegistryObject(name: NameSpacedString, registry: IForgeRegistry<T>): RegistryObject<U> =
-                    object: RegistryObject<U> {
-                        override val name: NameSpacedString = name
-                        override val value: U? = null
-                    }
+            override fun <T : IForgeRegistryEntry<T>> createDeferredRegister(owner: String, type: KClass<T>, registryFactory: () -> RegistryBuilder<T>): DeferredRegister<T> =
+                    this.createDeferredRegister(owner, type)
+
+            override fun <T : IForgeRegistryEntry<T>> createDeferredRegister(owner: String, type: KClass<T>): DeferredRegister<T> = object : DeferredRegister<T> {
+                override val registryType: KClass<T> = type
+                override val registry: IForgeRegistry<T> get() = throw IllegalStateException("Unable to find target registry")
+                override val owner: String = owner
+
+                override fun <U : T> register(name: String, objectSupplier: () -> U): RegistryObject<U> = object : RegistryObject<U> {
+                    override val name: NameSpacedString = NameSpacedString(name)
+                    override val value: U? = null
+                }
+
+                override fun subscribeOnto(bus: EventBus) = Unit
+            }
+
+            override fun <T : IForgeRegistryEntry<T>, U : T> createRegistryObject(name: NameSpacedString, registryType: () -> KClass<out T>): RegistryObject<U> = EmptyRegistryObject(name)
+            override fun <T : IForgeRegistryEntry<T>, U : T> createRegistryObject(name: NameSpacedString, registry: IForgeRegistry<T>): RegistryObject<U> = EmptyRegistryObject(name)
+            override fun <T : IForgeRegistryEntry<T>, U : T> createRegistryObject(name: NameSpacedString, baseType: KClass<T>, modId: String): RegistryObject<U> = EmptyRegistryObject(name)
+            override fun <T : IForgeRegistryEntry<in T>> obtainEmptyRegistryObject(): RegistryObject<T> = EmptyRegistryObject(NameSpacedString("empty_name"))
         }
     }
 }
@@ -222,8 +240,13 @@ interface BosonApi {
 
 @ApiStatus.Experimental
 interface ExperimentalBosonApi {
-    fun <T : IForgeRegistryEntry<T>> createDeferredRegister(registry: IForgeRegistry<T>, owner: String): DeferredRegister<T>
+    fun <T : IForgeRegistryEntry<T>> createDeferredRegister(owner: String, registry: IForgeRegistry<T>): DeferredRegister<T>
+    fun <T : IForgeRegistryEntry<T>> createDeferredRegister(owner: String, type: KClass<T>, registryFactory: () -> RegistryBuilder<T>): DeferredRegister<T>
+    fun <T : IForgeRegistryEntry<T>> createDeferredRegister(owner: String, type: KClass<T>): DeferredRegister<T>
+    fun <T : IForgeRegistryEntry<T>, U : T> createRegistryObject(name: NameSpacedString, registryType: () -> KClass<out T>): RegistryObject<U>
     fun <T : IForgeRegistryEntry<T>, U : T> createRegistryObject(name: NameSpacedString, registry: IForgeRegistry<T>): RegistryObject<U>
+    fun <T : IForgeRegistryEntry<T>, U : T> createRegistryObject(name: NameSpacedString, baseType: KClass<T>, modId: String): RegistryObject<U>
+    fun <T : IForgeRegistryEntry<in T>> obtainEmptyRegistryObject(): RegistryObject<T>
 }
 
 private fun <T : Any> loadWithService(lookUpInterface: KClass<T>, defaultProvider: () -> T) : T {

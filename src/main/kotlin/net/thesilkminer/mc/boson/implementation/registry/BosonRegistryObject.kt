@@ -27,6 +27,7 @@ import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.registries.IForgeRegistry
 import net.minecraftforge.registries.IForgeRegistryEntry
+import net.minecraftforge.registries.RegistryManager
 import net.thesilkminer.kotlin.commons.lang.reloadableLazy
 import net.thesilkminer.kotlin.commons.lang.uncheckedCast
 import net.thesilkminer.mc.boson.MOD_NAME
@@ -34,22 +35,42 @@ import net.thesilkminer.mc.boson.api.event.ObjectHoldersAppliedEvent
 import net.thesilkminer.mc.boson.api.id.NameSpacedString
 import net.thesilkminer.mc.boson.api.log.L
 import net.thesilkminer.mc.boson.api.registry.RegistryObject
+import net.thesilkminer.mc.boson.prefab.naming.toNameSpacedString
+import kotlin.reflect.KClass
 
 internal class BosonRegistryObject<T : IForgeRegistryEntry<in T>> private constructor(override val name: NameSpacedString,
-                                                                                      private val targetRegistryName: NameSpacedString?,
+                                                                                      private val targetRegistryNameProvider: () -> NameSpacedString?,
                                                                                       private val objectGetter: (NameSpacedString) -> T?) : RegistryObject<T> {
     companion object {
         private val allRegistryObjects = mutableListOf<BosonRegistryObject<*>>()
         private val l = L(MOD_NAME, "Registry Object Reloading")
+        private val empty: BosonRegistryObject<*> by lazy { BosonRegistryObject(NameSpacedString("empty"), { null }) { null } }
 
         init { MinecraftForge.EVENT_BUS.register(this) }
 
+        internal fun <T : IForgeRegistryEntry<T>, U : T> build(name: NameSpacedString, registryType: () -> KClass<out T>): RegistryObject<U> =
+                BosonRegistryObject(name, RegistryManager.ACTIVE.getRegistry(registryType().java.uncheckedCast<Class<T>>()))
+
         internal fun <T : IForgeRegistryEntry<T>, U : T> build(name: NameSpacedString, registry: IForgeRegistry<T>): RegistryObject<U> {
             @Suppress("RemoveExplicitTypeArguments") // Somehow type inference breaks again here
-            return BosonRegistryObject<U>(name, registry.name?.let { NameSpacedString(it.namespace, it.path) }) { registry.findTarget(it) }
+            return BosonRegistryObject<U>(name, { registry.name?.let { NameSpacedString(it.namespace, it.path) } }) { registry.findTarget(it) }
         }
 
+        internal fun <T : IForgeRegistryEntry<T>, U : T> build(name: NameSpacedString, registryType: KClass<T>, modId: String): RegistryObject<U> {
+            @Suppress("RemoveExplicitTypeArguments")
+            return BosonRegistryObject<U>(name, { RegistryManager.ACTIVE.getRegistry(registryType.java)?.name?.toNameSpacedString() }) {
+                val registry = RegistryManager.ACTIVE.getRegistry(registryType.java)
+                        ?: throw IllegalStateException("Unable to lookup registry of type '${registryType.qualifiedName}' for owner '${modId}'")
+                registry.findTarget(it)
+            }
+        }
+
+        internal fun <T : IForgeRegistryEntry<in T>> empty() = empty.uncheckedCast<RegistryObject<T>>()
+
+        internal operator fun <T : IForgeRegistryEntry<T>, U : T> invoke(name: NameSpacedString, registryType: () -> KClass<out T>): RegistryObject<U> = build(name, registryType)
         internal operator fun <T : IForgeRegistryEntry<T>, U : T> invoke(name: NameSpacedString, registry: IForgeRegistry<T>): RegistryObject<U> = build(name, registry)
+        internal operator fun <T : IForgeRegistryEntry<T>, U : T> invoke(name: NameSpacedString, registryType: KClass<T>, modId: String): RegistryObject<U> = build(name, registryType, modId)
+        internal operator fun <T : IForgeRegistryEntry<in T>> invoke(): RegistryObject<T> = empty()
 
         @SubscribeEvent
         fun onObjectHoldersApplication(event: ObjectHoldersAppliedEvent) = this.allRegistryObjects.forEach(BosonRegistryObject<*>::reload)
@@ -67,7 +88,7 @@ internal class BosonRegistryObject<T : IForgeRegistryEntry<in T>> private constr
     override val value: T? by reloadableLazy
 
     private fun reload() {
-        l.debug("Reloading entry '${this.name}' from registry '${this.targetRegistryName ?: "ERROR TYPE"}'")
+        l.debug("Reloading entry '${this.name}' from registry '${this.targetRegistryNameProvider() ?: "ERROR TYPE"}'")
         this.reloadableLazy.reload()
     }
 
@@ -77,10 +98,10 @@ internal class BosonRegistryObject<T : IForgeRegistryEntry<in T>> private constr
         if (this === other) return true
         if (other == null || this::class != other::class) return false
         if ((other as? BosonRegistryObject<*>) == null) return false
-        return this.name == other.name && this.targetRegistryName == other.targetRegistryName
+        return this.name == other.name && this.targetRegistryNameProvider() == other.targetRegistryNameProvider()
     }
 
-    override fun hashCode() = 31 * this.name.hashCode() + (this.targetRegistryName?.hashCode() ?: 0)
+    override fun hashCode() = 31 * this.name.hashCode() + (this.targetRegistryNameProvider()?.hashCode() ?: 0)
 
-    override fun toString() = "RegistryObject{name='${this.name}',targetRegistryName='${this.targetRegistryName}'}"
+    override fun toString() = "RegistryObject{name='${this.name}',targetRegistryName='${this.targetRegistryNameProvider()}'}"
 }

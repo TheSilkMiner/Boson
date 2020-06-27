@@ -26,26 +26,40 @@ import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.RegistryEvent
 import net.minecraftforge.fml.common.eventhandler.EventBus
+import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.registries.IForgeRegistry
 import net.minecraftforge.registries.IForgeRegistryEntry
+import net.minecraftforge.registries.RegistryBuilder
+import net.minecraftforge.registries.RegistryManager
 import net.thesilkminer.kotlin.commons.lang.uncheckedCast
 import net.thesilkminer.mc.boson.MOD_NAME
 import net.thesilkminer.mc.boson.api.id.NameSpacedString
 import net.thesilkminer.mc.boson.api.log.L
 import net.thesilkminer.mc.boson.api.registry.DeferredRegister
 import net.thesilkminer.mc.boson.api.registry.RegistryObject
+import kotlin.reflect.KClass
 
-internal class BosonDeferredRegister<T : IForgeRegistryEntry<T>>(override val registry: IForgeRegistry<T>, override val owner: String) : DeferredRegister<T> {
+internal class BosonDeferredRegister<T : IForgeRegistryEntry<T>>(override val owner: String, override val registryType: KClass<T>, private var registryStorage: IForgeRegistry<T>?,
+                                                                 private var registryFactory: (() -> RegistryBuilder<T>)?) : DeferredRegister<T> {
     private companion object {
         private val l = L(MOD_NAME, "DeferredRegister")
     }
 
+    constructor(owner: String, registry: IForgeRegistry<T>) : this(owner, registry.registrySuperType.kotlin, registry, null)
+    constructor(owner: String, registryType: KClass<T>, registryFactory: () -> RegistryBuilder<T>) : this(owner, registryType, null, registryFactory)
+    constructor(owner: String, registryType: KClass<T>) : this(owner, registryType, null, null)
+
     private val entries = mutableListOf<Pair<RegistryObject<*>, () -> T>>()
+    private var hasRegistered = false
+
+    override val registry: IForgeRegistry<T> get() = this.registryStorage ?: throw IllegalStateException("Unable to obtain custom registry before it has been registered")
 
     override fun <U : T> register(name: String, objectSupplier: () -> U): RegistryObject<U> {
+        if (this.hasRegistered) throw IllegalStateException("Cannot register entries to DeferredRegister after RegistryEvent.Register has been fired")
+
         val entryName = NameSpacedString(this.owner, name.ensureValid())
-        val registryObject = RegistryObject<T, U>(entryName, this.registry)
+        val registryObject = if (this.registryStorage != null) RegistryObject<T, U>(entryName, this.registry) else RegistryObject<T, U>(entryName, this.registryType, this.owner)
 
         if (this.entries.any { it.first == registryObject }) throw IllegalStateException("Found duplicate registration for name '$entryName'")
 
@@ -57,6 +71,31 @@ internal class BosonDeferredRegister<T : IForgeRegistryEntry<T>>(override val re
     override fun subscribeOnto(bus: EventBus) = MinecraftForge.EVENT_BUS.register(this)
 
     @SubscribeEvent
+    fun create(@Suppress("UNUSED_PARAMETER") event: RegistryEvent.NewRegistry) {
+        if (this.registryStorage != null) {
+            this.registryFactory.let {
+                if (it == null) {
+                    l.info("Attempted to create a DeferredRegister for an unknown registry without a factory: scheduling look-up later")
+                    return
+                }
+                this.registryStorage = it().create()
+                l.info("Successfully created registry '${this.registryStorage}'")
+            }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    fun capture(@Suppress("UNUSED_PARAMETER") event: RegistryEvent.NewRegistry) {
+        if (this.registryStorage == null) {
+            RegistryManager.ACTIVE.getRegistry(this.registryType.java).let {
+                if (it == null) throw IllegalStateException("Unable to lookup registry of type '${this.registryType.qualifiedName}' for owner '${this.owner}'")
+                this.registryStorage = it
+                l.info("Successfully looked up registry '${this.registryStorage}'")
+            }
+        }
+    }
+
+    @SubscribeEvent
     fun register(event: RegistryEvent.Register<*>) {
         if (!this.shouldLoad(event.forgeRegistry, this.registry)) return
 
@@ -64,6 +103,8 @@ internal class BosonDeferredRegister<T : IForgeRegistryEntry<T>>(override val re
         l.info("Performing deferred registration for registry '${registry.name ?: registry.registrySuperType.kotlin.qualifiedName ?: "ERROR TYPE"}' for owner '${this.owner}'")
 
         this.entries.forEach { registry.register(it.second()).also { _ -> it.first.attemptHotReload() } }
+
+        this.hasRegistered = true
     }
 
     private fun shouldLoad(eventRegistry: IForgeRegistry<*>, otherRegistry: IForgeRegistry<*>): Boolean {

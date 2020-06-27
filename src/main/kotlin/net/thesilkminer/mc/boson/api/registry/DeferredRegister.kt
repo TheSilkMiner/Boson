@@ -25,17 +25,25 @@ package net.thesilkminer.mc.boson.api.registry
 import net.minecraftforge.fml.common.eventhandler.EventBus
 import net.minecraftforge.registries.IForgeRegistry
 import net.minecraftforge.registries.IForgeRegistryEntry
+import net.minecraftforge.registries.RegistryBuilder
 import net.thesilkminer.mc.boson.api.experimentalBosonApi
 import org.jetbrains.annotations.ApiStatus
+import kotlin.reflect.KClass
 
 @ApiStatus.Experimental
 interface DeferredRegister<T : IForgeRegistryEntry<T>> {
     companion object {
-        fun <T : IForgeRegistryEntry<T>> obtain(registry: IForgeRegistry<T>, owner: String): DeferredRegister<T> = experimentalBosonApi.createDeferredRegister(registry, owner)
+        fun <T : IForgeRegistryEntry<T>> obtain(owner: String, registry: IForgeRegistry<T>): DeferredRegister<T> = experimentalBosonApi.createDeferredRegister(owner, registry)
+        fun <T : IForgeRegistryEntry<T>> obtain(owner: String, type: KClass<T>, registryFactory: () -> RegistryBuilder<T>): DeferredRegister<T> =
+                experimentalBosonApi.createDeferredRegister(owner, type, registryFactory)
+        fun <T : IForgeRegistryEntry<T>> obtain(owner: String, type: KClass<T>): DeferredRegister<T> = experimentalBosonApi.createDeferredRegister(owner, type)
 
-        operator fun <T : IForgeRegistryEntry<T>> invoke(registry: IForgeRegistry<T>, owner: String) = obtain(registry, owner)
+        operator fun <T : IForgeRegistryEntry<T>> invoke(owner: String, registry: IForgeRegistry<T>) = this.obtain(owner, registry)
+        operator fun <T : IForgeRegistryEntry<T>> invoke(owner: String, type: KClass<T>, registryFactory: () -> RegistryBuilder<T>) = this.obtain(owner, type, registryFactory)
+        operator fun <T : IForgeRegistryEntry<T>> invoke(owner: String, type: KClass<T>) = this.obtain(owner, type)
     }
 
+    val registryType: KClass<T>
     val registry: IForgeRegistry<T>
     val owner: String
 
