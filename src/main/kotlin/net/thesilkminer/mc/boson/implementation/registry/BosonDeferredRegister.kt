@@ -45,12 +45,15 @@ internal class BosonDeferredRegister<T : IForgeRegistryEntry<T>>(override val ow
                                                                  private val registryFactory: (() -> RegistryBuilder<T>)?) : DeferredRegister<T> {
     private companion object {
         private val l = L(MOD_NAME, "DeferredRegister")
+
+        private fun <T : IForgeRegistryEntry<T>> prepareRegistry(owner: String, name: String, type: KClass<T>, factory: RegistryBuilder<T>.() -> Unit): RegistryBuilder<T> =
+                RegistryBuilder<T>().setName(NameSpacedString(owner, name).toResourceLocation()).setType(type.java).apply { this.factory() }
     }
 
     constructor(owner: String, registryType: KClass<T>) : this(owner, registryType, null, null)
     constructor(owner: String, registry: IForgeRegistry<T>) : this(owner, registry.registrySuperType.kotlin, registry, null)
     constructor(owner: String, registryType: KClass<T>, name: String, registryFactory: RegistryBuilder<T>.() -> Unit)
-            : this(owner, registryType, null, { RegistryBuilder<T>().apply { this.registryFactory() }.setName(NameSpacedString(owner, name).toResourceLocation()) })
+            : this(owner, registryType, null, { prepareRegistry(owner, name, registryType, registryFactory) })
 
     private val entries = mutableListOf<Pair<RegistryObject<*>, () -> T>>()
     private var hasRegistered = false
