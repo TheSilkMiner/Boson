@@ -188,7 +188,8 @@ val experimentalBosonApi by lazy {
                 override fun subscribeOnto(bus: EventBus) = Unit
             }
 
-            override fun <T : IForgeRegistryEntry<T>> createDeferredRegister(owner: String, type: KClass<T>, name: String, registryFactory: () -> RegistryBuilder<T>): DeferredRegister<T> =
+            override fun <T : IForgeRegistryEntry<T>> createDeferredRegister(owner: String, type: KClass<T>, name: String,
+                                                                             registryFactory: RegistryBuilder<T>.() -> Unit): DeferredRegister<T> =
                     this.createDeferredRegister(owner, type)
 
             override fun <T : IForgeRegistryEntry<T>> createDeferredRegister(owner: String, type: KClass<T>): DeferredRegister<T> = object : DeferredRegister<T> {
@@ -241,7 +242,7 @@ interface BosonApi {
 @ApiStatus.Experimental
 interface ExperimentalBosonApi {
     fun <T : IForgeRegistryEntry<T>> createDeferredRegister(owner: String, registry: IForgeRegistry<T>): DeferredRegister<T>
-    fun <T : IForgeRegistryEntry<T>> createDeferredRegister(owner: String, type: KClass<T>, name: String, registryFactory: () -> RegistryBuilder<T>): DeferredRegister<T>
+    fun <T : IForgeRegistryEntry<T>> createDeferredRegister(owner: String, type: KClass<T>, name: String, registryFactory: RegistryBuilder<T>.() -> Unit): DeferredRegister<T>
     fun <T : IForgeRegistryEntry<T>> createDeferredRegister(owner: String, type: KClass<T>): DeferredRegister<T>
     fun <T : IForgeRegistryEntry<T>, U : T> createRegistryObject(name: NameSpacedString, registryType: () -> KClass<out T>): RegistryObject<U>
     fun <T : IForgeRegistryEntry<T>, U : T> createRegistryObject(name: NameSpacedString, registry: IForgeRegistry<T>): RegistryObject<U>

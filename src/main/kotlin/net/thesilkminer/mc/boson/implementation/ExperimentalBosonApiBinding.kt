@@ -43,7 +43,7 @@ class ExperimentalBosonApiBinding : ExperimentalBosonApi {
     }
 
     override fun <T : IForgeRegistryEntry<T>> createDeferredRegister(owner: String, registry: IForgeRegistry<T>): DeferredRegister<T> = BosonDeferredRegister(owner, registry)
-    override fun <T : IForgeRegistryEntry<T>> createDeferredRegister(owner: String, type: KClass<T>, name: String, registryFactory: () -> RegistryBuilder<T>): DeferredRegister<T>
+    override fun <T : IForgeRegistryEntry<T>> createDeferredRegister(owner: String, type: KClass<T>, name: String, registryFactory: RegistryBuilder<T>.() -> Unit): DeferredRegister<T>
             = BosonDeferredRegister(owner, type, name, registryFactory)
     override fun <T : IForgeRegistryEntry<T>> createDeferredRegister(owner: String, type: KClass<T>): DeferredRegister<T> = BosonDeferredRegister(owner, type)
     override fun <T : IForgeRegistryEntry<T>, U : T> createRegistryObject(name: NameSpacedString, registryType: () -> KClass<out T>): RegistryObject<U> = BosonRegistryObject(name, registryType)
