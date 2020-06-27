@@ -72,10 +72,10 @@ internal class BosonDeferredRegister<T : IForgeRegistryEntry<T>>(override val ow
 
     @SubscribeEvent
     fun create(@Suppress("UNUSED_PARAMETER") event: RegistryEvent.NewRegistry) {
-        if (this.registryStorage != null) {
+        if (this.registryStorage == null) {
             this.registryFactory.let {
                 if (it == null) {
-                    l.info("Attempted to create a DeferredRegister for an unknown registry without a factory: scheduling look-up later")
+                    l.info("Attempted to create a DeferredRegister for an unknown registry (base class: ${this.registryType.qualifiedName}) without a factory: assuming it's a look-up")
                     return
                 }
                 this.registryStorage = it().create()
