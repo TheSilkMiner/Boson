@@ -34,12 +34,13 @@ import kotlin.reflect.KClass
 interface DeferredRegister<T : IForgeRegistryEntry<T>> {
     companion object {
         fun <T : IForgeRegistryEntry<T>> obtain(owner: String, registry: IForgeRegistry<T>): DeferredRegister<T> = experimentalBosonApi.createDeferredRegister(owner, registry)
-        fun <T : IForgeRegistryEntry<T>> obtain(owner: String, type: KClass<T>, registryFactory: () -> RegistryBuilder<T>): DeferredRegister<T> =
-                experimentalBosonApi.createDeferredRegister(owner, type, registryFactory)
+        fun <T : IForgeRegistryEntry<T>> obtain(owner: String, type: KClass<T>, name: String, registryFactory: () -> RegistryBuilder<T>): DeferredRegister<T> =
+                experimentalBosonApi.createDeferredRegister(owner, type, name, registryFactory)
         fun <T : IForgeRegistryEntry<T>> obtain(owner: String, type: KClass<T>): DeferredRegister<T> = experimentalBosonApi.createDeferredRegister(owner, type)
 
         operator fun <T : IForgeRegistryEntry<T>> invoke(owner: String, registry: IForgeRegistry<T>) = this.obtain(owner, registry)
-        operator fun <T : IForgeRegistryEntry<T>> invoke(owner: String, type: KClass<T>, registryFactory: () -> RegistryBuilder<T>) = this.obtain(owner, type, registryFactory)
+        operator fun <T : IForgeRegistryEntry<T>> invoke(owner: String, type: KClass<T>, name: String, registryFactory: () -> RegistryBuilder<T>) =
+                this.obtain(owner, type, name, registryFactory)
         operator fun <T : IForgeRegistryEntry<T>> invoke(owner: String, type: KClass<T>) = this.obtain(owner, type)
     }
 

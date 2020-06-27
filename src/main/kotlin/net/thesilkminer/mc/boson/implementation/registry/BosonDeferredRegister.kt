@@ -38,17 +38,19 @@ import net.thesilkminer.mc.boson.api.id.NameSpacedString
 import net.thesilkminer.mc.boson.api.log.L
 import net.thesilkminer.mc.boson.api.registry.DeferredRegister
 import net.thesilkminer.mc.boson.api.registry.RegistryObject
+import net.thesilkminer.mc.boson.prefab.naming.toResourceLocation
 import kotlin.reflect.KClass
 
 internal class BosonDeferredRegister<T : IForgeRegistryEntry<T>>(override val owner: String, override val registryType: KClass<T>, private var registryStorage: IForgeRegistry<T>?,
-                                                                 private var registryFactory: (() -> RegistryBuilder<T>)?) : DeferredRegister<T> {
+                                                                 private val registryFactory: (() -> RegistryBuilder<T>)?) : DeferredRegister<T> {
     private companion object {
         private val l = L(MOD_NAME, "DeferredRegister")
     }
 
-    constructor(owner: String, registry: IForgeRegistry<T>) : this(owner, registry.registrySuperType.kotlin, registry, null)
-    constructor(owner: String, registryType: KClass<T>, registryFactory: () -> RegistryBuilder<T>) : this(owner, registryType, null, registryFactory)
     constructor(owner: String, registryType: KClass<T>) : this(owner, registryType, null, null)
+    constructor(owner: String, registry: IForgeRegistry<T>) : this(owner, registry.registrySuperType.kotlin, registry, null)
+    constructor(owner: String, registryType: KClass<T>, name: String, registryFactory: () -> RegistryBuilder<T>)
+            : this(owner, registryType, null, { registryFactory().setName(NameSpacedString(owner, name).toResourceLocation()) })
 
     private val entries = mutableListOf<Pair<RegistryObject<*>, () -> T>>()
     private var hasRegistered = false
@@ -79,7 +81,7 @@ internal class BosonDeferredRegister<T : IForgeRegistryEntry<T>>(override val ow
                     return
                 }
                 this.registryStorage = it().create()
-                l.info("Successfully created registry '${this.registryStorage}'")
+                l.info("Successfully created registry '${this.registryStorage?.name ?: "ERROR!"}' for base class '${this.registryType.qualifiedName}'")
             }
         }
     }
@@ -90,7 +92,7 @@ internal class BosonDeferredRegister<T : IForgeRegistryEntry<T>>(override val ow
             RegistryManager.ACTIVE.getRegistry(this.registryType.java).let {
                 if (it == null) throw IllegalStateException("Unable to lookup registry of type '${this.registryType.qualifiedName}' for owner '${this.owner}'")
                 this.registryStorage = it
-                l.info("Successfully looked up registry '${this.registryStorage}'")
+                l.info("Successfully looked up registry '${this.registryStorage?.name ?: "ERROR!"}'")
             }
         }
     }
