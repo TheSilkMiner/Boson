@@ -39,4 +39,6 @@ class ZenNameSpacedString(@get:ZenGetter(value = "nameSpace") val nameSpace: Str
 
     @ZenMethod
     fun asString() = this.toNative().toString()
+
+    override fun toString() = this.asString()
 }
