@@ -31,6 +31,7 @@ import net.thesilkminer.mc.boson.compatibility.crafttweaker.compiler.tag.boxNati
 import net.thesilkminer.mc.boson.compatibility.crafttweaker.compiler.tag.canFitIn
 import net.thesilkminer.mc.boson.compatibility.crafttweaker.compiler.tag.isCompatibleWith
 import net.thesilkminer.mc.boson.compatibility.crafttweaker.compiler.tag.unboxNative
+import net.thesilkminer.mc.boson.compatibility.crafttweaker.ctAction
 import net.thesilkminer.mc.boson.compatibility.crafttweaker.naming.ZenNameSpacedString
 import net.thesilkminer.mc.boson.compatibility.crafttweaker.toNative
 import net.thesilkminer.mc.boson.compatibility.crafttweaker.toZen
@@ -49,21 +50,19 @@ class ZenTag<T : Any>(val tag: Tag<T>) {
 
     fun <R : Any> getElements() = this.tag.elements.copy().map { it.boxNative<T, R>(this.tag.type) }.toList()
 
-    // TODO("Use actions")
+    fun add(vararg elements: ZenNameSpacedString) = ctAction(this.a(elements.toList())) { this.tag.add(*elements.map { it.toNative() }.toTypedArray()) }
+    fun addAll(elements: Array<*>) = ctAction(this.a("${elements.count()} elements")) { if (elements canFitIn this) this.tag.add(elements.convertToSet()) else Unit }
+    fun addFrom(other: ZenTag<*>) = ctAction(this.a(other.name, true)) { if (this isCompatibleWith other) this.tag.addFrom(other.toNative().uncheckedCast()) else Unit }
 
-    fun add(vararg elements: ZenNameSpacedString) = this.tag.add(*elements.map { it.toNative() }.toTypedArray())
-    fun addAll(elements: Array<*>) = if (elements canFitIn this) this.tag.add(elements.convertToSet()) else Unit
-    fun addFrom(other: ZenTag<*>) = if (this isCompatibleWith other) this.tag.addFrom(other.toNative().uncheckedCast()) else Unit
+    fun replace(vararg elements: ZenNameSpacedString) = ctAction(this.r(elements.toList())) { this.tag.replace(*elements.map { it.toNative() }.toTypedArray()) }
+    fun replaceAll(elements: Array<*>) = ctAction(this.r("${elements.count()} elements")) { if (elements canFitIn this) this.tag.replace(elements.convertToSet()) else Unit }
+    fun replaceWith(other: ZenTag<*>) = ctAction(this.r(other.name, true)) { if (this isCompatibleWith other) this.tag.replaceWith(other.toNative().uncheckedCast()) else Unit }
 
-    fun replace(vararg elements: ZenNameSpacedString) = this.tag.replace(*elements.map { it.toNative() }.toTypedArray())
-    fun replaceAll(elements: Array<*>) = if (elements canFitIn this) this.tag.replace(elements.convertToSet()) else Unit
-    fun replaceWith(other: ZenTag<*>) = if (this isCompatibleWith other) this.tag.replaceWith(other.toNative().uncheckedCast()) else Unit
+    fun remove(vararg elements: ZenNameSpacedString) = ctAction(this.d(elements.toList())) {this.tag.remove(*elements.map { it.toNative() }.toTypedArray()) }
+    fun removeAll(elements: Array<*>) = ctAction(this.d("${elements.count()} elements")) { if (elements canFitIn this) this.tag.remove(elements.convertToSet()) else Unit }
+    fun removeFrom(other: ZenTag<*>) = ctAction(this.d(other.name, true)) { if (this isCompatibleWith other) this.tag.removeFrom(other.toNative().uncheckedCast()) else Unit }
 
-    fun remove(vararg elements: ZenNameSpacedString) = this.tag.remove(*elements.map { it.toNative() }.toTypedArray())
-    fun removeAll(elements: Array<*>) = if (elements canFitIn this) this.tag.remove(elements.convertToSet()) else Unit
-    fun removeFrom(other: ZenTag<*>) = if (this isCompatibleWith other) this.tag.removeFrom(other.toNative().uncheckedCast()) else Unit
-
-    fun clear() = this.tag.clear()
+    fun clear() = ctAction("Clearing contents of tag #${this.name}") { this.tag.clear() }
 
     operator fun contains(element: T) = element in this.tag
     operator fun plusAssign(element: T) = this.addAll(arrayOf<Any>(element))
@@ -79,4 +78,9 @@ class ZenTag<T : Any>(val tag: Tag<T>) {
 
     private fun Set<T>.copy() = this.toSet()
     private fun Array<*>.convertToSet() = this.map { this.unboxNative<Any, T>(this@ZenTag.type.toNative().uncheckedCast()) }.requireNoNulls().toSet()
+
+    private fun a(s: Any, tr: Boolean = false) = "Adding ${this.tr(tr)}$s to tag #${this.name}"
+    private fun r(s: Any, tr: Boolean = false) = "Replacing elements of #${this.name} with ${this.tr(tr)}$s"
+    private fun d(s: Any, tr: Boolean = false) = "Removing ${this.tr(tr)}$s from tag #${this.name}"
+    private fun tr(tr: Boolean) = if (tr) "tag reference #" else ""
 }
