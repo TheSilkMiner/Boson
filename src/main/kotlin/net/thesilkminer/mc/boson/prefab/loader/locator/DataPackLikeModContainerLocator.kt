@@ -102,7 +102,7 @@ class DataPackLikeModContainerLocator(private val targetDirectory: String, priva
                 l.info("Successfully found directory '${this.kind.directoryName}' for mod container '$container': looping now")
 
                 Files.walk(data, 1).forEach {
-                    val name = it.fileName?.toString()
+                    val name = it.fileName?.toString()?.removeSuffix("/") // Removes trailing '/' in case we are iterating inside a ZIP file
                     if (Files.isDirectory(it) && it != data && name != null && name != container.modId && this.findContainerFor(name) != null) {
                         l.debug("Mod container '$container' supplies resources for '${this.kind.directoryName}/$name': looping on it later on")
                         idList += name
