@@ -26,7 +26,6 @@ import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.RegistryEvent
 import net.minecraftforge.fml.common.eventhandler.EventBus
-import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.registries.IForgeRegistry
 import net.minecraftforge.registries.IForgeRegistryEntry
@@ -89,19 +88,17 @@ internal class BosonDeferredRegister<T : IForgeRegistryEntry<T>>(override val ow
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    fun capture(@Suppress("UNUSED_PARAMETER") event: RegistryEvent.NewRegistry) {
+    @SubscribeEvent
+    fun register(event: RegistryEvent.Register<*>) {
         if (this.registryStorage == null) {
+            l.info("Reached registration phase, but no registry was assigned to this DeferredRegister: attempting to look up a registry for '${this.registryType.qualifiedName}'")
             RegistryManager.ACTIVE.getRegistry(this.registryType.java).let {
                 if (it == null) throw IllegalStateException("Unable to lookup registry of type '${this.registryType.qualifiedName}' for owner '${this.owner}'")
                 this.registryStorage = it
                 l.info("Successfully looked up registry '${this.registryStorage?.name ?: "ERROR!"}'")
             }
         }
-    }
 
-    @SubscribeEvent
-    fun register(event: RegistryEvent.Register<*>) {
         if (!this.shouldLoad(event.forgeRegistry, this.registry)) return
 
         val registry = event.forgeRegistry.uncheckedCast<IForgeRegistry<T>>()
