@@ -45,7 +45,7 @@ public final class BosonModFixerLaunchPlugin extends AbstractLaunchPlugin {
                 .setDescription("Interaction with other particles may have unintended consequences, and we're here to fix this")
                 .addAuthor("TheSilkMiner")
                 .addAuthor("RE/SYST")
-                .setVersion("0.1.0")
+                .setVersion("0.1.1")
                 .setLogoPath("boson_logo.png")
                 .setCredits("Fermion for making this possible");
     }

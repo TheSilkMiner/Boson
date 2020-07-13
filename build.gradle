@@ -96,7 +96,7 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = '1.8'
 }
 
-version = "0.1.0" + getBuildString()
+version = "0.1.1" + getBuildString()
 group = "net.thesilkminer.mc.boson" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Boson"
 
