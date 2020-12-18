@@ -95,10 +95,9 @@ class DataPackLikeModContainerLocator(private val targetDirectory: String, priva
                 }
             } ?: pathThatDoesNotExist
 
-
-            if (!Files.exists(data)) {
+            if (data != pathThatDoesNotExist && !Files.exists(data)) {
                 l.debug("No directory found in mod container '$container' that matches the path '${this.kind.directoryName}': skipping it now")
-            } else {
+            } else if (data != pathThatDoesNotExist) {
                 l.info("Successfully found directory '${this.kind.directoryName}' for mod container '$container': looping now")
 
                 Files.walk(data, 1).forEach {

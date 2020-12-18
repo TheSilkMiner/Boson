@@ -124,25 +124,22 @@ internal class BosonLoader(builder: LoaderBuilder) : Loader {
         when {
             this.isDirectory() -> this.processDirectory(phase, globalContext, phaseContext)
             this.exists() -> this.processFile(this, phase, globalContext, phaseContext)
-            else -> this@BosonLoader.l.debug("Skipping location '$this' because it does not exist: please complain to your nearest cat")
         }
     }
 
     private fun Location.processDirectory(phase: LoadingPhase<Any>, globalContext: Context?, phaseContext: Context?) {
-        this@BosonLoader.l.debug("Attempting to read all files inside the directory '$this'")
         Files.walk(this.path).use { file ->
             file.forEach { it.toLocation(this.additionalContext).processFile(this.path.relativize(it).toLocation(this.additionalContext), phase, globalContext, phaseContext) }
         }
     }
 
     private fun Location.processFile(relative: Location, phase: LoadingPhase<Any>, globalContext: Context?, phaseContext: Context?) {
-        this@BosonLoader.l.debug("Attempting to read file '$this' (relative: $relative)")
         val name = this@BosonLoader.identifierBuilder.makeIdentifier(relative, globalContext, phaseContext)
         if (this.isFiltered(phase)) {
-            this@BosonLoader.l.debug("Skipping processing of file '$name' because it was filtered")
             return
         }
         try {
+            this@BosonLoader.l.debug("Processing file '$name'")
             this.process(phase, name, globalContext, phaseContext)
         } catch (e: Exception) {
             throw ProcessingException("An error has occurred while attempting to process location '$this' (name is '$name')", e)
@@ -151,7 +148,6 @@ internal class BosonLoader(builder: LoaderBuilder) : Loader {
 
     private fun Location.process(phase: LoadingPhase<Any>, name: NameSpacedString, globalContext: Context?, phaseContext: Context?) {
         this@BosonLoader.progressReporter?.visitItem(name)
-        this@BosonLoader.l.debug("Reading data from '$name'")
         val content = Files.newBufferedReader(this.path).use { file ->
             file.lines().asSequence().joinToString(separator = "\n") { it }
         }
@@ -159,7 +155,8 @@ internal class BosonLoader(builder: LoaderBuilder) : Loader {
         if (pre == null) {
             phase.processor.process(content, name, globalContext, phaseContext)
         } else {
-            val preContent = pre.preProcessData(content, name, globalContext, phaseContext) ?: return
+            val preContent = pre.preProcessData(content, name, globalContext, phaseContext)
+                    ?: return this@BosonLoader.l.debug("Pre-processor disabled file loading for '$name': aborting")
             phase.processor.process(preContent, name, globalContext, phaseContext)
         }
     }

@@ -42,11 +42,10 @@ class ProgressBarVisitor : ProgressVisitor {
     override fun visitPhases(total: Int) = this.l.debug("$total phases to go through")
     override fun visitPhase(phase: LoadingPhase<*>) {
         this.endVisit()
-        this.l.debug("Preparing to push new bar for phase '${phase.name}'")
         this.nextPhase = phase.name
     }
     override fun visitItemsTotal(total: Int) {
-        this.l.debug("Pushing bar")
+        this.l.debug("Pushing bar for phase '${this.nextPhase}'")
         this.bar = ProgressManager.push(this.nextPhase, total)
         this.nextPhase = null
     }

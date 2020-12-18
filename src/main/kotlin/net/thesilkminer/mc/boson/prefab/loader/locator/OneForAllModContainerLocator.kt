@@ -89,10 +89,12 @@ class OneForAllModContainerLocator(private val lookupContainer: ModContainer, pr
             } ?: pathThatDoesNotExist
 
 
-            if (!Files.exists(root)) {
-                l.debug("No directory found in mod container '$container' that matches the path '$jsonDirectory': will be skipped later on")
-            } else {
-                l.info("Successfully found directory '$jsonDirectory' for mod container '$container': adding it to the list")
+            if (root != pathThatDoesNotExist) {
+                if (!Files.exists(root)) {
+                    l.debug("No directory found in mod container '$container' that matches the path '$jsonDirectory': will be skipped later on")
+                } else {
+                    l.info("Successfully found directory '$jsonDirectory' for mod container '$container': adding it to the list")
+                }
             }
 
             lazy {

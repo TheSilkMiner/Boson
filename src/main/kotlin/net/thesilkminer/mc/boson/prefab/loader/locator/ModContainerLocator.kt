@@ -88,11 +88,12 @@ class ModContainerLocator(private val targetDirectory: String, private val kind:
                 }
             } ?: pathThatDoesNotExist
 
-
-            if (!Files.exists(root)) {
-                l.debug("No directory found in mod container '$container' that matches the path '$jsonDirectory': will be skipped later on")
-            } else {
-                l.info("Successfully found directory '$jsonDirectory' for mod container '$container': adding it to the list")
+            if (root != pathThatDoesNotExist) {
+                if (!Files.exists(root)) {
+                    l.debug("No directory found in mod container '$container' that matches the path '$jsonDirectory': will be skipped later on")
+                } else {
+                    l.info("Successfully found directory '$jsonDirectory' for mod container '$container': adding it to the list")
+                }
             }
 
             lazy {
