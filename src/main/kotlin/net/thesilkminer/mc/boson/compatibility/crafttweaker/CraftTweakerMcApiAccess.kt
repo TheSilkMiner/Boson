@@ -102,9 +102,19 @@ import java.lang.reflect.Method
 import kotlin.reflect.KClass
 
 private val targetClass by lazy { Class.forName("crafttweaker.api.minecraft.CraftTweakerMC").kotlin }
-private fun findMethod(name: String, vararg arguments: KClass<*>) =
-        targetClass.java.getDeclaredMethod(name, *arguments.map { it.java }.toTypedArray())
-                ?: throw IllegalArgumentException("No such method exists: '${name}(${arguments.joinToString { it.simpleName ?: "?" } }}")
+private val methodCache = mutableMapOf<String, Method>()
+
+private fun findMethod(name: String, vararg arguments: KClass<*>): Method {
+    val methodString = "$name(${arguments.joinToString { it.simpleName ?: it.qualifiedName ?: it.java.name ?: "<UNKNOWN>" }})"
+    return methodCache.computeIfAbsent(methodString) {
+        try {
+            targetClass.java.getDeclaredMethod(name, *arguments.map { arg -> arg.java }.toTypedArray())
+        } catch (e: NoSuchMethodException) {
+            throw IllegalArgumentException("No CraftTweaker API method found for key $it", e)
+        }
+    }
+}
+
 private inline fun <reified T> Method.call(vararg arguments: Any?) = this.invoke(null, *arguments).uncheckedCast<T>()
 
 internal fun IItemStack?.toNativeStack() = findMethod("getItemStack", IItemStack::class).call<ItemStack>(this)
