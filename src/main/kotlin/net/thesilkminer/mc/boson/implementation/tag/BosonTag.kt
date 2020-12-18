@@ -24,26 +24,24 @@ package net.thesilkminer.mc.boson.implementation.tag
 
 import net.thesilkminer.mc.boson.api.bosonApi
 import net.thesilkminer.mc.boson.api.id.NameSpacedString
+import net.thesilkminer.mc.boson.api.tag.CircularTagReferenceException
 import net.thesilkminer.mc.boson.api.tag.Tag
 import net.thesilkminer.mc.boson.api.tag.TagType
-import java.lang.RuntimeException
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 
 internal class BosonTag<T : Any>(override val name: NameSpacedString, override val type: TagType<T>) : Tag<T> {
+    private val reentrantLock = ReentrantLock()
+
     private val mutableElements = mutableSetOf<T>()
     private val mutableOtherTags = mutableSetOf<Tag<out T>>()
 
+    private var statefulGetterLock = false
+    private val elementsCache by lazy(this::gatherElements)
+
     private val isFrozen get() = bosonApi.tagRegistry.isFrozen
 
-    private var statefulGetterLock = false
-
-    override val elements: Set<T>
-        get() = mutableSetOf<T>().apply {
-            if (this@BosonTag.statefulGetterLock) throw CircularTagDependencyException(this@BosonTag.name)
-            this@BosonTag.statefulGetterLock = true
-            this.addAllWithCheck(this@BosonTag.mutableElements)
-            this@BosonTag.mutableOtherTags.forEach { this.addAllWithCheck(it.elements) }
-            this@BosonTag.statefulGetterLock = false
-        }.toSet()
+    override val elements: Set<T> get() = if (this.isFrozen) this.elementsCache else this.gatherElements()
 
     override fun add(elements: Set<T>) {
         if (this.isFrozen) return
@@ -82,10 +80,20 @@ internal class BosonTag<T : Any>(override val name: NameSpacedString, override v
         this.mutableOtherTags.clear()
     }
 
-    private fun MutableSet<T>.addAllWithCheck(elements: Collection<T>) = elements.forEach { target ->
-        if (this.none { this@BosonTag.type.equalityEvaluator(target, it) }) this += target
+    private fun gatherElements(): Set<T> {
+        val set = mutableSetOf<T>()
+        this.reentrantLock.withLock {
+            if (this.statefulGetterLock) throw CircularTagReferenceException(this)
+            this.statefulGetterLock = true
+            set.addAllWithCheck(this.mutableElements, this.type)
+            this.mutableOtherTags.forEach { set.addAllWithCheck(it.elements, this.type) }
+            this.statefulGetterLock = false
+        }
+        return set.toSet()
+    }
+
+    private fun MutableSet<T>.addAllWithCheck(elements: Collection<T>, type: TagType<T>) = elements.forEach { target ->
+        if (this.none { type.equalityEvaluator(target, it) }) this += target
     }
 }
-
-private class CircularTagDependencyException(name: NameSpacedString) : RuntimeException("The tag $name specifies a circular dependency on itself: this cannot be resolved")
 
