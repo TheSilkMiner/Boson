@@ -28,5 +28,17 @@ enum class Direction {
     SOUTH,
     WEST,
     UP,
-    DOWN
+    DOWN;
+
+    // We can't hardcode it because of circular references, so we end up with a lot of lazy here
+    val opposite by lazy {
+        when (this) {
+            NORTH -> SOUTH
+            EAST -> WEST
+            SOUTH -> NORTH
+            WEST -> EAST
+            UP -> DOWN
+            DOWN -> UP
+        }
+    }
 }

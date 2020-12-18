@@ -25,6 +25,7 @@
 package net.thesilkminer.mc.boson.prefab.direction
 
 import net.minecraft.util.EnumFacing
+import net.minecraft.util.math.BlockPos
 import net.thesilkminer.mc.boson.api.direction.Direction
 
 fun Direction.toFacing() = when (this) {
@@ -44,3 +45,6 @@ fun EnumFacing.toDirection() = when (this) {
     EnumFacing.WEST -> Direction.WEST
     EnumFacing.EAST -> Direction.EAST
 }
+
+// TODO("API BlockPos out")
+fun BlockPos.offset(direction: Direction, amount: Int = 1): BlockPos = this.offset(direction.toFacing(), amount)
