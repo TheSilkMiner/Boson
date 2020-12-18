@@ -25,7 +25,9 @@
 package net.thesilkminer.mc.boson
 
 import net.thesilkminer.mc.boson.api.modid.BOSON
+import net.thesilkminer.mc.boson.api.modid.CRAFT_TWEAKER_2
 import net.thesilkminer.mc.boson.api.modid.FERMION
+import net.thesilkminer.mc.boson.api.modid.FORGE
 import net.thesilkminer.mc.boson.api.modid.FORGELIN
 
 internal const val MOD_ID = BOSON
@@ -34,9 +36,10 @@ internal const val MOD_VERSION = "@BOSON_VERSION@"
 internal const val MOD_MC_VERSION = "1.12.2"
 internal const val MOD_CERTIFICATE_FINGERPRINT = "@FINGERPRINT@"
 
-internal const val MOD_DEPENDENCIES = "required-after:forge@[14.23.5.2768,);" +
+internal const val MOD_DEPENDENCIES = "required-after:$FORGE@[14.23.5.2768,);" +
         "required-after:$FERMION@[1.0.2,);" +
-        "required-after:$FORGELIN@[1.8.4,)"
+        "required-after:$FORGELIN@[1.8.4,);" +
+        "before:$CRAFT_TWEAKER_2"
 
 @Suppress("SpellCheckingInspection")
 internal const val KOTLIN_LANGUAGE_ADAPTER = "net.shadowfacts.forgelin.KotlinAdapter"
