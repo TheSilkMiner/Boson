@@ -41,7 +41,7 @@ object DebugScreenTagHandler {
     fun onDebugScreenRendering(event: RenderGameOverlayEvent.Text) {
         val mc = Minecraft.getMinecraft()
         val rayTrace = mc.objectMouseOver
-        if (mc.gameSettings.showDebugInfo && !mc.isReducedDebug && rayTrace.typeOfHit == RayTraceResult.Type.BLOCK) {
+        if (mc.gameSettings.showDebugInfo && !mc.isReducedDebug && rayTrace != null && rayTrace.typeOfHit == RayTraceResult.Type.BLOCK) {
             val state = mc.world.getBlockState(rayTrace.blockPos)
             val allTags = bosonApi.tagRegistry[blockTagType]
             val tagsForState = allTags.filter { it has state }
