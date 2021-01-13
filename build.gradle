@@ -27,7 +27,6 @@ plugins {
     id 'org.jlleitschuh.gradle.ktlint' version '8.1.0'
     id 'org.jetbrains.dokka' version '0.9.17'
     id 'net.minecrell.licenser' version '0.4.1'
-    id 'com.wynprice.cursemaven' version '2.1.1'
 }
 
 apply plugin: 'kotlin'
@@ -140,10 +139,14 @@ repositories {
     flatDir {
         dirs 'libs'
     }
-    // Moved to the bottom to ensure that this is the last place we look into
+    // Moved to the bottom to ensure that these are the last places we look into
     maven {
         name 'ModMaven'
         url 'https://modmaven.k-4u.nl/'
+    }
+    maven {
+        name 'CurseMaven'
+        url 'https://www.cursemaven.com/'
     }
 }
 
@@ -163,7 +166,7 @@ dependencies {
     }
 
     // Document Your Mod Mod
-    deobfProvided group: 'curse.maven', name: 'document-your-mod-mod', version: '2918238'
+    deobfProvided group: 'curse.maven', name: 'document-your-mod-mod-328115', version: '2918238'
 
     // Fermion
     compile name: 'Fermion-1.0.2'
@@ -172,7 +175,7 @@ dependencies {
     compile group: 'net.shadowfacts', name: 'Forgelin', version: '1.8.4'
 
     // Hwyla API
-    deobfProvided group: 'mcp.mobius.waila', name: 'Hwyla', version: '1.8.26-B41_1.12.2', classifier: 'api'
+    deobfProvided group: 'curse.maven', name: 'hwyla-253449', version: '2568753'
 
     // JustEnoughItems API
     deobfProvided group: 'mezz.jei', name: 'jei_1.12.2', version: '4.15.0.293', classifier: 'api'
@@ -212,7 +215,7 @@ dependencies {
     }
 
     // Hwyla
-    runtime group: 'mcp.mobius.waila', name: 'Hwyla', version: '1.8.26-B41_1.12.2'
+    runtime group: 'curse.maven', name: 'hwyla-253449', version: '2568751'
 
     // JustEnoughItems
     runtime group: 'mezz.jei', name: 'jei_1.12.2', version: '4.15.0.293'
