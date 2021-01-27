@@ -89,8 +89,11 @@ private class EnergyInfoProvider : IProbeInfoProvider {
         //if (te.isEnergyConsumer()) Not much else to say
         if (te.isEnergyProducer()) {
             val power = te.energyProducer?.producedPower?.toUserFriendlyAmount(decimalDigits = 3) ?: throw IllegalStateException()
+            @Suppress("EXPERIMENTAL_UNSIGNED_LITERALS")
+            val rate = if (te.energyProducer?.productionRate != 1U) te.energyProducer?.productionRate ?: throw IllegalStateException() else null
+            val rateText = if (rate == null) "" else "/${rate}t"
             this.horizontal()
-                    .text("${TextStyleClass.PROGRESS}${IProbeInfo.STARTLOC}$ENERGY_TOOLTIP.producer.power${IProbeInfo.ENDLOC}: $power")
+                    .text("${TextStyleClass.PROGRESS}${IProbeInfo.STARTLOC}$ENERGY_TOOLTIP.producer.power${IProbeInfo.ENDLOC}: $power$rateText")
         }
         if (te.isEnergyHolder()) {
             val holder = te.energyHolder ?: throw IllegalStateException()

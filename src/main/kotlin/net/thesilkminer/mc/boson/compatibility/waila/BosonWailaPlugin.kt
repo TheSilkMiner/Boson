@@ -65,13 +65,14 @@ class BosonWailaPlugin : IWailaPlugin {
 
 private class EnergyDataProvider : IWailaDataProvider {
     @Suppress("EXPERIMENTAL_API_USAGE")
-    internal companion object {
+    companion object {
         internal const val ENERGY_CONFIGURATION_VALUE = "$WAILA_CONFIG_BEGIN.energy"
         private const val ENERGY_TOOLTIP_DISCRIMINATOR = "energy"
 
         private const val ENERGY_COMPOUND_SPECIFIC_KEY = "boson:waila_transfer_energy_data_compound"
         private const val TILE_ENTITY_TYPE = "te_kind"
         private const val PRODUCER_POWER = "producer:power"
+        private const val PRODUCER_RATE = "producer:rate"
         private const val HOLDER_POWER = "holder:power"
         private const val HOLDER_CAP = "holder:max"
 
@@ -90,6 +91,7 @@ private class EnergyDataProvider : IWailaDataProvider {
         private fun TileEntity.addProducerInfoTo(nbt: NBTTagCompound) {
             val producer = this.energyProducer ?: throw IllegalStateException()
             nbt.setLong(PRODUCER_POWER, producer.producedPower.toLong())
+            nbt.setInteger(PRODUCER_RATE, producer.productionRate.toInt())
         }
 
         private fun TileEntity.addHolderInfoTo(nbt: NBTTagCompound) {
@@ -101,7 +103,11 @@ private class EnergyDataProvider : IWailaDataProvider {
         @Suppress("unused", "unused_parameter") private fun TileEntity.addConsumerInfoTo(nbt: NBTTagCompound) = Unit // no info to add
 
         private fun MutableList<String>.appendProducerInfoFrom(nbt: NBTTagCompound) {
-            this += "$WAILA_TOOLTIP_BEGIN.$ENERGY_TOOLTIP_DISCRIMINATOR.producer.power".toLocale(nbt.getLong(PRODUCER_POWER).toULong().toUserFriendlyAmount(decimalDigits = 3))
+            val power = nbt.getLong(PRODUCER_POWER).toULong().toUserFriendlyAmount(decimalDigits = 3)
+            val rate = nbt.getLong(PRODUCER_RATE).toUInt()
+            @Suppress("EXPERIMENTAL_UNSIGNED_LITERALS")
+            val powerString = if (rate == 1U) power else "$power/${rate}t"
+            this += "$WAILA_TOOLTIP_BEGIN.$ENERGY_TOOLTIP_DISCRIMINATOR.producer.power".toLocale(powerString)
         }
 
         private fun MutableList<String>.appendHolderInfoFrom(nbt: NBTTagCompound) {

@@ -43,7 +43,7 @@ internal object Dispatcher {
     }
 
     init {
-        Runtime.getRuntime().addShutdownHook(Thread(Runnable { this.terminate() }))
+        Runtime.getRuntime().addShutdownHook(Thread { this.terminate() })
     }
 
     internal fun dispatch(receiver: String, message: Message<*>) = this.toRunnable(receiver, message)?.let { this.dispatchToPool(it) } ?: Unit
