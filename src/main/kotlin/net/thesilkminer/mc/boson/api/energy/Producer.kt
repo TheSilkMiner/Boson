@@ -28,4 +28,5 @@ import org.jetbrains.annotations.ApiStatus
 @ExperimentalUnsignedTypes
 interface Producer {
     val producedPower: ULong
+    val productionRate: UInt get() = 1U
 }
