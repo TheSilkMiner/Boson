@@ -30,7 +30,8 @@ import net.thesilkminer.mc.boson.api.log.L
 internal class CommunicationMainHandler : MessageHandler {
     private val l = L(MOD_ID, "Message Handler")
 
-    override fun handleMessage(message: Message<*>) {
-        this.l.info("Received message $message")
+    override fun handleMessage(message: Message<*>) = when (message.key) {
+        "echo" -> this.l.info("ECHO/${message.messageType.simpleName} request from ${message.sender}: ${message.content}")
+        else -> this.l.warn("Unknown message received, probably a test: $message")
     }
 }
