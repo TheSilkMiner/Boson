@@ -73,20 +73,24 @@ private class EnergyInfoProvider : IProbeInfoProvider {
     override fun getID() = "$MOD_ID:energy"
 
     private fun IProbeInfo.appendNormalEnergyInfo(te: TileEntity) {
-        if (!te.isEnergyHolder()) return this.appendVerboseEnergyInfo(te)
-        val energyHolder = te.energyHolder ?: throw IllegalStateException()
+        if (te.isEnergyProducer()) this.appendVerboseProducerInfo(te)
+        val energyHolder = te.energyHolder ?: return
         if (energyHolder.maximumCapacity.toLong() < 0) {
             // We're exceeding the normal Long size, so we can't use the progress
             // bar unless we started adding a lot of trickery, which is not what
             // we want: for these rare cases, we revert to the number system
-            return this.appendVerboseEnergyInfo(te)
+            return this.appendVerboseHolderInfo(te)
         }
 
         this.progress(energyHolder.storedPower.toLong(), energyHolder.maximumCapacity.toLong(), this.energyProgressStyle())
     }
 
     private fun IProbeInfo.appendVerboseEnergyInfo(te: TileEntity) {
-        //if (te.isEnergyConsumer()) Not much else to say
+        this.appendVerboseProducerInfo(te)
+        this.appendVerboseHolderInfo(te)
+    }
+
+    private fun IProbeInfo.appendVerboseProducerInfo(te: TileEntity) {
         if (te.isEnergyProducer()) {
             val power = te.energyProducer?.producedPower?.toUserFriendlyAmount(decimalDigits = 3) ?: throw IllegalStateException()
             @Suppress("EXPERIMENTAL_UNSIGNED_LITERALS")
@@ -95,6 +99,9 @@ private class EnergyInfoProvider : IProbeInfoProvider {
             this.horizontal()
                     .text("${TextStyleClass.PROGRESS}${IProbeInfo.STARTLOC}$ENERGY_TOOLTIP.producer.power${IProbeInfo.ENDLOC}: $power$rateText")
         }
+    }
+
+    private fun IProbeInfo.appendVerboseHolderInfo(te: TileEntity) {
         if (te.isEnergyHolder()) {
             val holder = te.energyHolder ?: throw IllegalStateException()
             val max = holder.maximumCapacity.toUserFriendlyAmount(decimalDigits = 3)
