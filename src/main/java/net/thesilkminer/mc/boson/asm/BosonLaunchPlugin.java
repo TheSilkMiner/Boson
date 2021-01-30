@@ -51,7 +51,7 @@ public final class BosonLaunchPlugin extends AbstractLaunchPlugin {
                 .setDescription("Every Boson is at the core of the universe: this is no exception")
                 .addAuthor("TheSilkMiner")
                 .addAuthor("RE/SYST")
-                .setVersion("0.1.1")
+                .setVersion("0.1.2")
                 .setLogoPath("boson_logo.png")
                 .setCredits("Fermion for making this possible");
     }
