@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020  TheSilkMiner
+ * Copyright (C) 2021  TheSilkMiner
  *
  * This file is part of Boson.
  *

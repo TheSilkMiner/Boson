@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020  TheSilkMiner
+ * Copyright (C) 2021  TheSilkMiner
  *
  * This file is part of Boson.
  *
@@ -37,7 +37,7 @@ internal object ConfigurationManager : ConfigurationRegistry {
     override fun registerConfiguration(configuration: Configuration) {
         val configurationRegistryName = configuration.toRegistryName()
         val modConfigurations = this.configurations.computeIfAbsent(configuration.owner) { mutableListOf() }
-        check(modConfigurations.asSequence().firstOrNull { it.toRegistryName() == configurationRegistryName } == null) {
+        check(modConfigurations.firstOrNull { it.toRegistryName() == configurationRegistryName } == null) {
             "The given configuration '$configurationRegistryName' was already registered"
         }
         modConfigurations.add(configuration)
