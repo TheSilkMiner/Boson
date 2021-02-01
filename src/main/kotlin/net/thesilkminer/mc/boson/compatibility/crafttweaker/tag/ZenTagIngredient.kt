@@ -34,6 +34,7 @@ import crafttweaker.api.liquid.ILiquidStack
 import crafttweaker.api.player.IPlayer
 import net.minecraftforge.oredict.OreDictionary
 import net.thesilkminer.mc.boson.compatibility.crafttweaker.naming.ZenNameSpacedString
+import net.thesilkminer.mc.boson.compatibility.crafttweaker.toNativeStack
 import net.thesilkminer.mc.boson.compatibility.crafttweaker.toZen
 import net.thesilkminer.mc.boson.mod.common.recipe.TagIngredient
 import stanhebben.zenscript.annotations.ZenClass
@@ -55,7 +56,7 @@ class ZenTagIngredient(val tagIngredient: TagIngredient, private val mark: Strin
     override fun transformNew(transformer: IItemTransformerNew?): IIngredient = if (transformer != null) this.copy(newTransformers = this.newTransformers.append(transformer)) else this
     override fun applyTransform(item: IItemStack?, byPlayer: IPlayer?): IItemStack? = item.applyTransforms(byPlayer, this.transformers)
     override fun getInternal(): Any = this.tagIngredient
-    override fun matchesExact(item: IItemStack?): Boolean = this.contains(item) && this.conditions.all { it.matches(item) }
+    override fun matchesExact(item: IItemStack?): Boolean = this.tagIngredient.apply(item.toNativeStack()) && this.conditions.all { it.matches(item) }
     override fun getAmount(): Int = 1
     override fun marked(mark: String?): IIngredient = this.copy(mark = mark)
     override fun hasTransformers(): Boolean = this.transformers.any()
@@ -65,7 +66,7 @@ class ZenTagIngredient(val tagIngredient: TagIngredient, private val mark: Strin
     override fun only(condition: IItemCondition?): IIngredient = if (condition != null) this.copy(conditions = this.conditions.append(condition)) else this
     override fun transform(transformer: IItemTransformer?): IIngredient = if (transformer != null) this.copy(transformers = this.transformers.append(transformer)) else this
     override fun or(ingredient: IIngredient?): IIngredient = IngredientOr(this, ingredient)
-    override fun matches(item: IItemStack?): Boolean = this.contains(item) && this.conditions.all { it.matches(item) }
+    override fun matches(item: IItemStack?): Boolean = this.tagIngredient.apply(item.toNativeStack()) && this.conditions.all { it.matches(item) }
     override fun matches(liquid: ILiquidStack?): Boolean = false
 
     private fun copy(mark: String? = this.mark, conditions: List<IItemCondition> = this.conditions, newTransformers: List<IItemTransformerNew> = this.newTransformers,
