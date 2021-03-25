@@ -53,6 +53,7 @@ import net.thesilkminer.mc.boson.api.loader.Context
 import net.thesilkminer.mc.boson.api.loader.Preprocessor
 import net.thesilkminer.mc.boson.api.loader.Processor
 import net.thesilkminer.mc.boson.api.log.L
+import net.thesilkminer.mc.boson.mod.common.common
 import net.thesilkminer.mc.boson.prefab.loader.processor.CatchingProcessor
 import net.thesilkminer.mc.boson.prefab.naming.toNameSpacedString
 import kotlin.reflect.full.cast
@@ -253,7 +254,9 @@ class RecipeLoadingProcessor(private val flags: Int) : Processor<JsonObject> {
             val mappedInstance = mappedClass.cast(v)
             val identifier = NameSpacedString(k.namespace, k.path)
             if (targetMap[identifier] == null) {
-                l.warn("A mod has registered the factory '$identifier' via code or assets. This will NOT survive an upgrade to 1.13! Start using data packs instead!")
+                if (!common["recipes"]["suppress_update_warnings"]().boolean) {
+                    l.warn("A mod has registered the factory '$identifier' via code or assets. This will NOT survive an upgrade to 1.13! Start using data packs instead!")
+                }
                 targetMap[identifier] = mappedInstance.uncheckedCast()
             }
         }

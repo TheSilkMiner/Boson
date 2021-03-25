@@ -33,6 +33,7 @@ import net.thesilkminer.mc.boson.api.loader.Location
 import net.thesilkminer.mc.boson.api.loader.Processor
 import net.thesilkminer.mc.boson.api.loader.loader
 import net.thesilkminer.mc.boson.api.log.L
+import net.thesilkminer.mc.boson.mod.common.common
 import net.thesilkminer.mc.boson.prefab.loader.context.BaseContextBuilder
 import net.thesilkminer.mc.boson.prefab.loader.filter.JsonFileFilter
 import net.thesilkminer.mc.boson.prefab.loader.filter.RegularFileFilter
@@ -165,6 +166,9 @@ internal fun loadDataPackRecipes() {
     l.info("Preparing to load recipes from data-packs")
     recipesLoader.load()
     l.info("Data-pack-based recipes loading has completed: now starting assets scanning")
-    assetsWarnerLoader.load()
+    if (!common["recipes"]["suppress_update_warnings"]().boolean) {
+        l.info("You can suppress this check via the configuration file")
+        assetsWarnerLoader.load()
+    }
     l.info("Scan completed")
 }

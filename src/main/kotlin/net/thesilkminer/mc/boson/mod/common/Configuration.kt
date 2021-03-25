@@ -26,10 +26,28 @@ package net.thesilkminer.mc.boson.mod.common
 
 import net.thesilkminer.mc.boson.MOD_ID
 import net.thesilkminer.mc.boson.api.configuration.ConfigurationFormat
+import net.thesilkminer.mc.boson.api.configuration.EntryType
 import net.thesilkminer.mc.boson.api.configuration.configuration
 
 internal val common = configuration {
     owner = MOD_ID
     name = "common"
     type = ConfigurationFormat.FORGE_CONFIG
+
+    categories {
+        "recipes" {
+            comment = "Manages the Recipe Loading and Parsing feature"
+            languageKey = "boson.configuration.common.recipes"
+
+            entries {
+                "suppress_update_warnings"(EntryType.BOOLEAN) {
+                    comment = "Sets whether warnings regarding recipes and factories regarding 1.13 updates should be suppressed or not"
+                    languageKey = "boson.configuration.common.recipes.suppress_update_warnings"
+                    default = false
+
+                    requiresGameRestart()
+                }
+            }
+        }
+    }
 }
